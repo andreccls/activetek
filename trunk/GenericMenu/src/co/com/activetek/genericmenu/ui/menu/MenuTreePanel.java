@@ -1,10 +1,13 @@
 package co.com.activetek.genericmenu.ui.menu;
 
 import java.awt.GridBagLayout;
+
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import java.awt.GridBagConstraints;
 import java.awt.ComponentOrientation;
@@ -13,21 +16,29 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
 import javax.swing.JScrollPane;
+
+import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.ui.GenericMenu;
+
 import java.awt.BorderLayout;
+import java.sql.SQLException;
+import java.util.Vector;
 
 public class MenuTreePanel extends JPanel
 {
 
     private static final long serialVersionUID = 1L;
+    private GenericMenu window;
     private JTree treeMenu = null;
     private JScrollPane jScrollPane = null;
 
     /**
      * This is the default constructor
      */
-    public MenuTreePanel( )
+    public MenuTreePanel(GenericMenu window )
     {
         super( );
+        this.window = window;
         initialize( );
     }
 
@@ -52,91 +63,53 @@ public class MenuTreePanel extends JPanel
     private JTree getTreeMenu( )
     {
         if( treeMenu == null )
-        {
+        {           
+            
             DefaultMutableTreeNode abuelo = new DefaultMutableTreeNode( "GenericMenu" );
-            DefaultTreeModel modelo = new DefaultTreeModel( abuelo );
-            
-            DefaultMutableTreeNode rollos = new DefaultMutableTreeNode("rollos");
-            DefaultMutableTreeNode sopas = new DefaultMutableTreeNode("sopas");
-            DefaultMutableTreeNode platos = new DefaultMutableTreeNode("platos pequeños");
-            
-            DefaultMutableTreeNode rollo0 = new DefaultMutableTreeNode("rollos de cangrejo");
-            DefaultMutableTreeNode rollo1 = new DefaultMutableTreeNode("Rollos de Primavera estilo Thai");
-            DefaultMutableTreeNode rollo2 = new DefaultMutableTreeNode("Rollitos Primavera");
-            DefaultMutableTreeNode rollo3 = new DefaultMutableTreeNode("Rollos Siam");
-            
-            DefaultMutableTreeNode sopa0 = new DefaultMutableTreeNode("<Miso>");
-            DefaultMutableTreeNode sopa1 = new DefaultMutableTreeNode("Sopa Pho ");
-            DefaultMutableTreeNode sopa2 = new DefaultMutableTreeNode("Sopa Agripicante de Fideos y Pollo");
-            DefaultMutableTreeNode sopa3 = new DefaultMutableTreeNode("<Tom Ka>");
-            
-            DefaultMutableTreeNode plato0 = new DefaultMutableTreeNode("Calamares crujientes");
-            DefaultMutableTreeNode plato1 = new DefaultMutableTreeNode("Pinchos a la Parrilla");
-            DefaultMutableTreeNode plato2 = new DefaultMutableTreeNode("Edamame");
-            DefaultMutableTreeNode plato3 = new DefaultMutableTreeNode("Raviolis de Camarón");
-            
-            modelo.insertNodeInto(rollos,abuelo,0);
-            modelo.insertNodeInto(sopas,abuelo,0);
-            modelo.insertNodeInto(platos,abuelo,0);
-            
-            modelo.insertNodeInto( rollo0, rollos , 0 );
-            modelo.insertNodeInto( rollo1, rollos , 1 );
-            modelo.insertNodeInto( rollo2, rollos , 2 );
-            modelo.insertNodeInto( rollo3, rollos , 3 );
-                        
-            modelo.insertNodeInto( sopa0, sopas , 0 );
-            modelo.insertNodeInto( sopa1, sopas , 1 );
-            modelo.insertNodeInto( sopa2, sopas , 2 );
-            modelo.insertNodeInto( sopa3, sopas , 3 );
-            
-            modelo.insertNodeInto( plato0, platos , 0 );
-            modelo.insertNodeInto( plato1, platos , 1 );
-            modelo.insertNodeInto( plato2, platos , 2 );
-            modelo.insertNodeInto( plato3, platos , 3 );
-
-            
-            treeMenu = new JTree( modelo );
+			buildMenuTree( window.getMenuTree(),abuelo);
+			
+			treeMenu = new JTree( abuelo );
             treeMenu.setEditable( false );
             treeMenu.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
             treeMenu.setRootVisible( true );
-            treeMenu.expandRow( 1 );
-            treeMenu.expandRow( 6 );
-            treeMenu.expandRow( 11 );
             treeMenu.addMouseListener( new MouseListener( )
             {
                 
-                @Override
                 public void mouseReleased( MouseEvent e )
                 {
                     // TODO Auto-generated method stub
                     
                 }
-                
-                @Override
+
                 public void mousePressed( MouseEvent e )
                 {
                     // TODO Auto-generated method stub
                     
                 }
                 
-                @Override
                 public void mouseExited( MouseEvent e )
                 {
                     // TODO Auto-generated method stub
                     
                 }
                 
-                @Override
+
                 public void mouseEntered( MouseEvent e )
                 {
                     // TODO Auto-generated method stub
                     
                 }
                 
-                @Override
+
                 public void mouseClicked( MouseEvent e )
                 {
-                    System.out.println(treeMenu.getPathForLocation( e.getX( ), e.getY( ) ));
+                	TreePath path = treeMenu.getPathForLocation( e.getX( ), e.getY( ) );
+                	if(path != null)
+                	{
+                		String path2 = path.toString().replace("[", "").replace("]", "").replace(" ", "");
+                		System.out.println(path2);
+                	}
+                    
                     
                 }
             });
@@ -144,7 +117,18 @@ public class MenuTreePanel extends JPanel
         return treeMenu;
     }
 
-    /**
+    private void buildMenuTree(MenuItem root, DefaultMutableTreeNode abuelo) {
+		Vector<MenuItem> sons= root.getSons();
+		
+		for (MenuItem menuItem : sons) {
+			DefaultMutableTreeNode me = new DefaultMutableTreeNode(menuItem);
+			abuelo.add(me);
+			buildMenuTree(menuItem, me);
+		}
+		
+	}
+
+	/**
      * This method initializes jScrollPane	
      * 	
      * @return javax.swing.JScrollPane	

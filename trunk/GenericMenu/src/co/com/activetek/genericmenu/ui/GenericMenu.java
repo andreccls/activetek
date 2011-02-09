@@ -2,14 +2,28 @@ package co.com.activetek.genericmenu.ui;
 
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
+
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.Rectangle;
+
+import co.com.activetek.genericmenu.server.GenericMenuServer;
+import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.exception.GenericMenuException;
 import co.com.activetek.genericmenu.ui.orders.OrdersPanel;
 import co.com.activetek.genericmenu.ui.menu.MenuTreePanel;
 import co.com.activetek.genericmenu.ui.menu.MenuPanel;
+import co.com.activetek.genericmenu.ui.tables.MapTablesPanel;
+import java.awt.Point;
+import java.awt.Dimension;
+import java.sql.SQLException;
+import java.util.Vector;
 
 public class GenericMenu extends JFrame
 {
@@ -22,6 +36,10 @@ public class GenericMenu extends JFrame
     private JInternalFrame internalFrameMenu = null;
     private JPanel contentPaneMenu = null;
     private MenuPanel menuPanel = null;
+	private JInternalFrame internalFrameTables = null;
+	private JPanel contentPaneTables = null;
+	private MapTablesPanel mapTablesPanel = null;
+	private GenericMenuServer server;
     /**
      * This method initializes jDesktopPane	
      * 	
@@ -34,6 +52,7 @@ public class GenericMenu extends JFrame
             jDesktopPane = new JDesktopPane( );
             jDesktopPane.add(getInternalFrameOrders(), null);
             jDesktopPane.add(getInternalFrameMenu(), null);
+            jDesktopPane.add(getInternalFrameTables(), null);
         }
         return jDesktopPane;
     }
@@ -48,7 +67,7 @@ public class GenericMenu extends JFrame
         if( internalFrameOrders == null )
         {
             internalFrameOrders = new JInternalFrame( );
-            internalFrameOrders.setBounds(new Rectangle(3, 0, 209, 563));
+            internalFrameOrders.setBounds(new Rectangle(-2, 4, 209, 563));
             internalFrameOrders.setMaximizable(true);
             internalFrameOrders.setClosable(true);
             internalFrameOrders.setResizable(true);
@@ -133,18 +152,65 @@ public class GenericMenu extends JFrame
     {
         if( menuPanel == null )
         {
-            menuPanel = new MenuPanel( );
+            menuPanel = new MenuPanel( this );
         }
         return menuPanel;
     }
 
     /**
+	 * This method initializes internalFrameTables	
+	 * 	
+	 * @return javax.swing.JInternalFrame	
+	 */
+	private JInternalFrame getInternalFrameTables() {
+		if (internalFrameTables == null) {
+			internalFrameTables = new JInternalFrame();
+			internalFrameTables.setVisible(true);
+			internalFrameTables.setResizable(true);
+			internalFrameTables.setLocation(new Point(0, 0));
+			internalFrameTables.setSize(new Dimension(600, 600));
+			internalFrameTables.setContentPane(getContentPaneTables());
+		}
+		return internalFrameTables;
+	}
+
+	/**
+	 * This method initializes contentPaneTables	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getContentPaneTables() {
+		if (contentPaneTables == null) {
+			contentPaneTables = new JPanel();
+			contentPaneTables.setLayout(new BorderLayout());
+			contentPaneTables.add(getMapTablesPanel(), BorderLayout.NORTH);
+		}
+		return contentPaneTables;
+	}
+
+	/**
+	 * This method initializes mapTablesPanel	
+	 * 	
+	 * @return co.com.activetek.genericmenu.ui.tables.MapTablesPanel	
+	 */
+	private MapTablesPanel getMapTablesPanel() {
+		if (mapTablesPanel == null) {
+			mapTablesPanel = new MapTablesPanel();
+		}
+		return mapTablesPanel;
+	}
+
+	/**
      * @param args
      */
     public static void main( String[] args )
     {
-        // TODO Auto-generated method stub
-
+        try {
+        	UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
+        } 
+        catch (Exception e) {
+        	e.printStackTrace();
+        }
         SwingUtilities.invokeLater( new Runnable( )
         {
             public void run( )
@@ -162,6 +228,13 @@ public class GenericMenu extends JFrame
     public GenericMenu( )
     {
         super( );
+        try {
+			server = new GenericMenuServer();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "Se ha producido un error inesperado tratando conectar a la base de datos, por favor contacte al administrador \n " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+			System.exit(0);
+		}
         initialize( );
     }
 
@@ -175,6 +248,32 @@ public class GenericMenu extends JFrame
         this.setSize( 1000, 1000 );
         this.setContentPane(getJDesktopPane());
         this.setTitle( "JFrame" );
+    }
+    
+    
+    
+    public Vector<MenuItem> getChildren(int parentId) 
+    {
+    	try {
+			return server.getChildren(parentId);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "Error inesperado, contacte al administrador del sistema \n " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+		return null;
+    }
+    public MenuItem getMenuTree()
+    {
+    	try {
+			return server.getMenuTree();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "Error inesperado, contacte al administrador del sistema \n " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		} catch (GenericMenuException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "ERROR", JOptionPane.WARNING_MESSAGE);
+			e.printStackTrace();
+		}
+		return null;
     }
 
 }

@@ -2,6 +2,9 @@ package co.com.activetek.genericmenu.ui.menu;
 
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
+
+import co.com.activetek.genericmenu.ui.GenericMenu;
+
 import java.awt.BorderLayout;
 
 public class MenuPanel extends JPanel
@@ -10,13 +13,15 @@ public class MenuPanel extends JPanel
     private static final long serialVersionUID = 1L;
     private MenuTreePanel menuTreePanel = null;
     private ProductInfoPanel productInfo = null;
+    private GenericMenu window;
 
     /**
      * This is the default constructor
      */
-    public MenuPanel( )
+    public MenuPanel( GenericMenu window )
     {
         super( );
+        this.window = window;
         initialize( );
     }
 
@@ -42,7 +47,7 @@ public class MenuPanel extends JPanel
     {
         if( menuTreePanel == null )
         {
-            menuTreePanel = new MenuTreePanel( );
+            menuTreePanel = new MenuTreePanel( window );
         }
         return menuTreePanel;
     }
