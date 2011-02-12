@@ -16,6 +16,7 @@ import java.awt.Rectangle;
 
 import co.com.activetek.genericmenu.server.GenericMenuServer;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.beans.Waitress;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
 import co.com.activetek.genericmenu.ui.orders.OrdersPanel;
 import co.com.activetek.genericmenu.ui.menu.MenuTreePanel;
@@ -25,6 +26,7 @@ import java.awt.Point;
 import java.awt.Dimension;
 import java.sql.SQLException;
 import java.util.Vector;
+import co.com.activetek.genericmenu.ui.waitress.WaitressesPanel;
 
 public class GenericMenu extends JFrame
 {
@@ -46,6 +48,9 @@ public class GenericMenu extends JFrame
      * Atributo que representa el item del menu que esta seleccionado actualmente en la interfaz del usuario
      */
     private MenuItem selected;
+    private JInternalFrame internalFrameWaitresses = null;
+    private JPanel contentPaneWaitresses = null;
+    private WaitressesPanel waitressesPanel = null;
 
     /**
      * This method initializes jDesktopPane
@@ -60,6 +65,7 @@ public class GenericMenu extends JFrame
             jDesktopPane.add( getInternalFrameOrders( ), null );
             jDesktopPane.add( getInternalFrameMenu( ), null );
             jDesktopPane.add( getInternalFrameTables( ), null );
+            jDesktopPane.add(getInternalFrameWaitresses(), null);
         }
         return jDesktopPane;
     }
@@ -214,6 +220,55 @@ public class GenericMenu extends JFrame
     }
 
     /**
+     * This method initializes internalFrameWaitresses	
+     * 	
+     * @return javax.swing.JInternalFrame	
+     */
+    private JInternalFrame getInternalFrameWaitresses( )
+    {
+        if( internalFrameWaitresses == null )
+        {
+            internalFrameWaitresses = new JInternalFrame( );
+            internalFrameWaitresses.setContentPane(getContentPaneWaitresses());
+            internalFrameWaitresses.setVisible( true );
+            internalFrameWaitresses.setResizable( true );
+            internalFrameWaitresses.setLocation( new Point( 0, 0 ) );
+            internalFrameWaitresses.setSize( new Dimension( 600, 600 ) );
+        }
+        return internalFrameWaitresses;
+    }
+
+    /**
+     * This method initializes contentPaneWaitresses	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getContentPaneWaitresses( )
+    {
+        if( contentPaneWaitresses == null )
+        {
+            contentPaneWaitresses = new JPanel( );
+            contentPaneWaitresses.setLayout(new BorderLayout());
+            contentPaneWaitresses.add(getWaitressesPanel(), BorderLayout.NORTH);
+        }
+        return contentPaneWaitresses;
+    }
+
+    /**
+     * This method initializes waitressesPanel	
+     * 	
+     * @return co.com.activetek.genericmenu.ui.waitress.WaitressesPanel	
+     */
+    private WaitressesPanel getWaitressesPanel( )
+    {
+        if( waitressesPanel == null )
+        {
+            waitressesPanel = new WaitressesPanel( this );
+        }
+        return waitressesPanel;
+    }
+
+    /**
      * @param args
      */
     public static void main( String[] args )
@@ -290,7 +345,6 @@ public class GenericMenu extends JFrame
     public MenuItem getMenuTree( )
     {
          return server.getMenuTree( );
-
     }
 
     public void setSelectedItem( String path )
@@ -298,6 +352,20 @@ public class GenericMenu extends JFrame
         System.out.println(path);
         selected = server.getMenuItemByPath( path );
         menuPanel.updateSelectedItem( selected );
+    }
+
+    public Vector<Waitress> getWaitresses( )
+    {
+        try
+        {
+            return server.getWaitresses( );
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado recolectando la informacion de meseros desde la base de datos, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

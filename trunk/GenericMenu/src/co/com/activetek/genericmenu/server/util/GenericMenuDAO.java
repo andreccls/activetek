@@ -75,7 +75,7 @@ public class GenericMenuDAO
         ResultSet rs = st.executeQuery( "SELECT * FROM mesero" );
         while( rs.next( ) )
         {
-            result.add( new Waitress( rs.getInt( "id_mesero" ), rs.getString( "foto" ), rs.getString( "name" ), rs.getString( "apellido" ), rs.getString( "nick" ), rs.getBoolean( "enable" ) ) );
+            result.add( new Waitress( rs.getInt( "id_mesero" ), rs.getString( "foto" ), rs.getString( "nombre" ), rs.getString( "apellido" ), rs.getString( "nick" ), rs.getBoolean( "enable" ) ) );
         }
         return result;
     }
