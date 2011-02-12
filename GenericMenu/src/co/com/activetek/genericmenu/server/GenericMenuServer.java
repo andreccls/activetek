@@ -23,7 +23,7 @@ public class GenericMenuServer
         GenericMenuDAO.getInstance( );// para verificar que la base de datos esta arriba
         try
         {
-            root = getChildren( -1 ).get( 0 );
+            root = getChildren( null ).get( 0 );
             root.loadSons( );         
         }
         catch( ArrayIndexOutOfBoundsException e )
@@ -31,9 +31,9 @@ public class GenericMenuServer
             throw new GenericMenuException( "No se ha definido ningun menu en el sistema" );
         }
     }
-    public Vector<MenuItem> getChildren( int idParent ) throws SQLException
+    public Vector<MenuItem> getChildren( MenuItem parent ) throws SQLException
     {
-        return GenericMenuDAO.getInstance( ).getChildren( idParent );
+        return GenericMenuDAO.getInstance( ).getChildren( parent );
     }
 
     // TODO eliminar esta cosa

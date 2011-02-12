@@ -42,15 +42,15 @@ public class GenericMenuDAO
 
     }
 
-    public Vector<MenuItem> getChildren( int idParent ) throws SQLException
+    public Vector<MenuItem> getChildren( MenuItem parent ) throws SQLException
     {
         Statement st = conn.createStatement( );
-        ResultSet rs = st.executeQuery( "SELECT * FROM menuitem WHERE parentId " + ( idParent == -1 ? "IS NULL" : " = " + idParent ) );
+        ResultSet rs = st.executeQuery( "SELECT * FROM menuitem WHERE parentId " + ( parent == null ? "IS NULL" : " = " + parent.getId( ) ) );
         Vector<MenuItem> res = new Vector<MenuItem>( );
         while( rs.next( ) )
         {
             int menuitemid = rs.getInt( "menuItem_id" );
-            res.add( new MenuItem( menuitemid, rs.getString( "nombre" ), rs.getString( "description" ), rs.getBoolean( "enable" ), rs.getString( "icon" ), getImages( menuitemid ) ) );
+            res.add( new MenuItem( menuitemid, rs.getString( "nombre" ), rs.getString( "description" ), rs.getBoolean( "enable" ), rs.getString( "icon" ), getImages( menuitemid ) , parent) );
         }
 
         return res;

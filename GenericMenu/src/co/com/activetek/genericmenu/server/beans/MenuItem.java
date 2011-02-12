@@ -1,9 +1,7 @@
 package co.com.activetek.genericmenu.server.beans;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Vector;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -18,8 +16,9 @@ public class MenuItem
     private String icon;
     private Vector<MenuItem> sons;
     private Vector<Image> images;
+    private MenuItem father;
 
-    public MenuItem( int id, String nombre, String description, boolean enable, String icon, Vector<Image> images )
+    public MenuItem( int id, String nombre, String description, boolean enable, String icon, Vector<Image> images, MenuItem father )
     {
         super( );
         this.id = id;
@@ -29,6 +28,7 @@ public class MenuItem
         this.icon = icon;
         sons = new Vector<MenuItem>( );
         this.images = images;
+        this.father = father;
     }
     public Vector<Image> getImages( )
     {
@@ -80,7 +80,7 @@ public class MenuItem
     }
     public void loadSons( ) throws SQLException
     {
-        sons = GenericMenuDAO.getInstance( ).getChildren( id );
+        sons = GenericMenuDAO.getInstance( ).getChildren( this );
         for( MenuItem son : sons )
         {
             son.loadSons( );
@@ -112,20 +112,19 @@ public class MenuItem
     {
         JSONObject object = new JSONObject( );
 
-        if( isLeaf( ) )
+        if( getLevel( ) == 2 )
         {
-            object.put( "name", name );            
-            object.put( "details", details );
-            System.err.println(details);
-            //object.put( "price", details );TODO
+            object.put( "name", name );
+            object.put( "details", details );            
+            // object.put( "price", details );TODO
             object.put( "images", getImagesJSON( ) );
-            System.out.println( object + "\n");
+            System.out.println( object + "\n" );
         }
         for( MenuItem menuItem : sons )
         {
             menuItem.getJSON( );
         }
-        
+
         return object;
 
     }
@@ -141,5 +140,9 @@ public class MenuItem
     public boolean isLeaf( )
     {
         return sons == null || sons.size( ) == 0;
+    }
+    public int getLevel( )
+    {
+        return father == null ? 0 : father.getLevel( ) + 1;
     }
 }

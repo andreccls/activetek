@@ -329,20 +329,6 @@ public class GenericMenu extends JFrame
         this.setTitle( "Osaki" );
     }
 
-    public Vector<MenuItem> getChildren( int parentId )
-    {
-        try
-        {
-            return server.getChildren( parentId );
-        }
-        catch( SQLException e )
-        {
-            JOptionPane.showMessageDialog( this, "Error inesperado, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-            e.printStackTrace( );
-        }
-        return null;
-    }
-
     public MenuItem getMenuTree( )
     {
         return server.getMenuTree( );
