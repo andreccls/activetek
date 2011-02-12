@@ -289,21 +289,8 @@ public class GenericMenu extends JFrame
 
     public MenuItem getMenuTree( )
     {
-        try
-        {
-            return server.getMenuTree( );
-        }
-        catch( SQLException e )
-        {
-            JOptionPane.showMessageDialog( this, "Error inesperado, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-            e.printStackTrace( );
-        }
-        catch( GenericMenuException e )
-        {
-            JOptionPane.showMessageDialog( this, e.getMessage( ), "ERROR", JOptionPane.WARNING_MESSAGE );
-            e.printStackTrace( );
-        }
-        return null;
+         return server.getMenuTree( );
+
     }
 
     public void setSelectedItem( String path )
