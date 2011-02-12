@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.beans.Waitress;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
 import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
@@ -38,7 +39,7 @@ public class GenericMenuServer
     {
         GenericMenuDAO.getInstance( ).showDatabses( );
     }
-    public MenuItem getMenuTree( ) throws SQLException, GenericMenuException
+    public MenuItem getMenuTree( ) 
     {
         return root;
     }
@@ -46,5 +47,9 @@ public class GenericMenuServer
     {
         String[] items = path.split( "," );
         return root.findByName(items[items.length-1]);
+    }
+    public Vector<Waitress> getWaitresses( ) throws SQLException
+    {
+        return GenericMenuDAO.getInstance( ).getWaitress( );
     }
 }
