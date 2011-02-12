@@ -17,6 +17,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 
+import co.com.activetek.genericmenu.ui.utils.MyImageIcon;
+
 public class TablePanel extends JPanel
 {
 
@@ -50,7 +52,7 @@ public class TablePanel extends JPanel
         labelIcon.setHorizontalTextPosition(SwingConstants.CENTER);
         labelIcon.setHorizontalAlignment(SwingConstants.CENTER);
         ImageIcon ic=new ImageIcon("./images/GenericMenu/ui/free_table.jpg");       
-        labelIcon.setIcon(setSize( ic.getImage( ), 70,70 ) );
+        labelIcon.setIcon(MyImageIcon.getInstance( ).setSize( ic.getImage( ), 70,70,this ) );
         labelNumber = new JLabel();
         labelNumber.setText(""+(x+1+y*MapTablesPanel.WIDTH));
         labelNumber.setHorizontalAlignment(SwingConstants.CENTER);
@@ -95,24 +97,5 @@ public class TablePanel extends JPanel
         this.add(labelIcon, BorderLayout.CENTER);
     }
     
-
-    private ImageIcon scale(Image src, double scale) {
-        int w = (int)(scale*src.getWidth(this));
-        int h = (int)(scale*src.getHeight(this));
-        int type = BufferedImage.TYPE_INT_RGB;
-        BufferedImage dst = new BufferedImage(w, h, type);
-        Graphics2D g2 = dst.createGraphics();
-        g2.drawImage(src, 0, 0, w, h, this);
-        g2.dispose();
-        return new ImageIcon(dst);
-    }
-    private ImageIcon setSize(Image src, int w,int h) {
-        int type = BufferedImage.TYPE_INT_RGB;
-        BufferedImage dst = new BufferedImage(w, h, type);
-        Graphics2D g2 = dst.createGraphics();
-        g2.drawImage(src, 0, 0, w, h, this);
-        g2.dispose();
-        return new ImageIcon(dst);
-    }
 
 }

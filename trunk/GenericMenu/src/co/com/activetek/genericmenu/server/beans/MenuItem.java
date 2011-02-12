@@ -4,13 +4,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
 public class MenuItem
 {
     private int id;
-    private String nombre;
-    private String description;
+    private String name;
+    private String details;
     private boolean enable;
     private String icon;
     private Vector<MenuItem> sons;
@@ -20,8 +23,8 @@ public class MenuItem
     {
         super( );
         this.id = id;
-        this.nombre = nombre;
-        this.description = description;
+        this.name = nombre;
+        this.details = description;
         this.enable = enable;
         this.icon = icon;
         sons = new Vector<MenuItem>( );
@@ -45,19 +48,19 @@ public class MenuItem
     }
     public String getName( )
     {
-        return nombre;
+        return name;
     }
     public void setNombre( String nombre )
     {
-        this.nombre = nombre;
+        this.name = nombre;
     }
     public String getDescription( )
     {
-        return description;
+        return details;
     }
     public void setDescription( String description )
     {
-        this.description = description;
+        this.details = description;
     }
     public boolean isEnable( )
     {
@@ -89,21 +92,54 @@ public class MenuItem
     }
     public String toString( )
     {
-        return nombre;
+        return name;
     }
     public MenuItem findByName( String string )
     {
-        if(nombre.equals( string ))
+        if( name.equals( string ) )
         {
             return this;
         }
         for( MenuItem menuitem : sons )
         {
             MenuItem temp = menuitem.findByName( string );
-            if(temp!=null)
+            if( temp != null )
                 return temp;
         }
         return null;
     }
+    public JSONObject getJSON( )
+    {
+        JSONObject object = new JSONObject( );
 
+        if( isLeaf( ) )
+        {
+            object.put( "name", name );            
+            object.put( "details", details );
+            System.err.println(details);
+            //object.put( "price", details );TODO
+            object.put( "images", getImagesJSON( ) );
+            System.out.println( object + "\n");
+        }
+        for( MenuItem menuItem : sons )
+        {
+            menuItem.getJSON( );
+        }
+        
+        return object;
+
+    }
+    public JSONArray getImagesJSON( )
+    {
+        JSONArray object = new JSONArray( );
+        for( Image image : images )
+        {
+            object.add( image.getJson( ) );
+        }
+        return object;
+    }
+    public boolean isLeaf( )
+    {
+        return sons == null || sons.size( ) == 0;
+    }
 }

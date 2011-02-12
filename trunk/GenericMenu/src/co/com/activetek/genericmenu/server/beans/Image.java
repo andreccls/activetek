@@ -1,5 +1,7 @@
 package co.com.activetek.genericmenu.server.beans;
 
+import net.sf.json.JSONObject;
+
 public class Image
 {
     private int id ;
@@ -22,5 +24,12 @@ public class Image
     public String getUrl()
     {
         return url;
+    }
+    public JSONObject getJson()
+    {
+        JSONObject object = new JSONObject( );
+        object.put( "order", new Integer( order ) );
+        object.put( "url", url );
+        return object;
     }
 }

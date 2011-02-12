@@ -1,3 +1,4 @@
+
 package co.com.activetek.genericmenu.ui.menu;
 
 import javax.swing.JPanel;
@@ -15,11 +16,15 @@ import javax.swing.JCheckBox;
 import javax.swing.JButton;
 
 import co.com.activetek.genericmenu.server.beans.Image;
+import co.com.activetek.genericmenu.ui.utils.MyImageIcon;
+
 import java.util.Vector;
 
 public class ProductInfoImagePanel extends JPanel
 {
     private final static String NO_IMAGE = "./images/GenericMenu/noimg.gif";
+    private final static int WIDHT = 200;
+    private final static int HEIGHT = 200;
 
     private static final long serialVersionUID = 1L;
     private JLabel labelImages = null;
@@ -194,13 +199,12 @@ public class ProductInfoImagePanel extends JPanel
     {
         if( images.size( ) > 0 )
         {
-            labelImages.setIcon( new ImageIcon( images.get( image ).getUrl( ) ) );
-            System.out.println( images.get( image ).getUrl( ) );
+            labelImages.setIcon( MyImageIcon.getInstance( ).setSize( new ImageIcon( images.get( image ).getUrl( ) ).getImage( ), WIDHT, HEIGHT, this ) );
         }
         else
         {
             image = -1;
-            labelImages.setIcon( new ImageIcon( NO_IMAGE ) );
+            labelImages.setIcon( MyImageIcon.getInstance( ).setSize( new ImageIcon( NO_IMAGE ).getImage( ), WIDHT, HEIGHT, this ) );
         }
         updateButtons( );
     }

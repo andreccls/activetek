@@ -65,7 +65,7 @@ public class GenericMenu extends JFrame
             jDesktopPane.add( getInternalFrameOrders( ), null );
             jDesktopPane.add( getInternalFrameMenu( ), null );
             jDesktopPane.add( getInternalFrameTables( ), null );
-            jDesktopPane.add(getInternalFrameWaitresses(), null);
+            jDesktopPane.add( getInternalFrameWaitresses( ), null );
         }
         return jDesktopPane;
     }
@@ -80,7 +80,7 @@ public class GenericMenu extends JFrame
         if( internalFrameOrders == null )
         {
             internalFrameOrders = new JInternalFrame( );
-            internalFrameOrders.setBounds( new Rectangle( -2, 4, 209, 563 ) );
+            internalFrameOrders.setBounds( new Rectangle( -1, 1, 209, 744 ) );
             internalFrameOrders.setMaximizable( true );
             internalFrameOrders.setClosable( true );
             internalFrameOrders.setResizable( true );
@@ -130,7 +130,7 @@ public class GenericMenu extends JFrame
         if( internalFrameMenu == null )
         {
             internalFrameMenu = new JInternalFrame( );
-            internalFrameMenu.setBounds( new Rectangle( 213, 0, 677, 404 ) );
+            internalFrameMenu.setBounds(new Rectangle(652, 2, 677, 404));
             internalFrameMenu.setResizable( true );
             internalFrameMenu.setMaximizable( true );
             internalFrameMenu.setClosable( true );
@@ -182,8 +182,8 @@ public class GenericMenu extends JFrame
             internalFrameTables = new JInternalFrame( );
             internalFrameTables.setVisible( true );
             internalFrameTables.setResizable( true );
-            internalFrameTables.setLocation( new Point( 0, 0 ) );
-            internalFrameTables.setSize( new Dimension( 600, 600 ) );
+            internalFrameTables.setLocation( new Point( 210, 2 ) );
+            internalFrameTables.setSize(new Dimension(442, 460));
             internalFrameTables.setContentPane( getContentPaneTables( ) );
         }
         return internalFrameTables;
@@ -220,44 +220,44 @@ public class GenericMenu extends JFrame
     }
 
     /**
-     * This method initializes internalFrameWaitresses	
-     * 	
-     * @return javax.swing.JInternalFrame	
+     * This method initializes internalFrameWaitresses
+     * 
+     * @return javax.swing.JInternalFrame
      */
     private JInternalFrame getInternalFrameWaitresses( )
     {
         if( internalFrameWaitresses == null )
         {
             internalFrameWaitresses = new JInternalFrame( );
-            internalFrameWaitresses.setContentPane(getContentPaneWaitresses());
+            internalFrameWaitresses.setContentPane( getContentPaneWaitresses( ) );
             internalFrameWaitresses.setVisible( true );
             internalFrameWaitresses.setResizable( true );
-            internalFrameWaitresses.setLocation( new Point( 0, 0 ) );
-            internalFrameWaitresses.setSize( new Dimension( 600, 600 ) );
+            internalFrameWaitresses.setLocation(new Point(208, 461));
+            internalFrameWaitresses.setSize( new Dimension( 597, 257 ) );
         }
         return internalFrameWaitresses;
     }
 
     /**
-     * This method initializes contentPaneWaitresses	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes contentPaneWaitresses
+     * 
+     * @return javax.swing.JPanel
      */
     private JPanel getContentPaneWaitresses( )
     {
         if( contentPaneWaitresses == null )
         {
             contentPaneWaitresses = new JPanel( );
-            contentPaneWaitresses.setLayout(new BorderLayout());
-            contentPaneWaitresses.add(getWaitressesPanel(), BorderLayout.NORTH);
+            contentPaneWaitresses.setLayout( new BorderLayout( ) );
+            contentPaneWaitresses.add( getWaitressesPanel( ), BorderLayout.NORTH );
         }
         return contentPaneWaitresses;
     }
 
     /**
-     * This method initializes waitressesPanel	
-     * 	
-     * @return co.com.activetek.genericmenu.ui.waitress.WaitressesPanel	
+     * This method initializes waitressesPanel
+     * 
+     * @return co.com.activetek.genericmenu.ui.waitress.WaitressesPanel
      */
     private WaitressesPanel getWaitressesPanel( )
     {
@@ -324,8 +324,9 @@ public class GenericMenu extends JFrame
     private void initialize( )
     {
         this.setSize( 1000, 1000 );
+        this.setExtendedState( getExtendedState( ) | MAXIMIZED_BOTH );
         this.setContentPane( getJDesktopPane( ) );
-        this.setTitle( "JFrame" );
+        this.setTitle( "Osaki" );
     }
 
     public Vector<MenuItem> getChildren( int parentId )
@@ -344,12 +345,11 @@ public class GenericMenu extends JFrame
 
     public MenuItem getMenuTree( )
     {
-         return server.getMenuTree( );
+        return server.getMenuTree( );
     }
 
     public void setSelectedItem( String path )
     {
-        System.out.println(path);
         selected = server.getMenuItemByPath( path );
         menuPanel.updateSelectedItem( selected );
     }
@@ -363,7 +363,7 @@ public class GenericMenu extends JFrame
         catch( SQLException e )
         {
             JOptionPane.showMessageDialog( this, "Error inesperado recolectando la informacion de meseros desde la base de datos, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-            e.printStackTrace();
+            e.printStackTrace( );
         }
         return null;
     }
