@@ -3,6 +3,8 @@ package co.com.activetek.genericmenu.ui.waitress;
 import javax.swing.JPanel;
 
 import co.com.activetek.genericmenu.server.beans.Waitress;
+import co.com.activetek.genericmenu.ui.utils.MyImageIcon;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
@@ -16,6 +18,9 @@ import javax.swing.SwingConstants;
 public class WaitressPanel extends JPanel
 {
     private final static String NON_WAITRESS = "./images/GenericMenu/waitresses/none.jpg";
+    private final static int WIDHT = 80;
+    private final static int HEIGHT = 80;
+
     private Waitress waitress;
     private JLabel labelPhoto = null;
     public WaitressPanel( Waitress waitress )
@@ -31,9 +36,11 @@ public class WaitressPanel extends JPanel
     private void initialize( )
     {
         labelPhoto = new JLabel( );
-        labelPhoto.setIcon( new ImageIcon( waitress.getPhoto( ) == null ? NON_WAITRESS : waitress.getPhoto( ) ) );
-        labelPhoto.setHorizontalTextPosition(SwingConstants.CENTER);
-        labelPhoto.setHorizontalAlignment(SwingConstants.CENTER);
+        ImageIcon ic = new ImageIcon( waitress.getPhoto( ) == null ? NON_WAITRESS : waitress.getPhoto( ) );
+        ic = MyImageIcon.getInstance( ).setSize( ic.getImage( ), WIDHT, HEIGHT, this );
+        labelPhoto.setIcon( ic );
+        labelPhoto.setHorizontalTextPosition( SwingConstants.CENTER );
+        labelPhoto.setHorizontalAlignment( SwingConstants.CENTER );
         this.setLayout( new BorderLayout( ) );
         this.setSize( new Dimension( 189, 163 ) );
         this.setBorder( BorderFactory.createTitledBorder( null, waitress.getNick( ), TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION, new Font( "DialogInput", Font.ITALIC, 12 ), new Color( 146, 51, 51 ) ) );
