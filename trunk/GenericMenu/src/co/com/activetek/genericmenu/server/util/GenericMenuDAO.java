@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import co.com.activetek.genericmenu.server.beans.Image;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.server.beans.Waitress;
 
 public class GenericMenuDAO
@@ -50,7 +51,20 @@ public class GenericMenuDAO
         while( rs.next( ) )
         {
             int menuitemid = rs.getInt( "menuItem_id" );
-            res.add( new MenuItem( menuitemid, rs.getString( "nombre" ), rs.getString( "description" ), rs.getBoolean( "enable" ), rs.getString( "icon" ), getImages( menuitemid ) , parent) );
+            res.add( new MenuItem( menuitemid, rs.getString( "nombre" ), rs.getString( "description" ), rs.getBoolean( "enable" ), rs.getString( "icon" ), getImages( menuitemid ) , parent, getPrices( menuitemid )) );
+        }
+
+        return res;
+    }
+    
+    public Vector<PriceItem> getPrices(int menuitemid) throws SQLException
+    {
+        Statement st = conn.createStatement( );        
+        ResultSet rs = st.executeQuery( "SELECT * FROM menuitem_priceitem JOIN priceitem USING(priceitem_id) WHERE menuitem_id = "+menuitemid+" ORDER BY price_order ASC" );     
+        Vector<PriceItem> res = new Vector<PriceItem>( );
+        while( rs.next( ) )
+        {
+            res.add( new PriceItem( rs.getInt( "priceitem_id" ), rs.getInt( "cuantity" ),rs.getString( "description" ), rs.getBoolean( "enable" ), rs.getInt( "price_order" ),rs.getLong( "price" ) ) );
         }
 
         return res;
