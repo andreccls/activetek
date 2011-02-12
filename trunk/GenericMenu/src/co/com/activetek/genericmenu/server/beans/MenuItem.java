@@ -111,13 +111,17 @@ public class MenuItem
     public JSONObject getJSON( )
     {
         JSONObject object = new JSONObject( );
-
+        object.put( "name", name );//si es categoria o item igual va el nombre
         if( getLevel( ) == 2 )
-        {
-            object.put( "name", name );
-            object.put( "details", details );            
+        {            
+            object.put( "details", details );
             // object.put( "price", details );TODO
-            object.put( "images", getImagesJSON( ) );
+            object.put( "images", getImagesJSONArray( ) );
+            System.out.println( "\t" + object + "\n" );
+        }
+        if( getLevel( ) == 1 )
+        {
+            object.put( "menuitem", getSonsJSONArray( ) );
             System.out.println( object + "\n" );
         }
         for( MenuItem menuItem : sons )
@@ -128,12 +132,21 @@ public class MenuItem
         return object;
 
     }
-    public JSONArray getImagesJSON( )
+    public JSONArray getImagesJSONArray( )
     {
         JSONArray object = new JSONArray( );
         for( Image image : images )
         {
             object.add( image.getJson( ) );
+        }
+        return object;
+    }
+    public JSONArray getSonsJSONArray( )
+    {
+        JSONArray object = new JSONArray( );
+        for( MenuItem menuItem : sons )
+        {
+            object.add( menuItem.getJSON( ) );
         }
         return object;
     }
