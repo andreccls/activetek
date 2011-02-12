@@ -3,6 +3,7 @@ package co.com.activetek.genericmenu.ui.menu;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 
+import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.ui.GenericMenu;
 
 import java.awt.BorderLayout;
@@ -64,6 +65,11 @@ public class MenuPanel extends JPanel
             productInfo = new ProductInfoPanel( );
         }
         return productInfo;
+    }
+
+    public void updateSelectedItem( MenuItem selected )
+    {
+        productInfo.updateSelectedItem( selected );        
     }
 
 }

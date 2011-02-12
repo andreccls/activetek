@@ -35,7 +35,7 @@ public class MenuTreePanel extends JPanel
     /**
      * This is the default constructor
      */
-    public MenuTreePanel(GenericMenu window )
+    public MenuTreePanel( GenericMenu window )
     {
         super( );
         this.window = window;
@@ -50,9 +50,9 @@ public class MenuTreePanel extends JPanel
     private void initialize( )
     {
         this.setSize( 300, 200 );
-        this.setLayout(new BorderLayout());
-        this.setBorder(BorderFactory.createTitledBorder(null, "GnericMenu", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        this.add(getJScrollPane(), BorderLayout.CENTER);
+        this.setLayout( new BorderLayout( ) );
+        this.setBorder( BorderFactory.createTitledBorder( null, "GnericMenu", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null ) );
+        this.add( getJScrollPane( ), BorderLayout.CENTER );
     }
 
     /**
@@ -63,82 +63,76 @@ public class MenuTreePanel extends JPanel
     private JTree getTreeMenu( )
     {
         if( treeMenu == null )
-        {           
-            
+        {
+
             DefaultMutableTreeNode abuelo = new DefaultMutableTreeNode( "GenericMenu" );
-			buildMenuTree( window.getMenuTree(),abuelo);
-			
-			treeMenu = new JTree( abuelo );
+            buildMenuTree( window.getMenuTree( ), abuelo );
+
+            treeMenu = new JTree( abuelo );
             treeMenu.setEditable( false );
             treeMenu.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
             treeMenu.setRootVisible( true );
             treeMenu.addMouseListener( new MouseListener( )
             {
-                
+
                 public void mouseReleased( MouseEvent e )
                 {
-                    // TODO Auto-generated method stub
-                    
+
                 }
 
                 public void mousePressed( MouseEvent e )
                 {
-                    // TODO Auto-generated method stub
-                    
+
                 }
-                
+
                 public void mouseExited( MouseEvent e )
                 {
-                    // TODO Auto-generated method stub
-                    
+
                 }
-                
 
                 public void mouseEntered( MouseEvent e )
                 {
-                    // TODO Auto-generated method stub
-                    
+
                 }
-                
 
                 public void mouseClicked( MouseEvent e )
                 {
-                	TreePath path = treeMenu.getPathForLocation( e.getX( ), e.getY( ) );
-                	if(path != null)
-                	{
-                		String path2 = path.toString().replace("[", "").replace("]", "").replace(" ", "");
-                		System.out.println(path2);
-                	}
-                    
-                    
+                    TreePath path = treeMenu.getPathForLocation( e.getX( ), e.getY( ) );
+                    if( path != null )
+                    {
+                        String path2 = path.toString( ).replace( "[", "" ).replace( "]", "" ).replace( ", ", "," );
+                        window.setSelectedItem( path2 );
+                    }
                 }
-            });
+            } );
         }
         return treeMenu;
     }
 
-    private void buildMenuTree(MenuItem root, DefaultMutableTreeNode abuelo) {
-		Vector<MenuItem> sons= root.getSons();
-		
-		for (MenuItem menuItem : sons) {
-			DefaultMutableTreeNode me = new DefaultMutableTreeNode(menuItem);
-			abuelo.add(me);
-			buildMenuTree(menuItem, me);
-		}
-		
-	}
+    private void buildMenuTree( MenuItem root, DefaultMutableTreeNode abuelo )
+    {
+        Vector<MenuItem> sons = root.getSons( );
 
-	/**
-     * This method initializes jScrollPane	
-     * 	
-     * @return javax.swing.JScrollPane	
+        for( MenuItem menuItem : sons )
+        {
+            DefaultMutableTreeNode me = new DefaultMutableTreeNode( menuItem );
+            abuelo.add( me );
+            buildMenuTree( menuItem, me );
+        }
+
+    }
+
+    /**
+     * This method initializes jScrollPane
+     * 
+     * @return javax.swing.JScrollPane
      */
     private JScrollPane getJScrollPane( )
     {
         if( jScrollPane == null )
         {
             jScrollPane = new JScrollPane( );
-            jScrollPane.setViewportView(getTreeMenu());
+            jScrollPane.setViewportView( getTreeMenu( ) );
         }
         return jScrollPane;
     }
