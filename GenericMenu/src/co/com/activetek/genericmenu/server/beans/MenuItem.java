@@ -16,9 +16,10 @@ public class MenuItem
     private String icon;
     private Vector<MenuItem> sons;
     private Vector<Image> images;
+    private Vector<PriceItem> prices;
     private MenuItem father;
 
-    public MenuItem( int id, String nombre, String description, boolean enable, String icon, Vector<Image> images, MenuItem father )
+    public MenuItem( int id, String nombre, String description, boolean enable, String icon, Vector<Image> images, MenuItem father, Vector<PriceItem> prices )
     {
         super( );
         this.id = id;
@@ -26,9 +27,10 @@ public class MenuItem
         this.details = description;
         this.enable = enable;
         this.icon = icon;
-        sons = new Vector<MenuItem>( );
+        sons = new Vector<MenuItem>( );//son cargados luego mediante loadSons
         this.images = images;
         this.father = father;
+        this.prices = prices;
     }
     public Vector<Image> getImages( )
     {
@@ -115,7 +117,7 @@ public class MenuItem
         if( getLevel( ) == 2 )
         {            
             object.put( "details", details );
-            // object.put( "price", details );TODO
+            object.put( "price", getPricesJSONArray( ) );
             object.put( "images", getImagesJSONArray( ) );
             System.out.println( "\t" + object + "\n" );
         }
@@ -132,6 +134,10 @@ public class MenuItem
         return object;
 
     }
+    /**
+     * usado unicamente para los que son hoja
+     * @return
+     */
     public JSONArray getImagesJSONArray( )
     {
         JSONArray object = new JSONArray( );
@@ -141,6 +147,23 @@ public class MenuItem
         }
         return object;
     }
+    /**
+     * usado unicamente para los que son hoja
+     * @return
+     */
+    public JSONArray getPricesJSONArray( )
+    {        
+        JSONArray array = new JSONArray( );
+        for( PriceItem priceItem : prices )
+        {
+            array.add( priceItem.getJSON( ) );
+        }
+        return array;
+    }
+    /**
+     * usado unicamente para los que son categorias
+     * @return
+     */
     public JSONArray getSonsJSONArray( )
     {
         JSONArray object = new JSONArray( );
