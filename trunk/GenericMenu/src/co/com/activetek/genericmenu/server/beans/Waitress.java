@@ -76,7 +76,8 @@ public class Waitress
         JSONObject object = new JSONObject( );
         object.put( "nick", nick );
         object.put( "id", id );
-        object.put( "photo", photo.substring( 1 ) );
+        if(photo != null)
+            object.put( "photo", photo.substring( 1 ) );
         return object;
     }
 }
