@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">ActiveMenu!</string>
+    <string name="app_name">ActiveMenu</string>
+<string name="start">Iniciar </string>
+</resources>

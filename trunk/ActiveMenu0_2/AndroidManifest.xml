@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.activetek.activemenu"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name=".ActiveMenu"
+                  android:label="@string/app_name"
+                  android:screenOrientation="landscape"
+                  android:theme="@style/Theme.Menu">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+<activity android:name="WaiterActivity"
+		android:theme="@style/Theme.Menu"
+		android:screenOrientation="landscape"
+		></activity>
+		<activity android:name="TableActivity"
+		android:theme="@style/Theme.Menu"
+		android:screenOrientation="landscape"
+		></activity>
+		<activity android:name="MenuActivity"
+		android:theme="@style/Theme.Menu"
+		android:screenOrientation="landscape"
+		></activity>
+		<activity android:name="Gallery1"
+		android:theme="@style/Theme.Menu"
+		android:screenOrientation="landscape"
+		></activity>
+		<activity android:name="Gallery2"
+		android:theme="@style/Theme.Menu"
+		android:screenOrientation="landscape"
+		></activity>
+    </application>
+<uses-permission android:name="android.permission.INTERNET"/>
+    <uses-sdk android:minSdkVersion="3" />
+
+</manifest> 
