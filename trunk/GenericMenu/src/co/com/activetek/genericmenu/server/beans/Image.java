@@ -29,7 +29,7 @@ public class Image
     {
         JSONObject object = new JSONObject( );
         object.put( "order", new Integer( order ) );
-        object.put( "url", url );
+        object.put( "url", url.substring( 1 ) );
         return object;
     }
 }
