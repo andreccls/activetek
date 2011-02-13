@@ -1,5 +1,9 @@
 package co.com.activetek.genericmenu.server.beans;
 
+import com.sun.xml.internal.bind.marshaller.NioEscapeHandler;
+
+import net.sf.json.JSONObject;
+
 public class Waitress
 {
     private int id;
@@ -66,5 +70,13 @@ public class Waitress
     public void setEnable( boolean enable )
     {
         this.enable = enable;
+    }
+    public JSONObject getJSON()
+    {
+        JSONObject object = new JSONObject( );
+        object.put( "nick", nick );
+        object.put( "id", id );
+        object.put( "photo", photo.substring( 1 ) );
+        return object;
     }
 }
