@@ -84,6 +84,7 @@ public class GenericMenuServer
         object.put( "meseros", getWaitressesJSON( ) );
         object.put( "mesas", getTablesJSON( ) );
         System.out.println(object);
+        System.out.println(getTablesJSON( ));
         return object.toString( );
     }
 }
