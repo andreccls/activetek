@@ -18,6 +18,7 @@ import co.com.activetek.genericmenu.server.GenericMenuServer;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.Waitress;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
+import co.com.activetek.genericmenu.server.util.Log;
 import co.com.activetek.genericmenu.ui.orders.OrdersPanel;
 import co.com.activetek.genericmenu.ui.menu.MenuTreePanel;
 import co.com.activetek.genericmenu.ui.menu.MenuPanel;
@@ -26,6 +27,8 @@ import java.awt.Point;
 import java.awt.Dimension;
 import java.sql.SQLException;
 import java.util.Vector;
+import java.util.logging.Logger;
+
 import co.com.activetek.genericmenu.ui.waitress.WaitressesPanel;
 
 public class GenericMenu extends JFrame
@@ -130,7 +133,7 @@ public class GenericMenu extends JFrame
         if( internalFrameMenu == null )
         {
             internalFrameMenu = new JInternalFrame( );
-            internalFrameMenu.setBounds(new Rectangle(652, 2, 677, 404));
+            internalFrameMenu.setBounds( new Rectangle( 652, 2, 677, 404 ) );
             internalFrameMenu.setResizable( true );
             internalFrameMenu.setMaximizable( true );
             internalFrameMenu.setClosable( true );
@@ -183,7 +186,7 @@ public class GenericMenu extends JFrame
             internalFrameTables.setVisible( true );
             internalFrameTables.setResizable( true );
             internalFrameTables.setLocation( new Point( 210, 2 ) );
-            internalFrameTables.setSize(new Dimension(442, 460));
+            internalFrameTables.setSize( new Dimension( 442, 460 ) );
             internalFrameTables.setContentPane( getContentPaneTables( ) );
         }
         return internalFrameTables;
@@ -232,7 +235,7 @@ public class GenericMenu extends JFrame
             internalFrameWaitresses.setContentPane( getContentPaneWaitresses( ) );
             internalFrameWaitresses.setVisible( true );
             internalFrameWaitresses.setResizable( true );
-            internalFrameWaitresses.setLocation(new Point(208, 461));
+            internalFrameWaitresses.setLocation( new Point( 208, 461 ) );
             internalFrameWaitresses.setSize( new Dimension( 597, 257 ) );
         }
         return internalFrameWaitresses;
@@ -273,12 +276,16 @@ public class GenericMenu extends JFrame
      */
     public static void main( String[] args )
     {
+        Log.getInstance( ).getLog( ).info( "Iniciando Menu" );
         try
         {
-            UIManager.setLookAndFeel( "ch.randelshofer.quaqua.QuaquaLookAndFeel" );
+            // UIManager.setLookAndFeel( "ch.randelshofer.quaqua.QuaquaLookAndFeel" );
+            //UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
+            UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
         }
         catch( Exception e )
         {
+            Log.getInstance( ).getLog( ).warning( "No fue posible establecer el look & feel " + e );
             e.printStackTrace( );
         }
         SwingUtilities.invokeLater( new Runnable( )
