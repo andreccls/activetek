@@ -22,6 +22,7 @@ public class GenericMenuDAO
     public GenericMenuDAO( ) throws SQLException
     {
         conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/genericMenu", "menu", "unem" );
+        Log.getInstance( ).getLog( ).info( "Establecida conexion con la base de datos" );
     }
 
     public static GenericMenuDAO getInstance( ) throws SQLException
