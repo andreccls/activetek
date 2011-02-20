@@ -1,25 +1,29 @@
-
 package co.com.activetek.genericmenu.ui.menu;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
+
 import java.awt.BorderLayout;
+import java.awt.Panel;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JCheckBox;
 import javax.swing.JButton;
-
 import co.com.activetek.genericmenu.server.beans.Image;
 import co.com.activetek.genericmenu.ui.utils.MyImageIcon;
-
 import java.util.Vector;
+import javax.swing.BoxLayout;
 
+/**
+ * Clase que contiene las imagenes del producto
+ * @author daniel.rodriguez
+ *
+ */
 public class ProductInfoImagePanel extends JPanel
 {
     private final static String NO_IMAGE = "./images/GenericMenu/noimg.gif";
@@ -34,7 +38,7 @@ public class ProductInfoImagePanel extends JPanel
     private JPanel panelButtonsNextBack = null;
     private JButton buttonBack = null;
     private JButton buttonNext = null;
-    private Vector<Image> images;
+    private Vector<Image> images; // @jve:decl-index=0:
     private int image;
 
     /**
@@ -54,14 +58,19 @@ public class ProductInfoImagePanel extends JPanel
     private void initialize( )
     {
         labelImages = new JLabel( );
-        labelImages.setIcon( new ImageIcon( "./images/GenericMenu/test.jpg" ) );
+        labelImages.setIcon( MyImageIcon.getInstance( ).setSize( new ImageIcon( NO_IMAGE ).getImage( ), WIDHT, HEIGHT, this ) );
         labelImages.setHorizontalAlignment( SwingConstants.CENTER );
-        this.setSize( 300, 200 );
+        this.setSize( 300, 600 );
+
         this.setLayout( new BorderLayout( ) );
         this.setBorder( BorderFactory.createTitledBorder( null, "Fotos", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null ) );
-        this.add( getPanelButtonsNextBack( ), BorderLayout.SOUTH );
         this.add( labelImages, BorderLayout.NORTH );
-        this.add( getPanelImageOptions( ), BorderLayout.CENTER );
+
+        Panel p = new Panel( );
+        p.setLayout( new BoxLayout( p, BoxLayout.Y_AXIS ) );
+        p.add( getPanelButtonsNextBack( ) );
+        p.add( getPanelImageOptions( ) );
+        this.add( p );
     }
 
     /**
@@ -74,8 +83,8 @@ public class ProductInfoImagePanel extends JPanel
         if( panelImageOptions == null )
         {
             GridLayout gridLayout = new GridLayout( );
-            gridLayout.setRows( 2 );
-            gridLayout.setColumns( 1 );
+            gridLayout.setRows( 1 );
+            gridLayout.setColumns( 2 );
             panelImageOptions = new JPanel( );
             panelImageOptions.setLayout( gridLayout );
             panelImageOptions.add( getButtonDelete( ), null );

@@ -1,6 +1,5 @@
 package co.com.activetek.genericmenu.ui.menu;
 
-import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 
 import co.com.activetek.genericmenu.server.beans.MenuItem;
@@ -8,6 +7,11 @@ import co.com.activetek.genericmenu.ui.GenericMenu;
 
 import java.awt.BorderLayout;
 
+/**
+ * Panel encargado de unir el arbol del menu, junto con el panel de descripciones
+ * @author daniel.rodriguez
+ *
+ */
 public class MenuPanel extends JPanel
 {
 
@@ -33,7 +37,7 @@ public class MenuPanel extends JPanel
      */
     private void initialize( )
     {
-        this.setSize( 300, 200 );
+        this.setSize( 600, 600 );
         this.setLayout(new BorderLayout());
         this.add(getMenuTreePanel(), BorderLayout.WEST);
         this.add(getProductInfo(), BorderLayout.CENTER);

@@ -1,16 +1,14 @@
 package co.com.activetek.genericmenu.ui.menu;
 
-import java.awt.GridBagLayout;
-
-import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-
-import java.awt.GridBagConstraints;
 import java.awt.ComponentOrientation;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
@@ -21,9 +19,13 @@ import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.ui.GenericMenu;
 
 import java.awt.BorderLayout;
-import java.sql.SQLException;
 import java.util.Vector;
 
+/**
+ * Clase que contiene el arbol del muenu
+ * @author daniel.rodriguez
+ *
+ */
 public class MenuTreePanel extends JPanel
 {
 
@@ -32,6 +34,12 @@ public class MenuTreePanel extends JPanel
     private JTree treeMenu = null;
     private JScrollPane jScrollPane = null;
 
+    
+    JPopupMenu menuTtable = new JPopupMenu();   
+    /**
+     * meny item usado para agregar un nuebo item a la categoria seleccionada
+     */
+    JMenuItem itemAdd = new JMenuItem("Agregar Item");
     /**
      * This is the default constructor
      */
@@ -53,6 +61,15 @@ public class MenuTreePanel extends JPanel
         this.setLayout( new BorderLayout( ) );
         this.setBorder( BorderFactory.createTitledBorder( null, "GnericMenu", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null ) );
         this.add( getJScrollPane( ), BorderLayout.CENTER );
+        itemAdd.addActionListener( new ActionListener( )
+        {            
+            @Override
+            public void actionPerformed( ActionEvent e )
+            {
+                // TODO Auto-generated method stub                
+            }
+        });
+        menuTtable.add( itemAdd );
     }
 
     /**
@@ -102,6 +119,10 @@ public class MenuTreePanel extends JPanel
                     {
                         String path2 = path.toString( ).replace( "[", "" ).replace( "]", "" ).replace( ", ", "," );
                         window.setSelectedItem( path2 );
+                    }
+                    if( e.getButton( ) == MouseEvent.BUTTON3  && window.getSelectedItem( ).getLevel( ) == MenuItem.LEVEl_CATEGORY )
+                    {                        
+                        menuTtable.show( e.getComponent( ), e.getX( ), e.getY( ) );
                     }
                 }
             } );
