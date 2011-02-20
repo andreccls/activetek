@@ -80,5 +80,10 @@ public class PriceItem
         object.put( "descripcion", descripcion );
         return object;
     }
+    public String toString()
+    {
+        return cuantity + " " + descripcion + " " + price;
+        
+    }
 
 }

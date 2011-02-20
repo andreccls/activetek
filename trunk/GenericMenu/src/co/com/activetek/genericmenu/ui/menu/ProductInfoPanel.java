@@ -12,14 +12,15 @@ import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.util.Vector;
+import javax.swing.BoxLayout;
 
 public class ProductInfoPanel extends JPanel
-{    
+{
     private static final long serialVersionUID = 1L;
     private JLabel labelNombre = null;
     private ProductInfoImagePanel productInfoImagePanel = null;
     private ProdcutInfoDetailPanel prodcutInfoDetailPanel = null;
-    
+
     /**
      * This is the default constructor
      */
@@ -37,26 +38,21 @@ public class ProductInfoPanel extends JPanel
     private void initialize( )
     {
 
-        GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-        gridBagConstraints3.gridy=2;
-        GridBagConstraints gbc1 = new GridBagConstraints();
-        gbc1.gridy = 1;
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        labelNombre = new JLabel();
-        labelNombre.setText("Ebi roll");
-        labelNombre.setFont(new Font("Dialog", Font.BOLD, 18));
-        this.setSize(388, 267);
-        this.setLayout(new GridBagLayout());
-        this.setBorder(BorderFactory.createTitledBorder(null, "Detalles del producto", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        this.add(labelNombre, gridBagConstraints);
-        this.add(getProductInfoImagePanel(), gbc1);
-        this.add(getProdcutInfoDetailPanel(), gridBagConstraints3);
+        labelNombre = new JLabel( );
+        labelNombre.setText( "Ebi roll" );//TODO esta vaina tiene que morir
+        labelNombre.setFont( new Font( "Dialog", Font.BOLD, 18 ) );
+        this.setSize( 388, 600 );
+        this.setLayout( new BoxLayout( this, BoxLayout.Y_AXIS ) );
+        this.setBorder( BorderFactory.createTitledBorder( null, "Detalles del producto", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null ) );
+        this.add( labelNombre );
+        this.add( getProductInfoImagePanel( ) );
+        this.add( getProdcutInfoDetailPanel( ) );
     }
 
     /**
-     * This method initializes productInfoImagePanel	
-     * 	
-     * @return co.com.activetek.genericmenu.ui.menu.ProductInfoImagePanel	
+     * This method initializes productInfoImagePanel
+     * 
+     * @return co.com.activetek.genericmenu.ui.menu.ProductInfoImagePanel
      */
     private ProductInfoImagePanel getProductInfoImagePanel( )
     {
@@ -68,9 +64,9 @@ public class ProductInfoPanel extends JPanel
     }
 
     /**
-     * This method initializes prodcutInfoDetailPanel	
-     * 	
-     * @return co.com.activetek.genericmenu.ui.menu.ProdcutInfoDetailPanel	
+     * This method initializes prodcutInfoDetailPanel
+     * 
+     * @return co.com.activetek.genericmenu.ui.menu.ProdcutInfoDetailPanel
      */
     private ProdcutInfoDetailPanel getProdcutInfoDetailPanel( )
     {
@@ -84,7 +80,7 @@ public class ProductInfoPanel extends JPanel
     public void updateSelectedItem( MenuItem selected )
     {
         labelNombre.setText( selected.getName( ) );
-        productInfoImagePanel.setImages(selected.getImages( ));
+        productInfoImagePanel.setImages( selected.getImages( ) );
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+} // @jve:decl-index=0:visual-constraint="10,10"

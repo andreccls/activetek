@@ -9,6 +9,12 @@ import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
 public class MenuItem
 {
+    /**
+     * Constante que representa los las caterias en el arbol del menu.
+     * Es decir las categorias son lso nodos de nivel 2 en el arbol
+     */
+    public final static int LEVEl_CATEGORY = 1;
+    
     private int id;
     private String name;
     private String details;

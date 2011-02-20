@@ -50,7 +50,7 @@ public class GenericMenu extends JFrame
     /**
      * Atributo que representa el item del menu que esta seleccionado actualmente en la interfaz del usuario
      */
-    private MenuItem selected;
+    private MenuItem selected;  //  @jve:decl-index=0:
     private JInternalFrame internalFrameWaitresses = null;
     private JPanel contentPaneWaitresses = null;
     private WaitressesPanel waitressesPanel = null;
@@ -133,7 +133,7 @@ public class GenericMenu extends JFrame
         if( internalFrameMenu == null )
         {
             internalFrameMenu = new JInternalFrame( );
-            internalFrameMenu.setBounds( new Rectangle( 652, 2, 677, 404 ) );
+            internalFrameMenu.setBounds( new Rectangle( 652, 2, 532, 563 ) );
             internalFrameMenu.setResizable( true );
             internalFrameMenu.setMaximizable( true );
             internalFrameMenu.setClosable( true );
@@ -280,7 +280,7 @@ public class GenericMenu extends JFrame
         try
         {
             // UIManager.setLookAndFeel( "ch.randelshofer.quaqua.QuaquaLookAndFeel" );
-            //UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
+            // UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
             UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
         }
         catch( Exception e )
@@ -360,5 +360,8 @@ public class GenericMenu extends JFrame
         }
         return null;
     }
-
+    public MenuItem getSelectedItem( )
+    {
+        return selected;
+    }
 }
