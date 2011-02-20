@@ -2,9 +2,12 @@ package co.com.activetek.genericmenu.ui.menu;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.JCheckBox;
 import java.awt.GridBagConstraints;
 import javax.swing.JButton;
@@ -174,27 +177,6 @@ public class ProdcutInfoDetailPanel extends JPanel
         }
         return scrollPaneDetails;
     }
-
-    // --------------------------------------------------------------------------------------------
-    // Clases auxiliares
-    // --------------------------------------------------------------------------------------------
-    /**
-     * Objeto grafico que representa una opcion de prcio de un producto
-     * @author daniel.rodriguez
-     * 
-     */
-    public class PriceItem extends JPanel
-    {
-        private int cuantity;
-        private String PreiceItemDescription;
-        private long price;
-    }
-    public class PriceItemWrapper extends JPanel
-    {
-        private int cuantity;
-        private String PreiceItemDescription;
-        private long price;
-    }
     /**
      * This method initializes jScrollPane
      * 
@@ -209,7 +191,6 @@ public class ProdcutInfoDetailPanel extends JPanel
         }
         return jScrollPane;
     }
-
     /**
      * This method initializes jTable
      * 
@@ -219,13 +200,67 @@ public class ProdcutInfoDetailPanel extends JPanel
     {
         if( jTable == null )
         {
-            String[] columnNames = { "First Name", "Last Name", "Sport", "# of Years", "Vegetarian" };
-            Object[][] data = { { "Kathy", "Smith", "Snowboarding", new Integer( 5 ), new Boolean( false ) }, { "John", "Doe", "Rowing", new Integer( 3 ), new Boolean( true ) }, { "Sue", "Black", "Knitting", new Integer( 2 ), new Boolean( false ) },
-                    { "Jane", "White", "Speed reading", new Integer( 20 ), new Boolean( true ) }, { "Joe", "Brown", "Pool", new Integer( 10 ), new Boolean( false ) } };
-
-            jTable = new JTable( data, columnNames );
+            jTable = new JTable( new PricesTableRender( ) );
         }
         return jTable;
     }
+    // --------------------------------------------------------------------------------------------
+    // Clases auxiliares
+    // --------------------------------------------------------------------------------------------
+    /**
+     * 
+     * @author daniel.rodriguez
+     *
+     */
+    public class PricesTableRender extends AbstractTableModel
+    {
+        private static final long serialVersionUID = 1L;
+        
+        String[] columnNames = { "#Items", "Detalles", "Precio", "Enable" };
+        Object[][] data = { 
+                    { 1, "" , 20000, true },
+                    { 1, "" , 20000, false }
+                };
+        public PricesTableRender()
+        {
+            super( );
+        }
+        @Override
+        public int getRowCount( )
+        {
+            return data.length;
+        }
 
+        @Override
+        public int getColumnCount( )
+        {
+            return columnNames.length;
+        }
+
+        @Override
+        public Object getValueAt( int rowIndex, int columnIndex )
+        {
+            return data[rowIndex][columnIndex];
+        }
+        
+        public String getColumnName(int col)
+        {
+            return columnNames[col];
+        }
+        public Class getColumnClass( int c )
+        {
+            return c==3?Boolean.class:String.class;
+        }
+        public boolean isCellEditable( int row, int col )
+        {
+            return true;//TODO cambiar para que solo lo pueda hacer el usuario de administrador
+        }
+        public void setValueAt( Object value, int row, int col )
+        {
+            data[ row ][ col ] = value;
+            fireTableCellUpdated( row, col );
+            System.out.println(row+ " " + col + " " + value);//TODO Aqui se escucha cuando el administrador cambia algo
+        }
+        
+    }
 }
