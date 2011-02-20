@@ -33,6 +33,10 @@
 		android:theme="@style/Theme.Menu"
 		android:screenOrientation="landscape"
 		></activity>
+		<activity android:name="lastActivity"
+		android:theme="@style/Theme.Menu"
+		android:screenOrientation="landscape"
+		></activity>
     </application>
 <uses-permission android:name="android.permission.INTERNET"/>
     <uses-sdk android:minSdkVersion="3" />
