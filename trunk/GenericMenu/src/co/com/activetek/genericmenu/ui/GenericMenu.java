@@ -364,4 +364,5 @@ public class GenericMenu extends JFrame
     {
         return selected;
     }
+
 }
