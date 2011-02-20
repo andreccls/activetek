@@ -1,6 +1,6 @@
 package com.activetek.activemenu;
 
-import android.app.Activity;
+import android.app.ActivityGroup;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class Gallery1 extends Activity implements OnClickListener{
+public class Gallery1 extends ActivityGroup implements OnClickListener{
 
 	private int currentIndex;
 	private int itemsInGallery;
@@ -50,7 +50,6 @@ public class Gallery1 extends Activity implements OnClickListener{
 				Intent in= new Intent(Gallery1.this,Gallery2.class);
 				in.putExtra("cat", index);
 				Gallery1.this.startActivityForResult(in, 1);
-				
 			}
 		});
 
@@ -123,4 +122,6 @@ public class Gallery1 extends Activity implements OnClickListener{
 	    }
 		
 	}
+	
+	
 }

@@ -65,7 +65,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 		try {
 			process = Runtime.getRuntime().exec("sh");
 			OutputStream os = process.getOutputStream();
-			writeLine( os,"sleep 5 && exit");
+			writeLine( os,"sleep 1 && exit");
 			os.flush();
 			process.waitFor();
 			CreateContent();
@@ -88,7 +88,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 		@Override
 		public void handleMessage(Message msg) {
 			dialog.dismiss();
-			Intent in= new Intent(ActiveMenu.this, WaiterActivity.class);
+			Intent in= new Intent(ActiveMenu.this, TableActivity.class);
 			ActiveMenu.this.startActivityForResult(in,1);
 		}
 	};
@@ -125,10 +125,23 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 				{
 					JSONObject fin=wow.getJSONObject(k);
 					String name=fin.getString("name");
-					String thumb=fin.getString("image1");
-					String prec=fin.getString("price");
+					JSONArray arraimag=fin.getJSONArray("images");
+					ArrayList<String> arras=new ArrayList<String>();
+					for(int z=0; z<arraimag.length();z++)
+					{
+						JSONObject finn=arraimag.getJSONObject(z);
+						arras.add("/data/menu"+finn.getString("url"));
+					}
+					ArrayList<Price> arrapric=new ArrayList<Price>();
+					JSONArray arraprec=fin.getJSONArray("price");
+					for(int z=0; z<arraprec.length();z++)
+					{
+						JSONObject finn=arraprec.getJSONObject(z);
+						arrapric.add(new Price(finn.getInt("price"),finn.getInt("cuantity"),finn.getInt("id")));
+					}
 					String desc=fin.getString("details");
-					arr.add(new MenuItem(name,15,"/data/menu"+thumb,Integer.parseInt(prec.replaceAll("\\D", "")),desc));
+					//arr.add(new MenuItem(name,15,"/data/menu"+thumb,Integer.parseInt(prec.replaceAll("\\D", "")),desc));
+					arr.add(new MenuItem(name,15,arras,arrapric,desc));
 				}
 				Category aux1= new Category(nombre,arr);
 				CategoryWrapper cat=CategoryWrapper.getInstance();

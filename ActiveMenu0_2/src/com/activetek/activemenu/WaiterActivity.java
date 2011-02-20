@@ -1,6 +1,9 @@
 package com.activetek.activemenu;
 
-import android.app.Activity;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +17,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class WaiterActivity extends Activity{
+public class WaiterActivity extends AbstractActivity{
+	private Socket sock;
+	private BufferedReader read;
+	private PrintWriter write;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -23,6 +30,19 @@ public class WaiterActivity extends Activity{
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		GridView grid= (GridView) findViewById(R.id.gridview);
+		/**
+		try {
+			sock=new Socket("192.168.0.102",9999);
+			read= new BufferedReader(new InputStreamReader(sock.getInputStream()));
+			write= new PrintWriter(sock.getOutputStream(),true);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
 		grid.setAdapter(new ImageAdapter(this));
 		grid.setOnItemClickListener(new OnItemClickListener()
 		{
@@ -35,7 +55,9 @@ public class WaiterActivity extends Activity{
 				String text = WaiterWrapper.getInstance().getWaiters().get(position).getName()+" "+WaiterWrapper.getInstance().getWaiters().get(position).getCode()+" ";
 				toast.setText(text);
 				toast.show();
-				Intent in= new Intent(WaiterActivity.this,TableActivity.class);
+				//write.println("MESERO:"+WaiterWrapper.getInstance().getWaiters().get(position).getCode());
+				
+				Intent in= new Intent(WaiterActivity.this,MenuActivity.class);
 				WaiterActivity.this.startActivity(in);
 			}
 		});
@@ -86,5 +108,11 @@ public class WaiterActivity extends Activity{
 			return imageView;
 		}
 
+	}
+
+	@Override
+	public void notifier(String message) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -3,7 +3,6 @@ package com.activetek.activemenu;
 import java.util.Observable;
 import java.util.Observer;
 
-import android.app.ActivityGroup;
 import android.app.LocalActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -26,16 +25,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
-public class MenuActivity extends ActivityGroup{
-	
+public class MenuActivity extends AbstractActivityGroup{
+
 	private SmartList smartList1;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.menu);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-        		WindowManager.LayoutParams.FLAG_FULLSCREEN);
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		LinearLayout listLayout=(LinearLayout) findViewById(R.id.listsmart);
 		ListView list=new ListView(this);
 
@@ -52,14 +51,14 @@ public class MenuActivity extends ActivityGroup{
 		title.setTextColor(Color.BLACK);
 		title.setGravity(Gravity.CENTER);
 		list.addHeaderView(title);
-		list.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT, 1));
+		list.setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,android.view.ViewGroup.LayoutParams.FILL_PARENT, 1));
 		list.setCacheColorHint(0);
 		list.setAdapter(smartAdapter);
 		listLayout.addView(list);
 
 		Button orderButton=new Button(this);
 		orderButton.setText("Ordenar Pedido");
-		orderButton.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT,6));
+		orderButton.setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,android.view.ViewGroup.LayoutParams.FILL_PARENT,6));
 		orderButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -70,17 +69,19 @@ public class MenuActivity extends ActivityGroup{
 
 		});
 		listLayout.addView(orderButton);
-		
+
 		LinearLayout lay=(LinearLayout)findViewById(R.id.galleryspace);
 		Intent in= new Intent().setClass(this, Gallery1.class);
 		LocalActivityManager m = getLocalActivityManager();
 		Window w = m.startActivity("tratat", in);
 		View v = w.getDecorView();
 		lay.addView(v);
-		
+
 	}
+
+
 	
-	
+
 	private class SmartListAdapter extends BaseAdapter implements Observer {
 		private Context mContext;
 		private SmartList smartList2;
@@ -137,6 +138,15 @@ public class MenuActivity extends ActivityGroup{
 			notifyDataSetChanged();
 			Log.v("SmartListAdapter", "Count is :"+smartList2.size());
 		}
+	}
+
+
+
+
+	@Override
+	public void notifier(String message) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
