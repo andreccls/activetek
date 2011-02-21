@@ -59,6 +59,7 @@ public class ProductInfoImagePanel extends JPanel
     {
         labelImages = new JLabel( );
         labelImages.setIcon( MyImageIcon.getInstance( ).setSize( new ImageIcon( NO_IMAGE ).getImage( ), WIDHT, HEIGHT, this ) );
+        labelImages.setText("");
         labelImages.setHorizontalAlignment( SwingConstants.CENTER );
         this.setSize( 300, 600 );
 
@@ -117,6 +118,19 @@ public class ProductInfoImagePanel extends JPanel
         if( buttonDelete == null )
         {
             buttonDelete = new JButton( "Eliminar imagen" );
+        }
+        return buttonDelete;
+    }
+    /**
+     * This method initializes buttonDelete
+     * 
+     * @return javax.swing.JButton
+     */
+    private JButton getButtonAdd( )
+    {
+        if( buttonDelete == null )
+        {
+            buttonDelete = new JButton( "Agregar Imagenes" );
         }
         return buttonDelete;
     }
