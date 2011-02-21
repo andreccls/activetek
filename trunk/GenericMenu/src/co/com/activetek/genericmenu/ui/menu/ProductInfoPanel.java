@@ -81,6 +81,7 @@ public class ProductInfoPanel extends JPanel
     {
         labelNombre.setText( selected.getName( ) );
         productInfoImagePanel.setImages( selected.getImages( ) );
+        prodcutInfoDetailPanel.setSelectedItem(selected);
     }
 
 } // @jve:decl-index=0:visual-constraint="10,10"
