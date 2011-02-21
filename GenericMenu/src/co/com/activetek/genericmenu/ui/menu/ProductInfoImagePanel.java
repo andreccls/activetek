@@ -35,6 +35,7 @@ public class ProductInfoImagePanel extends JPanel
     private JPanel panelImageOptions = null;
     private JCheckBox checkBoxEneble = null;
     private JButton buttonDelete = null;
+    private JButton buttonAdd = null;
     private JPanel panelButtonsNextBack = null;
     private JButton buttonBack = null;
     private JButton buttonNext = null;
@@ -89,6 +90,7 @@ public class ProductInfoImagePanel extends JPanel
             panelImageOptions = new JPanel( );
             panelImageOptions.setLayout( gridLayout );
             panelImageOptions.add( getButtonDelete( ), null );
+            panelImageOptions.add( getButtonAdd( ), null );
             panelImageOptions.add( getCheckBoxEneble( ), null );
         }
         return panelImageOptions;
@@ -128,11 +130,11 @@ public class ProductInfoImagePanel extends JPanel
      */
     private JButton getButtonAdd( )
     {
-        if( buttonDelete == null )
+        if( buttonAdd == null )
         {
-            buttonDelete = new JButton( "Agregar Imagenes" );
+            buttonAdd = new JButton( "Agregar Imagenes" );
         }
-        return buttonDelete;
+        return buttonAdd;
     }
 
     /**
