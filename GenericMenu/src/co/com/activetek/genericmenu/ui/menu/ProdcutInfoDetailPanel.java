@@ -10,6 +10,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.JCheckBox;
 import java.awt.GridBagConstraints;
+import java.util.Vector;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,6 +19,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+
+import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.beans.PriceItem;
 
 /**
  * Este panel muestra los detalles del producto (opciones de precios) especidficiones, ademas permite borrar y activar/desactivar el producto
@@ -43,6 +48,7 @@ public class ProdcutInfoDetailPanel extends JPanel
     private JScrollPane jScrollPane = null;
 
     private JTable jTable = null;
+    private PricesTableRender pricesTableRender = null;
 
     // --------------------------------------------------------------------------------------------
     // Constructores
@@ -200,9 +206,17 @@ public class ProdcutInfoDetailPanel extends JPanel
     {
         if( jTable == null )
         {
-            jTable = new JTable( new PricesTableRender( ) );
+            pricesTableRender = new PricesTableRender( );
+            jTable = new JTable( pricesTableRender);
         }
         return jTable;
+    }
+    public void setSelectedItem( MenuItem selected )
+    {
+        pricesTableRender.setSelected( selected );
+        textFieldDetails.setText( selected.getDescription( ) ); 
+        jTable.repaint( );
+        this.repaint( );
     }
     // --------------------------------------------------------------------------------------------
     // Clases auxiliares
@@ -261,6 +275,21 @@ public class ProdcutInfoDetailPanel extends JPanel
             fireTableCellUpdated( row, col );
             System.out.println(row+ " " + col + " " + value);//TODO Aqui se escucha cuando el administrador cambia algo
         }
+        public void setSelected(MenuItem menuitem)
+        {
+            Vector<PriceItem> prices = menuitem.getPrices( );
+            this.data = new Object[ prices.size( ) ][ columnNames.length ];
+            
+            for( int i = 0 ; i < prices.size( ); i++ )
+            {
+                PriceItem p = prices.get( i );
+                data[i][0] = p.getCuantity( );
+                data[i][1] = p.getDescripcion( );
+                data[i][2] = p.getPrice( );
+                data[i][3] = p.isEnable( );
+            }
+        }
         
     }
+
 }

@@ -187,4 +187,8 @@ public class MenuItem
     {
         return father == null ? 0 : father.getLevel( ) + 1;
     }
+    public Vector<PriceItem> getPrices()
+    {
+        return prices;
+    }
 }

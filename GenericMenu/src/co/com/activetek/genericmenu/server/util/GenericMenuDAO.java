@@ -62,7 +62,7 @@ public class GenericMenuDAO
     public Vector<PriceItem> getPrices( int menuitemid ) throws SQLException
     {
         Statement st = conn.createStatement( );
-        ResultSet rs = st.executeQuery( "SELECT * FROM menuitem_priceitem JOIN priceitem USING(priceitem_id) WHERE menuitem_id = " + menuitemid + " ORDER BY price_order ASC" );
+        ResultSet rs = st.executeQuery( "SELECT * FROM priceitem WHERE menuitem_id = " + menuitemid + " ORDER BY price_order ASC" );
         Vector<PriceItem> res = new Vector<PriceItem>( );
         while( rs.next( ) )
         {
