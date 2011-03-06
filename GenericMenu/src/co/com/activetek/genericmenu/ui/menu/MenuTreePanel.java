@@ -16,7 +16,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.JScrollPane;
 
 import co.com.activetek.genericmenu.server.beans.MenuItem;
-import co.com.activetek.genericmenu.ui.GenericMenu;
+import co.com.activetek.genericmenu.ui.OsakiMenu;
 
 import java.awt.BorderLayout;
 import java.util.Vector;
@@ -30,7 +30,7 @@ public class MenuTreePanel extends JPanel
 {
 
     private static final long serialVersionUID = 1L;
-    private GenericMenu window;
+    private OsakiMenu window;
     private JTree treeMenu = null;
     private JScrollPane jScrollPane = null;
 
@@ -43,7 +43,7 @@ public class MenuTreePanel extends JPanel
     /**
      * This is the default constructor
      */
-    public MenuTreePanel( GenericMenu window )
+    public MenuTreePanel( OsakiMenu window )
     {
         super( );
         this.window = window;
