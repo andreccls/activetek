@@ -3,7 +3,7 @@ package co.com.activetek.genericmenu.ui.menu;
 import javax.swing.JPanel;
 
 import co.com.activetek.genericmenu.server.beans.MenuItem;
-import co.com.activetek.genericmenu.ui.GenericMenu;
+import co.com.activetek.genericmenu.ui.OsakiMenu;
 
 import java.awt.BorderLayout;
 
@@ -18,12 +18,12 @@ public class MenuPanel extends JPanel
     private static final long serialVersionUID = 1L;
     private MenuTreePanel menuTreePanel = null;
     private ProductInfoPanel productInfo = null;
-    private GenericMenu window;
+    private OsakiMenu window;
 
     /**
      * This is the default constructor
      */
-    public MenuPanel( GenericMenu window )
+    public MenuPanel( OsakiMenu window )
     {
         super( );
         this.window = window;
