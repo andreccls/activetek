@@ -9,12 +9,12 @@ import android.util.Log;
 
 public class Receiver extends Thread{
 	
-	private AbstractActivity owner;
+	private AbstractActivityGroup owner;
 	private Socket sock;
 	private BufferedReader read;
 	private static Receiver instance;
 	
-	public Receiver(AbstractActivity a, Socket s)
+	public Receiver(AbstractActivityGroup a, Socket s)
 	{
 		owner=a;
 		sock=s;
@@ -28,7 +28,9 @@ public class Receiver extends Thread{
 	
 	public Receiver()
 	{
-		
+		owner=null;
+		sock=null;
+		read=null;
 	}
 	public static synchronized Receiver getInstance() {
 		if (instance == null)
@@ -36,9 +38,19 @@ public class Receiver extends Thread{
 		return instance;
 	}
 
-	public void setOwner(AbstractActivity a)
+	public void setOwner(AbstractActivityGroup a)
 	{
 		owner=a;
+	}
+	public void setSocket(Socket s)
+	{
+		sock=s;
+		try {
+			read=new BufferedReader(new InputStreamReader(sock.getInputStream()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			Log.d("Receiver", e.getMessage());
+		}
 	}
 	
 	public void run()

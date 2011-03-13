@@ -1,9 +1,5 @@
 package com.activetek.activemenu;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +7,7 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class TableActivity extends AbstractActivity{
+public class TableActivity extends AbstractActivityGroup{
 
-	private Socket sock;
-	private BufferedReader read;
-	private PrintWriter write;
+	private Sender send;
+	private Receiver rec;
+	private int slaveIndex;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +44,8 @@ public class TableActivity extends AbstractActivity{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		 */
+		slaveIndex=0;
 		GridView grid= (GridView) findViewById(R.id.gridmesa);
 		grid.setAdapter(new TextAdapter(this));
 		grid.setOnItemClickListener(new OnItemClickListener()
@@ -65,7 +63,7 @@ public class TableActivity extends AbstractActivity{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				*/
+				 */
 				//System.out.println(beta);
 				toast.setDuration(Toast.LENGTH_SHORT);
 				String alfa="Libre";
@@ -80,10 +78,23 @@ public class TableActivity extends AbstractActivity{
 					AlertDialog.Builder alertbox = new AlertDialog.Builder(TableActivity.this);
 
 					// set the message to display
-					alertbox.setMessage("La Mesa está Ocupada");
-
+					alertbox.setMessage("La Mesa está Ocupada, ¿Desea Continuar?");
+					final int index=position;
 					// add a neutral button to the alert box and assign a click listener
-					alertbox.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+					alertbox.setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+
+						// click listener on the alert box
+						public void onClick(DialogInterface arg0, int arg1) {
+							// the button was clicked
+							send.getWrite().println("MESA:"+TableWrapper.getInstance().getTables().get(index).getNumber());
+							Toast.makeText(getApplicationContext(), "Haz seleccionado la mesa "+TableWrapper.getInstance().getTables().get(index).getNumber() , Toast.LENGTH_LONG).show();
+							Intent in=new Intent(TableActivity.this,WaiterActivity.class);
+							in.putExtra("SLI",slaveIndex);
+							TableActivity.this.startActivityForResult(in,1);
+							finish();
+						}
+					});
+					alertbox.setNegativeButton("Seleccionar Otra Mesa", new DialogInterface.OnClickListener() {
 
 						// click listener on the alert box
 						public void onClick(DialogInterface arg0, int arg1) {
@@ -107,14 +118,21 @@ public class TableActivity extends AbstractActivity{
 					{
 						Intent in=new Intent(TableActivity.this,MenuActivity.class);
 						TableActivity.this.startActivityForResult(in,1);
-					
+
 					}
-					*/
+					 */
+					send.getWrite().println("MESA:"+TableWrapper.getInstance().getTables().get(position).getNumber());
+					Toast.makeText(getApplicationContext(), "Haz seleccionado la mesa "+TableWrapper.getInstance().getTables().get(position).getNumber() , Toast.LENGTH_LONG).show();
 					Intent in=new Intent(TableActivity.this,WaiterActivity.class);
+					in.putExtra("SLI", slaveIndex);
 					TableActivity.this.startActivityForResult(in,1);
+					finish();
 				}
 			}
 		});
+		rec=Receiver.getInstance();
+		rec.setOwner(this);
+		send=Sender.getInstance();
 	}
 
 
@@ -177,6 +195,14 @@ public class TableActivity extends AbstractActivity{
 	@Override
 	public void notifier(String message) {
 		// TODO Auto-generated method stub
-		
+		Log.d("TableActivity", message);
+		if (!message.equals("MAESTRO"))
+			slaveIndex=Integer.parseInt(message.substring(message.indexOf(":"))+1,message.length());
+
+	}
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
 	}
 }
