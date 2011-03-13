@@ -33,7 +33,15 @@ public class Sender{
 			instance = new Sender();
 		return instance;
 	}
-	
+	public void setSocket(Socket s)
+	{
+		sock=s;
+		try {
+			write=new PrintWriter(sock.getOutputStream(),true);
+		} catch (IOException e) {
+			Log.d("Sender",e.getMessage());
+		}
+	}
 	public PrintWriter getWrite()
 	{
 		return write;

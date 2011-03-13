@@ -1,12 +1,9 @@
 package com.activetek.activemenu;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -17,10 +14,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class WaiterActivity extends AbstractActivity{
-	private Socket sock;
-	private BufferedReader read;
-	private PrintWriter write;
+public class WaiterActivity extends AbstractActivityGroup{
+	
+	private Sender send;
+	private Receiver rec;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,19 +27,6 @@ public class WaiterActivity extends AbstractActivity{
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		GridView grid= (GridView) findViewById(R.id.gridview);
-		/**
-		try {
-			sock=new Socket("192.168.0.102",9999);
-			read= new BufferedReader(new InputStreamReader(sock.getInputStream()));
-			write= new PrintWriter(sock.getOutputStream(),true);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
 		grid.setAdapter(new ImageAdapter(this));
 		grid.setOnItemClickListener(new OnItemClickListener()
 		{
@@ -53,14 +37,18 @@ public class WaiterActivity extends AbstractActivity{
 				toast.setDuration(Toast.LENGTH_SHORT);
 
 				String text = WaiterWrapper.getInstance().getWaiters().get(position).getName()+" "+WaiterWrapper.getInstance().getWaiters().get(position).getCode()+" ";
+				send.getWrite().println("MESERO:"+WaiterWrapper.getInstance().getWaiters().get(position).getCode());
 				toast.setText(text);
 				toast.show();
-				//write.println("MESERO:"+WaiterWrapper.getInstance().getWaiters().get(position).getCode());
-				
 				Intent in= new Intent(WaiterActivity.this,MenuActivity.class);
+				in.putExtra("SLI", WaiterActivity.this.getIntent().getExtras().getInt("SLI"));
 				WaiterActivity.this.startActivity(in);
+				finish();
 			}
 		});
+		rec=Receiver.getInstance();
+		rec.setOwner(this);
+		send=Sender.getInstance();
 	}
 
 
@@ -112,7 +100,12 @@ public class WaiterActivity extends AbstractActivity{
 
 	@Override
 	public void notifier(String message) {
-		// TODO Auto-generated method stub
-		
+		Log.d("WaiterActivity", message);
+		//La actividad de meseros No debe recibir mensajes, si recibe, no hacemos nada con ellos
+	}
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
 	}
 }

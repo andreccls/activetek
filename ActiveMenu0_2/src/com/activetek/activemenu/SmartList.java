@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Observable;
 
-public class SmartList extends Observable implements List<MenuItem> {
+public class SmartList extends Observable implements List<String> {
 
-	List<MenuItem> delegate;
+	List<String> delegate;
 
-	public SmartList(List<MenuItem> delegate) {
+	public SmartList(List<String> delegate) {
 		this.delegate = delegate;
 	}
 
 	private SmartList() {
-		this.delegate = new ArrayList<MenuItem>();
+		this.delegate = new ArrayList<String>();
 	}
 
 	public static synchronized SmartList getInstance() {
@@ -31,9 +31,10 @@ public class SmartList extends Observable implements List<MenuItem> {
     public String toString() {
         return delegate.toString();
     }
+	
 
 	@Override
-	public boolean add(MenuItem song) {
+	public boolean add(String song) {
 		boolean result = delegate.add(song);
         if (result) {
         	setChanged();
@@ -43,14 +44,14 @@ public class SmartList extends Observable implements List<MenuItem> {
 	}
 
 	@Override
-	public void add(int position, MenuItem song) {
+	public void add(int position, String song) {
 		delegate.add(position, song);
         setChanged();
         notifyObservers();
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends MenuItem> c) {
+	public boolean addAll(Collection<? extends String> c) {
 		boolean result = delegate.addAll(c);
         if(result) {
         	setChanged();
@@ -60,7 +61,7 @@ public class SmartList extends Observable implements List<MenuItem> {
 	}
 
 	@Override
-	public boolean addAll(int position, Collection<? extends MenuItem> c) {
+	public boolean addAll(int position, Collection<? extends String> c) {
 		boolean result = delegate.addAll(position, c);
         if(result) {
         	setChanged();
@@ -87,7 +88,7 @@ public class SmartList extends Observable implements List<MenuItem> {
 	}
 
 	@Override
-	public MenuItem get(int position) {
+	public String get(int position) {
 		return delegate.get(position);
 	}
 
@@ -112,7 +113,7 @@ public class SmartList extends Observable implements List<MenuItem> {
 	}
 
 	@Override
-	public Iterator<MenuItem> iterator() {
+	public Iterator<String> iterator() {
 		return delegate.iterator();
 	}
 
@@ -122,18 +123,18 @@ public class SmartList extends Observable implements List<MenuItem> {
 	}
 
 	@Override
-	public ListIterator<MenuItem> listIterator() {
+	public ListIterator<String> listIterator() {
 		return delegate.listIterator();
 	}
 
 	@Override
-	public ListIterator<MenuItem> listIterator(int position) {
+	public ListIterator<String> listIterator(int position) {
 		return delegate.listIterator(position);
 	}
 
 	@Override
-	public MenuItem remove(int position) {
-		MenuItem result = delegate.remove(position);
+	public String remove(int position) {
+		String result = delegate.remove(position);
         setChanged();
         notifyObservers();
         return result;
@@ -170,8 +171,8 @@ public class SmartList extends Observable implements List<MenuItem> {
 	}
 
 	@Override
-	public MenuItem set(int position, MenuItem song) {
-		MenuItem result = delegate.set(position, song);
+	public String set(int position, String song) {
+		String result = delegate.set(position, song);
 		setChanged();
 		notifyObservers();
 		return result;
@@ -183,7 +184,7 @@ public class SmartList extends Observable implements List<MenuItem> {
 	}
 
 	@Override
-	public List<MenuItem> subList(int fromPosition, int toPosition) {
+	public List<String> subList(int fromPosition, int toPosition) {
 		return delegate.subList(fromPosition, toPosition);
 	}
 
@@ -196,4 +197,5 @@ public class SmartList extends Observable implements List<MenuItem> {
 	public <T> T[] toArray(T[] a) {
 		return delegate.toArray(a);
 	}
+	
 }

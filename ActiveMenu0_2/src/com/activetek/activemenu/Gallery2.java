@@ -23,15 +23,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * Actividad de la segunda galería, de MenuItems
+ * @author juan
+ *
+ */
 public class Gallery2 extends Activity implements OnClickListener{
 
+	/**
+	 * Numero de la categorìa desplegada
+	 */
 	private int code;
+	/**
+	 *  Indice actual de la galería
+	 */
 	private int currentIndex;
+	/**
+	 * Cantidad de Items en la galería
+	 */
 	private int itemsInGallery;
 	private Gallery gallery;
 	private Button btnPrev;
 	private Button btnNext;
 	private Button btnBack;
+	/**
+	 * ArrayList de MenuItems a Mostrar
+	 */
 	private ArrayList<MenuItem> items;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,7 +56,6 @@ public class Gallery2 extends Activity implements OnClickListener{
 		setContentView(R.layout.second_gal);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		//findViewById(R.layout.second_gal).requestFocus();
 		btnPrev=(Button)findViewById(R.id.btnPrev2);
 		btnNext=(Button)findViewById(R.id.btnNext2);
 		btnBack=(Button)findViewById(R.id.btnBack);
@@ -48,22 +64,33 @@ public class Gallery2 extends Activity implements OnClickListener{
 		btnBack.setOnClickListener(this);
 		TextView txt=(TextView)findViewById(R.id.Title);
 		gallery=(Gallery)findViewById(R.id.gallery2);
+		// Queremos obtener mensajes extras que nos dejó la actividad
+		// que realizó la invocación de esta actividad
 		Bundle extras=getIntent().getExtras();
+		// Inicializamos el código de categoría
 		code=0;
 		if (extras!=null)
+			//Obtenemos el código de la actividad anterior
 			code=extras.getInt("cat");
+		// Obtenemos el array de menuitems con el código de categoría
 		items=CategoryWrapper.getInstance().getCategories().get(code).getFoods();
 		itemsInGallery=items.size();
+		// El título de la galería es el nombre de la categoría
 		txt.setText(CategoryWrapper.getInstance().getCategories().get(code).getName());
+		// Creamos un nuevo adaptador
 		gallery.setAdapter(new Gallery2Adapter(this,items));
 		gallery.setOnItemClickListener(new OnItemClickListener()
 		{
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
+				// Preparamos la siguiente Actividad
 				Intent in= new Intent(Gallery2.this,lastActivity.class);
+				// Pasamos los parámetros relevantes a la siguiente actividad
 				in.putExtra("cat", code);
 				in.putExtra("food", arg2);
+				in.putExtra("id", Gallery2.this.getIntent().getExtras().getInt("id"));
+				// Iniciamos la Actividad
 				Gallery2.this.startActivityForResult(in, 1);
 				
 			}
@@ -71,12 +98,20 @@ public class Gallery2 extends Activity implements OnClickListener{
 
 	}
 
+	/**
+	 * Este método verifica el resultado de las actividades generadas
+	 */
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         super.onActivityResult(requestCode, resultCode, intent);
-	setResult(1);
-	finish();
+        if(resultCode==1)
+        {
+        	// Si el resultado es 1, el usuario seleccionó un Item
+        	//Volvamos al menu principal
+        	setResult(1);
+        	finish();
+        }
 	
 	}
 	@Override
@@ -149,6 +184,7 @@ public class Gallery2 extends Activity implements OnClickListener{
 			text.setText(wrap.get(position).getName());
 			text.setGravity(Gravity.CENTER);
 			text.setTextColor(Color.GRAY);
+			// Introducimos la descripción del menuitem
 			desc.setText("Descripción: \n"+wrap.get(position).getDescription());
 			desc.setGravity(Gravity.CENTER);
 			desc.setTextColor(Color.GRAY);
@@ -161,5 +197,9 @@ public class Gallery2 extends Activity implements OnClickListener{
 		}
 
 	}
-
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+	}
 }
