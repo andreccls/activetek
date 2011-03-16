@@ -7,7 +7,7 @@ import net.sf.json.JSONObject;
 
 import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
-public class MenuItem
+public class MenuItem extends Vector<MenuItem>
 {
     /**
      * Constante que representa los las caterias en el arbol del menu.
@@ -20,7 +20,6 @@ public class MenuItem
     private String details;
     private boolean enable;
     private String icon;
-    private Vector<MenuItem> sons;
     private Vector<Image> images;
     private Vector<PriceItem> prices;
     private MenuItem father;
@@ -33,7 +32,6 @@ public class MenuItem
         this.details = description;
         this.enable = enable;
         this.icon = icon;
-        sons = new Vector<MenuItem>( );//son cargados luego mediante loadSons
         this.images = images;
         this.father = father;
         this.prices = prices;
@@ -41,10 +39,6 @@ public class MenuItem
     public Vector<Image> getImages( )
     {
         return images;
-    }
-    public void addSon( MenuItem son )
-    {
-        sons.add( son );
     }
     public int getId( )
     {
@@ -88,16 +82,13 @@ public class MenuItem
     }
     public void loadSons( ) throws SQLException
     {
-        sons = GenericMenuDAO.getInstance( ).getChildren( this );
-        for( MenuItem son : sons )
+        addAll( GenericMenuDAO.getInstance( ).getChildren( this ) );
+        for( MenuItem menuItem : this )
         {
-            son.loadSons( );
+            menuItem.loadSons( );
         }
     }
-    public Vector<MenuItem> getSons( )
-    {
-        return sons;
-    }
+
     public String toString( )
     {
         return name;
@@ -108,9 +99,9 @@ public class MenuItem
         {
             return this;
         }
-        for( MenuItem menuitem : sons )
+        for( MenuItem menuItem : this )
         {
-            MenuItem temp = menuitem.findByName( string );
+            MenuItem temp = menuItem.findByName( string );
             if( temp != null )
                 return temp;
         }
@@ -173,7 +164,7 @@ public class MenuItem
     public JSONArray getSonsJSONArray( )
     {
         JSONArray object = new JSONArray( );
-        for( MenuItem menuItem : sons )
+        for( MenuItem menuItem : this )
         {
             object.add( menuItem.getJSON( ) );
         }
@@ -181,7 +172,7 @@ public class MenuItem
     }
     public boolean isLeaf( )
     {
-        return sons == null || sons.size( ) == 0;
+        return this.size( ) == 0;
     }
     public int getLevel( )
     {

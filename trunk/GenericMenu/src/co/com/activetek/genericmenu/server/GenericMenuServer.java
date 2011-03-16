@@ -87,4 +87,13 @@ public class GenericMenuServer
         System.out.println(getTablesJSON( ));
         return object.toString( );
     }
+    public Table[][] getMatrixTables( ) throws SQLException
+    {
+        return GenericMenuDAO.getInstance( ).getMatrixTables( );
+    }
+    public Vector<MenuItem> getMenuTreeAsVector( )
+    {
+        return null;
+    }
+
 }
