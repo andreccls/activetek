@@ -1,11 +1,16 @@
 package co.com.activetek.genericmenu.ui.menu;
 
+import javax.swing.AbstractCellEditor;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeCellEditor;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
+
+import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,12 +18,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.JScrollPane;
 
 import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.ui.OsakiMenu;
 
 import java.awt.BorderLayout;
+import java.util.EventObject;
 import java.util.Vector;
 
 /**
@@ -71,7 +79,7 @@ public class MenuTreePanel extends JPanel
         });
         menuTtable.add( itemAdd );
     }
-
+    
     /**
      * This method initializes treeMenu
      * 
@@ -82,11 +90,9 @@ public class MenuTreePanel extends JPanel
         if( treeMenu == null )
         {
 
-            DefaultMutableTreeNode abuelo = new DefaultMutableTreeNode( "GenericMenu" );
-            buildMenuTree( window.getMenuTree( ), abuelo );
-
-            treeMenu = new JTree( abuelo );
-            treeMenu.setEditable( false );
+            treeMenu = new JTree( window.getMenuTree( ) );
+            treeMenu.setCellEditor( new menuItemEditor( treeMenu ) );
+            treeMenu.setEditable( true );//TODO cambiar para que solo lo tenga el administrador
             treeMenu.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
             treeMenu.setRootVisible( true );
             treeMenu.addMouseListener( new MouseListener( )
@@ -130,19 +136,6 @@ public class MenuTreePanel extends JPanel
         return treeMenu;
     }
 
-    private void buildMenuTree( MenuItem root, DefaultMutableTreeNode abuelo )
-    {
-        Vector<MenuItem> sons = root.getSons( );
-
-        for( MenuItem menuItem : sons )
-        {
-            DefaultMutableTreeNode me = new DefaultMutableTreeNode( menuItem );
-            abuelo.add( me );
-            buildMenuTree( menuItem, me );
-        }
-
-    }
-
     /**
      * This method initializes jScrollPane
      * 
@@ -157,5 +150,97 @@ public class MenuTreePanel extends JPanel
         }
         return jScrollPane;
     }
+    
+    //-----------------------------------------------------------------------------------
+    //              Otras clases    
+    //-----------------------------------------------------------------------------------
+    /**
+     * 
+     */
+    class menuItemEditor extends AbstractCellEditor implements TreeCellEditor
+    {
 
+        private static final long serialVersionUID = 1L;
+        ChangeEvent changeEvent = null;
+        JTree tree;
+        
+        public menuItemEditor( JTree treeMenu )
+        {
+            tree = treeMenu;
+        }
+
+        @Override
+        public Object getCellEditorValue( )
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public boolean isCellEditable( EventObject anEvent )
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean shouldSelectCell( EventObject anEvent )
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean stopCellEditing( )
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public void cancelCellEditing( )
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void addCellEditorListener( CellEditorListener l )
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void removeCellEditorListener( CellEditorListener l )
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public Component getTreeCellEditorComponent( JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row )
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+        
+    }
+    
+    /**
+     * 
+     * @author daniel.rodriguez
+     *
+     */
+    class menuItemRender implements TreeCellRenderer
+    {
+
+        @Override
+        public Component getTreeCellRendererComponent( JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus )
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+        
+    }
 }

@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import co.com.activetek.genericmenu.server.beans.Image;
@@ -12,6 +14,7 @@ import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
+import co.com.activetek.genericmenu.ui.tables.MapTablesPanel;
 
 public class GenericMenuDAO
 {
@@ -75,7 +78,7 @@ public class GenericMenuDAO
     public Vector<Image> getImages( int menuitemid ) throws SQLException
     {
         Statement st = conn.createStatement( );
-        ResultSet rs = st.executeQuery( "SELECT * FROM menuitem_image JOIN image USING(image_id) WHERE menuitem_id = " + menuitemid + " order by image_order asc" );
+        ResultSet rs = st.executeQuery( "SELECT * FROM image WHERE menuitem_id = " + menuitemid + " order by image_order asc" );
         Vector<Image> res = new Vector<Image>( );
         while( rs.next( ) )
         {
@@ -102,8 +105,54 @@ public class GenericMenuDAO
         ResultSet rs = st.executeQuery( "SELECT * FROM x_table" );
         while( rs.next( ) )
         {
-            result.add( new Table( rs.getInt( "table_id" ), rs.getString( "state" ), rs.getBoolean( "enable" ) ) );
+            result.add( new Table( rs.getInt( "table_id" ), rs.getInt( "number" ), rs.getInt( "capacity" ), rs.getInt( "x" ), rs.getInt( "y" ), rs.getString( "state" ), rs.getBoolean( "enable" ) ) );
         }
         return result;
     }
+    /**
+     * Retorna un map con las mesas en donde la llave es de la forma <x>:<y>
+     * @return
+     * @throws SQLException
+     */
+    public Map<String, Table> getMapTables( ) throws SQLException
+    {
+        Statement st = conn.createStatement( );
+        ResultSet rs = st.executeQuery( "SELECT * from x_table" );
+        Map<String, Table> result = new HashMap<String, Table>( );
+        while( rs.next( ) )
+        {
+            result.put( rs.getInt( "x" ) + ":" + rs.getInt( "y" ), new Table( rs.getInt( "table_id" ), rs.getInt( "number" ), rs.getInt( "capacity" ), rs.getInt( "x" ), rs.getInt( "y" ), rs.getString( "state" ), rs.getBoolean( "enable" ) ) );
+        }
+        return result;
+    }
+    /**
+     * Reportana una matriz con las mesas, las coordenadas en la que no se encuentre la mesa es null
+     * @return
+     * @throws SQLException
+     */
+    public Table[][] getMatrixTables( ) throws SQLException
+    {
+        Map<String, Table> map = getMapTables( );
+
+        Statement st = conn.createStatement( );
+        ResultSet rs = st.executeQuery( "SELECT max(x) as x,max(y) as y from x_table" );
+        if( rs.next( ) )
+        {
+            int x = rs.getInt( "x" );
+            int y = rs.getInt( "y" );
+            Table[][] tables = new Table[x][y];
+            for( int i = 0; i < x; i++ )
+            {
+                for( int j = 0; j < y; j++ )
+                {
+                    tables[ i ][ j ] = map.get( ( i + 1 ) + ":" + ( j + 1 ) );
+                }
+            }
+            return tables;
+        }
+        else
+            return new Table[0][0];
+
+    }
+
 }

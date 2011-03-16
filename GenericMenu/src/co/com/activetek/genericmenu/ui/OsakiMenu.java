@@ -16,6 +16,7 @@ import java.awt.Rectangle;
 
 import co.com.activetek.genericmenu.server.GenericMenuServer;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
 import co.com.activetek.genericmenu.server.util.Log;
@@ -50,6 +51,7 @@ public class OsakiMenu extends JFrame
     private JSplitPane splitPane = null;
     private JTabbedPane tabbedPane = null;
     private OsakiMenuBar osakiMenuBar = null;   //  @jve:decl-index=0:visual-constraint=""
+    private JSplitPane splitPaneRight = null;
 
     /**
      * This method initializes ordersPanel
@@ -88,7 +90,7 @@ public class OsakiMenu extends JFrame
     {
         if( mapTablesPanel == null )
         {
-            mapTablesPanel = new MapTablesPanel( );
+            mapTablesPanel = new MapTablesPanel( this );
         }
         return mapTablesPanel;
     }
@@ -118,7 +120,7 @@ public class OsakiMenu extends JFrame
         {
             splitPane = new JSplitPane( );
             splitPane.setLeftComponent(getOrdersPanel());
-            splitPane.setRightComponent(getTabbedPane());
+            splitPane.setRightComponent(getSplitPaneRight());
         }
         return splitPane;
     }
@@ -152,6 +154,21 @@ public class OsakiMenu extends JFrame
             osakiMenuBar = new OsakiMenuBar( );
         }
         return osakiMenuBar;
+    }
+
+    /**
+     * This method initializes splitPaneRight	
+     * 	
+     * @return javax.swing.JSplitPane	
+     */
+    private JSplitPane getSplitPaneRight( )
+    {
+        if( splitPaneRight == null )
+        {
+            splitPaneRight = new JSplitPane( );
+            splitPaneRight.setLeftComponent(getTabbedPane());
+        }
+        return splitPaneRight;
     }
 
     /**
@@ -224,7 +241,12 @@ public class OsakiMenu extends JFrame
     {
         return server.getMenuTree( );
     }
-
+    
+    public Vector<MenuItem> getMenuTreeAsVector()
+    {
+        return server.getMenuTreeAsVector();
+    }
+    
     public void setSelectedItem( String path )
     {   
         selected = server.getMenuItemByPath( path );
@@ -247,6 +269,20 @@ public class OsakiMenu extends JFrame
     public MenuItem getSelectedItem( )
     {
         return selected;
+    }
+
+    public Table[][] getMatrixTables( )
+    {
+        try
+        {
+            return server.getMatrixTables( );
+        }
+        catch( Exception e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado recolectando la informacion de las mesas desde la base de datos, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }  //  @jve:decl-index=0:visual-constraint="258,54"
