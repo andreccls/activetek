@@ -1,6 +1,8 @@
 package co.com.activetek.genericmenu.ui.menu;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -14,6 +16,8 @@ import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
@@ -91,6 +95,8 @@ public class MenuTreePanel extends JPanel
         {
 
             treeMenu = new JTree( window.getMenuTree( ) );
+            
+            treeMenu.setCellRenderer( new menuItemRender( ) );
             treeMenu.setCellEditor( new menuItemEditor( treeMenu ) );
             treeMenu.setEditable( true );//TODO cambiar para que solo lo tenga el administrador
             treeMenu.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
@@ -163,6 +169,7 @@ public class MenuTreePanel extends JPanel
         private static final long serialVersionUID = 1L;
         ChangeEvent changeEvent = null;
         JTree tree;
+        menuItemRender render = new menuItemRender( );
         
         public menuItemEditor( JTree treeMenu )
         {
@@ -177,10 +184,10 @@ public class MenuTreePanel extends JPanel
         }
 
         @Override
+        //TODO todos deberian ser editables???
         public boolean isCellEditable( EventObject anEvent )
-        {
-            // TODO Auto-generated method stub
-            return false;
+        {            
+            return true;
         }
 
         @Override
@@ -221,8 +228,21 @@ public class MenuTreePanel extends JPanel
         @Override
         public Component getTreeCellEditorComponent( JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row )
         {
-            // TODO Auto-generated method stub
-            return null;
+            
+            Component editor =  render.getTreeCellRendererComponent( tree, value, isSelected, expanded, leaf, row, true );
+            
+            ItemListener itemListener = new ItemListener( )
+            {
+                public void itemStateChanged( ItemEvent itemEvent )
+                {
+                    if( stopCellEditing( ) )
+                    {
+                        fireEditingStopped( );
+                    }
+                }
+            };
+            
+            return editor;
         }
         
     }
@@ -238,8 +258,9 @@ public class MenuTreePanel extends JPanel
         @Override
         public Component getTreeCellRendererComponent( JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus )
         {
-            // TODO Auto-generated method stub
-            return null;
+            String stringValue = tree.convertValueToText( value, selected, expanded, leaf, row, false );
+            JLabel l = new JLabel( stringValue);
+            return l;
         }
         
     }
