@@ -179,6 +179,7 @@ public class MenuTreePanel extends JPanel
         @Override
         public Object getCellEditorValue( )
         {
+            System.out.println(hashCode( ) + " getCellEditorValue" );
             // TODO Auto-generated method stub
             return null;
         }
@@ -187,48 +188,49 @@ public class MenuTreePanel extends JPanel
         //TODO todos deberian ser editables???
         public boolean isCellEditable( EventObject anEvent )
         {            
-            return true;
+            System.out.println(hashCode( ) + " isCellEditable");
+            return true;    
         }
 
         @Override
         public boolean shouldSelectCell( EventObject anEvent )
         {
-            // TODO Auto-generated method stub
+            System.out.println(hashCode( ) + " shouldSelectCell");
             return false;
         }
 
         @Override
         public boolean stopCellEditing( )
         {
-            // TODO Auto-generated method stub
+            System.out.println(hashCode( ) + " shouldSelectCell");
             return false;
         }
 
         @Override
         public void cancelCellEditing( )
         {
-            // TODO Auto-generated method stub
+            System.out.println(hashCode( ) + " cancelCellEditing");
             
         }
 
         @Override
         public void addCellEditorListener( CellEditorListener l )
         {
-            // TODO Auto-generated method stub
+            System.out.println(hashCode( ) + " addCellEditorListener");
             
         }
 
         @Override
         public void removeCellEditorListener( CellEditorListener l )
         {
-            // TODO Auto-generated method stub
+            System.out.println(hashCode( ) + " removeCellEditorListener");
             
         }
 
         @Override
         public Component getTreeCellEditorComponent( JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row )
         {
-            
+            System.out.println(hashCode( ) + " getTreeCellEditorComponent");
             Component editor =  render.getTreeCellRendererComponent( tree, value, isSelected, expanded, leaf, row, true );
             
             ItemListener itemListener = new ItemListener( )
@@ -258,6 +260,7 @@ public class MenuTreePanel extends JPanel
         @Override
         public Component getTreeCellRendererComponent( JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus )
         {
+            System.out.println(hashCode( ) + " getTreeCellRendererComponent");
             String stringValue = tree.convertValueToText( value, selected, expanded, leaf, row, false );
             JLabel l = new JLabel( stringValue);
             return l;
