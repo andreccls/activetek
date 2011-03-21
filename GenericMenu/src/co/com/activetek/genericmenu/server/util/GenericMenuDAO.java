@@ -37,7 +37,7 @@ public class GenericMenuDAO
         return instance;
     }
 
-    public void showDatabses( ) throws SQLException
+    public synchronized void showDatabses( ) throws SQLException
     {
         Statement st = conn.createStatement( );
         ResultSet rs = st.executeQuery( "show databases" );
@@ -48,7 +48,7 @@ public class GenericMenuDAO
 
     }
 
-    public Vector<MenuItem> getChildren( MenuItem parent ) throws SQLException
+    public synchronized Vector<MenuItem> getChildren( MenuItem parent ) throws SQLException
     {
         Statement st = conn.createStatement( );
         ResultSet rs = st.executeQuery( "SELECT * FROM menuitem WHERE parentId " + ( parent == null ? "IS NULL" : " = " + parent.getId( ) ) );
@@ -62,7 +62,7 @@ public class GenericMenuDAO
         return res;
     }
 
-    public Vector<PriceItem> getPrices( int menuitemid ) throws SQLException
+    public synchronized Vector<PriceItem> getPrices( int menuitemid ) throws SQLException
     {
         Statement st = conn.createStatement( );
         ResultSet rs = st.executeQuery( "SELECT * FROM priceitem WHERE menuitem_id = " + menuitemid + " ORDER BY price_order ASC" );
@@ -75,7 +75,7 @@ public class GenericMenuDAO
         return res;
     }
 
-    public Vector<Image> getImages( int menuitemid ) throws SQLException
+    public synchronized Vector<Image> getImages( int menuitemid ) throws SQLException
     {
         Statement st = conn.createStatement( );
         ResultSet rs = st.executeQuery( "SELECT * FROM image WHERE menuitem_id = " + menuitemid + " order by image_order asc" );
@@ -87,7 +87,7 @@ public class GenericMenuDAO
 
         return res;
     }
-    public Vector<Waitress> getWaitress( ) throws SQLException
+    public synchronized Vector<Waitress> getWaitress( ) throws SQLException
     {
         Vector<Waitress> result = new Vector<Waitress>( );
         Statement st = conn.createStatement( );
@@ -98,7 +98,7 @@ public class GenericMenuDAO
         }
         return result;
     }
-    public Vector<Table> getTables( ) throws SQLException
+    public synchronized Vector<Table> getTables( ) throws SQLException
     {
         Vector<Table> result = new Vector<Table>( );
         Statement st = conn.createStatement( );
@@ -114,7 +114,7 @@ public class GenericMenuDAO
      * @return
      * @throws SQLException
      */
-    public Map<String, Table> getMapTables( ) throws SQLException
+    public synchronized Map<String, Table> getMapTables( ) throws SQLException
     {
         Statement st = conn.createStatement( );
         ResultSet rs = st.executeQuery( "SELECT * from x_table" );
@@ -130,7 +130,7 @@ public class GenericMenuDAO
      * @return
      * @throws SQLException
      */
-    public Table[][] getMatrixTables( ) throws SQLException
+    public synchronized Table[][] getMatrixTables( ) throws SQLException
     {
         Map<String, Table> map = getMapTables( );
 
