@@ -1,6 +1,10 @@
 package co.com.activetek.genericmenu.server;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.Vector;
 
 import net.sf.json.JSONArray;
@@ -14,6 +18,7 @@ import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
 public class GenericMenuServer
 {
+    public final static String PROPERTIES = "./OsakiMenu.properties";
 
     /**
      * MenuItem raiz del arbol del menu. Desde este elemento se tiene acceso a todo el arbol
@@ -21,7 +26,8 @@ public class GenericMenuServer
     private MenuItem root;
     private Vector<Waitress> waitresses;
     private Vector<Table> tables;
-    
+    private ListenerThread listener;
+
     public GenericMenuServer( ) throws SQLException, GenericMenuException
     {
         GenericMenuDAO.getInstance( );// para verificar que la base de datos esta arriba
@@ -30,11 +36,28 @@ public class GenericMenuServer
             root = getChildren( null ).get( 0 );
             root.loadSons( );
             waitresses = GenericMenuDAO.getInstance( ).getWaitress( );
-            tables = GenericMenuDAO.getInstance( ).getTables( );            
+            tables = GenericMenuDAO.getInstance( ).getTables( );
+
+            Properties prop = new Properties( );
+            FileInputStream in = new FileInputStream( PROPERTIES );
+            prop.load( in );
+            in.close( );
+
+            listener = new ListenerThread( this, Integer.parseInt( prop.getProperty( "osaki.server.port" ) ) );
+            listener.start( );
         }
         catch( ArrayIndexOutOfBoundsException e )
         {
             throw new GenericMenuException( "No se ha definido ningun menu en el sistema" );
+        }
+        catch( FileNotFoundException e )
+        {
+            throw new GenericMenuException( "No se encuentra el archivo de propiedadades \n contacte al administrador del sistema" );
+        }
+        catch( IOException e )
+        {
+            e.printStackTrace( );
+            throw new GenericMenuException( "Error inesperado cargando el archivo de propiedades" );
         }
     }
     public Vector<MenuItem> getChildren( MenuItem parent ) throws SQLException
@@ -47,20 +70,20 @@ public class GenericMenuServer
     {
         new GenericMenuServer( ).getJSon( );
     }
-    public MenuItem getMenuTree( ) 
+    public MenuItem getMenuTree( )
     {
         return root;
     }
     public MenuItem getMenuItemByPath( String path )
     {
         String[] items = path.split( "," );
-        return root.findByName(items[items.length-1]);
+        return root.findByName( items[ items.length - 1 ] );
     }
     public Vector<Waitress> getWaitresses( ) throws SQLException
     {
         return waitresses;
     }
-    public JSONArray getWaitressesJSON()
+    public JSONArray getWaitressesJSON( )
     {
         JSONArray array = new JSONArray( );
         for( Waitress waitress : waitresses )
@@ -69,7 +92,7 @@ public class GenericMenuServer
         }
         return array;
     }
-    public JSONArray getTablesJSON()
+    public JSONArray getTablesJSON( )
     {
         JSONArray array = new JSONArray( );
         for( Table table : tables )
@@ -80,11 +103,11 @@ public class GenericMenuServer
     }
     public String getJSon( )
     {
-        JSONObject object = root.getJSON( ); 
+        JSONObject object = root.getJSON( );
         object.put( "meseros", getWaitressesJSON( ) );
         object.put( "mesas", getTablesJSON( ) );
-        System.out.println(object);
-        System.out.println(getTablesJSON( ));
+        System.out.println( object );
+        System.out.println( getTablesJSON( ) );
         return object.toString( );
     }
     public Table[][] getMatrixTables( ) throws SQLException
