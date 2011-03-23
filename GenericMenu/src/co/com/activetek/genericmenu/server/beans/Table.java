@@ -11,7 +11,7 @@ public class Table
     private int y;
     private String state;
     private boolean enable;
-    
+
     public Table( int id, int number, int capacity, int x, int y, String state, boolean enable )
     {
         super( );
@@ -86,9 +86,9 @@ public class Table
         object.put( "busy", state.equals( "busy" ) ? 1 : 0 );
         return object;
     }
-    public String toString()
+    public String toString( )
     {
-        return x+","+y;
+        return x + "," + y;
     }
 
 }

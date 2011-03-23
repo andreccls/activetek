@@ -79,7 +79,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         gridBagConstraints0.gridy = 0;
         gridBagConstraints0.weightx = 1;
         gridBagConstraints0.weighty = 0.4;
-        gridBagConstraints0.gridwidth =2;
+        gridBagConstraints0.gridwidth = 2;
 
         GridBagConstraints gridBagConstraints1 = new GridBagConstraints( );// Para el label detalles
         gridBagConstraints1.fill = GridBagConstraints.BOTH;
@@ -94,8 +94,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         gridBagConstraints2.gridy = 2;
         gridBagConstraints2.weightx = 1;
         gridBagConstraints2.weighty = 0.4;
-        gridBagConstraints2.gridwidth =2;
-        
+        gridBagConstraints2.gridwidth = 2;
 
         GridBagConstraints gridBagConstraints3 = new GridBagConstraints( );// Para el chek de enable
         gridBagConstraints3.fill = GridBagConstraints.BOTH;
@@ -103,7 +102,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         gridBagConstraints3.gridy = 3;
         gridBagConstraints3.weightx = 0.8;
         gridBagConstraints3.gridheight = 1;
-        
+
         GridBagConstraints gridBagConstraints4 = new GridBagConstraints( );// Para el chek de enable
         gridBagConstraints4.fill = GridBagConstraints.BOTH;
         gridBagConstraints4.gridx = 1;
@@ -207,14 +206,14 @@ public class ProdcutInfoDetailPanel extends JPanel
         if( jTable == null )
         {
             pricesTableRender = new PricesTableRender( );
-            jTable = new JTable( pricesTableRender);
+            jTable = new JTable( pricesTableRender );
         }
         return jTable;
     }
     public void setSelectedItem( MenuItem selected )
     {
         pricesTableRender.setSelected( selected );
-        textFieldDetails.setText( selected.getDescription( ) ); 
+        textFieldDetails.setText( selected.getDescription( ) );
         jTable.repaint( );
         this.repaint( );
     }
@@ -224,18 +223,15 @@ public class ProdcutInfoDetailPanel extends JPanel
     /**
      * 
      * @author daniel.rodriguez
-     *
+     * 
      */
     public class PricesTableRender extends AbstractTableModel
     {
         private static final long serialVersionUID = 1L;
-        
+
         String[] columnNames = { "#Items", "Detalles", "Precio", "Enable" };
-        Object[][] data = { 
-                    { 1, "" , 20000, true },
-                    { 1, "" , 20000, false }
-                };
-        public PricesTableRender()
+        Object[][] data = { { 1, "", 20000, true }, { 1, "", 20000, false } };
+        public PricesTableRender( )
         {
             super( );
         }
@@ -254,42 +250,42 @@ public class ProdcutInfoDetailPanel extends JPanel
         @Override
         public Object getValueAt( int rowIndex, int columnIndex )
         {
-            return data[rowIndex][columnIndex];
+            return data[ rowIndex ][ columnIndex ];
         }
-        
-        public String getColumnName(int col)
+
+        public String getColumnName( int col )
         {
-            return columnNames[col];
+            return columnNames[ col ];
         }
         public Class getColumnClass( int c )
         {
-            return c==3?Boolean.class:String.class;
+            return c == 3 ? Boolean.class : String.class;
         }
         public boolean isCellEditable( int row, int col )
         {
-            return true;//TODO cambiar para que solo lo pueda hacer el usuario de administrador
+            return true;// TODO cambiar para que solo lo pueda hacer el usuario de administrador
         }
         public void setValueAt( Object value, int row, int col )
         {
             data[ row ][ col ] = value;
             fireTableCellUpdated( row, col );
-            System.out.println(row+ " " + col + " " + value);//TODO Aqui se escucha cuando el administrador cambia algo
+            System.out.println( row + " " + col + " " + value );// TODO Aqui se escucha cuando el administrador cambia algo
         }
-        public void setSelected(MenuItem menuitem)
+        public void setSelected( MenuItem menuitem )
         {
             Vector<PriceItem> prices = menuitem.getPrices( );
-            this.data = new Object[ prices.size( ) ][ columnNames.length ];
-            
-            for( int i = 0 ; i < prices.size( ); i++ )
+            this.data = new Object[prices.size( )][columnNames.length];
+
+            for( int i = 0; i < prices.size( ); i++ )
             {
                 PriceItem p = prices.get( i );
-                data[i][0] = p.getCuantity( );
-                data[i][1] = p.getDescripcion( );
-                data[i][2] = p.getPrice( );
-                data[i][3] = p.isEnable( );
+                data[ i ][ 0 ] = p.getCuantity( );
+                data[ i ][ 1 ] = p.getDescripcion( );
+                data[ i ][ 2 ] = p.getPrice( );
+                data[ i ][ 3 ] = p.isEnable( );
             }
         }
-        
+
     }
 
 }

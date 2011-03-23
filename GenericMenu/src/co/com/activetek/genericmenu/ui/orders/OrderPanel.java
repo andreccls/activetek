@@ -37,7 +37,7 @@ public class OrderPanel extends JPanel
     private void initialize( )
     {
         this.setLayout( new BorderLayout( ) );
-        this.setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        this.setBorder( BorderFactory.createTitledBorder( null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null ) );
         this.add( getPanelTitle( ), BorderLayout.NORTH );
         this.add( getPanelItems( ), BorderLayout.CENTER );
     }
@@ -56,7 +56,8 @@ public class OrderPanel extends JPanel
             labelTable = new JLabel( );
             labelTable.setText( "Mesa 1" );
             panelTitle = new JPanel( );
-            panelTitle.setLayout( new GridBagLayout( ) );;
+            panelTitle.setLayout( new GridBagLayout( ) );
+            ;
             panelTitle.add( labelTable, gridBagConstraints );
             panelTitle.add( getJCheckBox( ), gridBagConstraints1 );
         }

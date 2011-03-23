@@ -30,20 +30,20 @@ public class OrderItemPanel extends JPanel
      */
     private void initialize( )
     {
-        labelItemName = new JLabel();
-        labelItemName.setText("labelItemName");
-        labelCuantity = new JLabel();
-        labelCuantity.setText("  10  ");
-        this.setLayout(new BorderLayout());
-        this.add(labelCuantity, BorderLayout.WEST);
-        this.add(labelItemName, BorderLayout.CENTER);
-        this.add(getJCheckBox(), BorderLayout.EAST);
+        labelItemName = new JLabel( );
+        labelItemName.setText( "labelItemName" );
+        labelCuantity = new JLabel( );
+        labelCuantity.setText( "  10  " );
+        this.setLayout( new BorderLayout( ) );
+        this.add( labelCuantity, BorderLayout.WEST );
+        this.add( labelItemName, BorderLayout.CENTER );
+        this.add( getJCheckBox( ), BorderLayout.EAST );
     }
 
     /**
-     * This method initializes jCheckBox	
-     * 	
-     * @return javax.swing.JCheckBox	
+     * This method initializes jCheckBox
+     * 
+     * @return javax.swing.JCheckBox
      */
     private JCheckBox getJCheckBox( )
     {

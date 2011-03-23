@@ -10,7 +10,7 @@ import java.awt.BorderLayout;
 /**
  * Panel encargado de unir el arbol del menu, junto con el panel de descripciones
  * @author daniel.rodriguez
- *
+ * 
  */
 public class MenuPanel extends JPanel
 {
@@ -38,15 +38,15 @@ public class MenuPanel extends JPanel
     private void initialize( )
     {
         this.setSize( 600, 600 );
-        this.setLayout(new BorderLayout());
-        this.add(getMenuTreePanel(), BorderLayout.WEST);
-        this.add(getProductInfo(), BorderLayout.CENTER);
+        this.setLayout( new BorderLayout( ) );
+        this.add( getMenuTreePanel( ), BorderLayout.WEST );
+        this.add( getProductInfo( ), BorderLayout.CENTER );
     }
 
     /**
-     * This method initializes menuTreePanel	
-     * 	
-     * @return co.com.activetek.genericmenu.ui.menu.MenuTreePanel	
+     * This method initializes menuTreePanel
+     * 
+     * @return co.com.activetek.genericmenu.ui.menu.MenuTreePanel
      */
     private MenuTreePanel getMenuTreePanel( )
     {
@@ -58,9 +58,9 @@ public class MenuPanel extends JPanel
     }
 
     /**
-     * This method initializes productInfo	
-     * 	
-     * @return co.com.activetek.genericmenu.ui.menu.ProductInfo	
+     * This method initializes productInfo
+     * 
+     * @return co.com.activetek.genericmenu.ui.menu.ProductInfo
      */
     private ProductInfoPanel getProductInfo( )
     {
@@ -73,7 +73,7 @@ public class MenuPanel extends JPanel
 
     public void updateSelectedItem( MenuItem selected )
     {
-        productInfo.updateSelectedItem( selected );        
+        productInfo.updateSelectedItem( selected );
     }
 
 }

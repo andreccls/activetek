@@ -28,7 +28,7 @@ public class AddItemDialog extends JDialog
      */
     private void initialize( )
     {
-        this.setSize(640, 407);
+        this.setSize( 640, 407 );
         this.setContentPane( getJContentPane( ) );
     }
     /**
@@ -46,4 +46,4 @@ public class AddItemDialog extends JDialog
         return jContentPane;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+} // @jve:decl-index=0:visual-constraint="10,10"

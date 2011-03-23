@@ -39,7 +39,7 @@ public class ProductInfoPanel extends JPanel
     {
 
         labelNombre = new JLabel( );
-        labelNombre.setText( "Ebi roll" );//TODO esta vaina tiene que morir
+        labelNombre.setText( "Ebi roll" );// TODO esta vaina tiene que morir
         labelNombre.setFont( new Font( "Dialog", Font.BOLD, 18 ) );
         this.setSize( 388, 600 );
         this.setLayout( new BoxLayout( this, BoxLayout.Y_AXIS ) );
@@ -81,7 +81,7 @@ public class ProductInfoPanel extends JPanel
     {
         labelNombre.setText( selected.getName( ) );
         productInfoImagePanel.setImages( selected.getImages( ) );
-        prodcutInfoDetailPanel.setSelectedItem(selected);
+        prodcutInfoDetailPanel.setSelectedItem( selected );
     }
 
 } // @jve:decl-index=0:visual-constraint="10,10"

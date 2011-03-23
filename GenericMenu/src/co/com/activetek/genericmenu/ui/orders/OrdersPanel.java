@@ -29,40 +29,40 @@ public class OrdersPanel extends JPanel
     {
         GridLayout gridLayout = new GridLayout( );
         this.setLayout( gridLayout );
-        this.add(getJScrollPane(), null);
+        this.add( getJScrollPane( ), null );
     }
 
     /**
-     * This method initializes jScrollPane	
-     * 	
-     * @return javax.swing.JScrollPane	
+     * This method initializes jScrollPane
+     * 
+     * @return javax.swing.JScrollPane
      */
     private JScrollPane getJScrollPane( )
     {
         if( jScrollPane == null )
         {
             jScrollPane = new JScrollPane( );
-            jScrollPane.setViewportView(getJPanel());
+            jScrollPane.setViewportView( getJPanel( ) );
         }
         return jScrollPane;
     }
 
     /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel
+     * 
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel( )
     {
         if( jPanel == null )
         {
             jPanel = new JPanel( );
-            jPanel.setLayout(new GridLayout(5,1));
-            for(int i=0; i<5;i++) 
+            jPanel.setLayout( new GridLayout( 5, 1 ) );
+            for( int i = 0; i < 5; i++ )
             {
                 jPanel.add( new OrderPanel( ) );
             }
-            
+
         }
         return jPanel;
     }

@@ -46,11 +46,11 @@ public class OsakiMenu extends JFrame
     /**
      * Atributo que representa el item del menu que esta seleccionado actualmente en la interfaz del usuario
      */
-    private MenuItem selected;  //  @jve:decl-index=0:
+    private MenuItem selected; // @jve:decl-index=0:
     private WaitressesPanel waitressesPanel = null;
     private JSplitPane splitPane = null;
     private JTabbedPane tabbedPane = null;
-    private OsakiMenuBar osakiMenuBar = null;   //  @jve:decl-index=0:visual-constraint=""
+    private OsakiMenuBar osakiMenuBar = null; // @jve:decl-index=0:visual-constraint=""
     private JSplitPane splitPaneRight = null;
 
     /**
@@ -110,42 +110,42 @@ public class OsakiMenu extends JFrame
     }
 
     /**
-     * This method initializes splitPane	
-     * 	
-     * @return javax.swing.JSplitPane	
+     * This method initializes splitPane
+     * 
+     * @return javax.swing.JSplitPane
      */
     private JSplitPane getSplitPane( )
     {
         if( splitPane == null )
         {
             splitPane = new JSplitPane( );
-            splitPane.setLeftComponent(getOrdersPanel());
-            splitPane.setRightComponent(getSplitPaneRight());
+            splitPane.setLeftComponent( getOrdersPanel( ) );
+            splitPane.setRightComponent( getSplitPaneRight( ) );
         }
         return splitPane;
     }
 
     /**
-     * This method initializes tabbedPane	
-     * 	
-     * @return javax.swing.JTabbedPane	
+     * This method initializes tabbedPane
+     * 
+     * @return javax.swing.JTabbedPane
      */
     private JTabbedPane getTabbedPane( )
     {
         if( tabbedPane == null )
         {
             tabbedPane = new JTabbedPane( );
-            tabbedPane.addTab("Mesas", null, getMapTablesPanel(), null);
-            tabbedPane.addTab("Menu", null, getMenuPanel(), null);
-            tabbedPane.addTab("Meseros", null, getWaitressesPanel(), null);
+            tabbedPane.addTab( "Mesas", null, getMapTablesPanel( ), null );
+            tabbedPane.addTab( "Menu", null, getMenuPanel( ), null );
+            tabbedPane.addTab( "Meseros", null, getWaitressesPanel( ), null );
         }
         return tabbedPane;
     }
 
     /**
-     * This method initializes osakiMenuBar	
-     * 	
-     * @return co.com.activetek.genericmenu.ui.OsakiMenuBar	
+     * This method initializes osakiMenuBar
+     * 
+     * @return co.com.activetek.genericmenu.ui.OsakiMenuBar
      */
     private OsakiMenuBar getOsakiMenuBar( )
     {
@@ -157,16 +157,16 @@ public class OsakiMenu extends JFrame
     }
 
     /**
-     * This method initializes splitPaneRight	
-     * 	
-     * @return javax.swing.JSplitPane	
+     * This method initializes splitPaneRight
+     * 
+     * @return javax.swing.JSplitPane
      */
     private JSplitPane getSplitPaneRight( )
     {
         if( splitPaneRight == null )
         {
             splitPaneRight = new JSplitPane( );
-            splitPaneRight.setLeftComponent(getTabbedPane());
+            splitPaneRight.setLeftComponent( getTabbedPane( ) );
         }
         return splitPaneRight;
     }
@@ -179,8 +179,8 @@ public class OsakiMenu extends JFrame
         Log.getInstance( ).getLog( ).info( "Iniciando Menu" );
         try
         {
-            //UIManager.setLookAndFeel( "ch.randelshofer.quaqua.QuaquaLookAndFeel" );
-             //UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
+            // UIManager.setLookAndFeel( "ch.randelshofer.quaqua.QuaquaLookAndFeel" );
+            // UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
             // UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
         }
         catch( Exception e )
@@ -231,24 +231,24 @@ public class OsakiMenu extends JFrame
     private void initialize( )
     {
         this.setSize( 1000, 1000 );
-        this.setContentPane(getSplitPane());
+        this.setContentPane( getSplitPane( ) );
         this.setExtendedState( getExtendedState( ) | MAXIMIZED_BOTH );
         this.setTitle( "Osaki" );
-        this.setMenuBar( getOsakiMenuBar( ));
+        this.setMenuBar( getOsakiMenuBar( ) );
     }
 
     public MenuItem getMenuTree( )
     {
         return server.getMenuTree( );
     }
-    
-    public Vector<MenuItem> getMenuTreeAsVector()
+
+    public Vector<MenuItem> getMenuTreeAsVector( )
     {
-        return server.getMenuTreeAsVector();
+        return server.getMenuTreeAsVector( );
     }
-    
+
     public void setSelectedItem( String path )
-    {   
+    {
         selected = server.getMenuItemByPath( path );
         menuPanel.updateSelectedItem( selected );
     }
@@ -280,9 +280,9 @@ public class OsakiMenu extends JFrame
         catch( Exception e )
         {
             JOptionPane.showMessageDialog( this, "Error inesperado recolectando la informacion de las mesas desde la base de datos, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-            e.printStackTrace();
+            e.printStackTrace( );
         }
         return null;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="258,54"
+} // @jve:decl-index=0:visual-constraint="258,54"

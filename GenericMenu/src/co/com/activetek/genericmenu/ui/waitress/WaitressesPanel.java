@@ -32,14 +32,14 @@ public class WaitressesPanel extends JPanel
      */
     private void initialize( )
     {
-        GridLayout gridLayout = new GridLayout(HEIGHT,WIDTH);
-        
-        for( Waitress waitress : window.getWaitresses() )
+        GridLayout gridLayout = new GridLayout( HEIGHT, WIDTH );
+
+        for( Waitress waitress : window.getWaitresses( ) )
         {
             this.add( new WaitressPanel( waitress ) );
         }
-                
-        this.setLayout(gridLayout);
+
+        this.setLayout( gridLayout );
         this.setSize( 300, 200 );
     }
 

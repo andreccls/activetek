@@ -10,11 +10,10 @@ import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 public class MenuItem extends Vector<MenuItem>
 {
     /**
-     * Constante que representa los las caterias en el arbol del menu.
-     * Es decir las categorias son lso nodos de nivel 2 en el arbol
+     * Constante que representa los las caterias en el arbol del menu. Es decir las categorias son lso nodos de nivel 2 en el arbol
      */
     public final static int LEVEl_CATEGORY = 1;
-    
+
     private int id;
     private String name;
     private String details;
@@ -110,20 +109,20 @@ public class MenuItem extends Vector<MenuItem>
     public JSONObject getJSON( )
     {
         JSONObject object = new JSONObject( );
-        
+
         if( getLevel( ) == 2 )
         {
             object.put( "name", name );
             object.put( "details", details );
             object.put( "price", getPricesJSONArray( ) );
-            object.put( "images", getImagesJSONArray( ) );            
+            object.put( "images", getImagesJSONArray( ) );
         }
         if( getLevel( ) == 1 )
         {
             object.put( "name", name );
-            object.put( "menuitem", getSonsJSONArray( ) ); 
+            object.put( "menuitem", getSonsJSONArray( ) );
         }
-        if( getLevel( ) == 0)
+        if( getLevel( ) == 0 )
         {
             object.put( "categorias", getSonsJSONArray( ) );
         }
@@ -149,7 +148,7 @@ public class MenuItem extends Vector<MenuItem>
      * @return
      */
     public JSONArray getPricesJSONArray( )
-    {        
+    {
         JSONArray array = new JSONArray( );
         for( PriceItem priceItem : prices )
         {
@@ -178,7 +177,7 @@ public class MenuItem extends Vector<MenuItem>
     {
         return father == null ? 0 : father.getLevel( ) + 1;
     }
-    public Vector<PriceItem> getPrices()
+    public Vector<PriceItem> getPrices( )
     {
         return prices;
     }

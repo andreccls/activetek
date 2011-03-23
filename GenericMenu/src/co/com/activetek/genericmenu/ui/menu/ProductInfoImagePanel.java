@@ -22,7 +22,7 @@ import javax.swing.BoxLayout;
 /**
  * Clase que contiene las imagenes del producto
  * @author daniel.rodriguez
- *
+ * 
  */
 public class ProductInfoImagePanel extends JPanel
 {
@@ -60,7 +60,7 @@ public class ProductInfoImagePanel extends JPanel
     {
         labelImages = new JLabel( );
         labelImages.setIcon( MyImageIcon.getInstance( ).setSize( new ImageIcon( NO_IMAGE ).getImage( ), WIDHT, HEIGHT, this ) );
-        labelImages.setText("");
+        labelImages.setText( "" );
         labelImages.setHorizontalAlignment( SwingConstants.CENTER );
         this.setSize( 300, 600 );
 
