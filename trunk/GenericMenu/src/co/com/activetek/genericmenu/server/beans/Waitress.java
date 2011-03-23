@@ -13,14 +13,14 @@ public class Waitress
     private String nick;
     private boolean enable;
 
-    public Waitress( int id, String photo, String name, String lastName,String nick, boolean enable )
+    public Waitress( int id, String photo, String name, String lastName, String nick, boolean enable )
     {
         super( );
         this.id = id;
         this.photo = photo;
         this.name = name;
         this.lastName = lastName;
-        this.nick =  nick;
+        this.nick = nick;
         this.enable = enable;
     }
     public int getId( )
@@ -71,12 +71,12 @@ public class Waitress
     {
         this.enable = enable;
     }
-    public JSONObject getJSON()
+    public JSONObject getJSON( )
     {
         JSONObject object = new JSONObject( );
         object.put( "nick", nick );
         object.put( "id", id );
-        if(photo != null)
+        if( photo != null )
             object.put( "photo", photo.substring( 1 ) );
         return object;
     }

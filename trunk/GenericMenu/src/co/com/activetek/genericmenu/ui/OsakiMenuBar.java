@@ -5,10 +5,9 @@ import java.awt.MenuBar;
 
 public class OsakiMenuBar extends MenuBar
 {
-    private Menu file = new Menu("File" );
-    public OsakiMenuBar()
+    private Menu file = new Menu( "File" );
+    public OsakiMenuBar( )
     {
-        this.add(file);
+        this.add( file );
     }
 }
-    

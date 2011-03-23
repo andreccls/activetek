@@ -9,42 +9,42 @@ public class Log
 {
     private static Log instance;
     private static String LOG_DIRECTORY = "./log/out.log";
-    
-    Logger log = Logger.getLogger("Log");
-    
+
+    Logger log = Logger.getLogger( "Log" );
+
     public Log( )
     {
         FileHandler hand;
         try
         {
-            hand = new FileHandler(LOG_DIRECTORY,true);
-            SimpleFormatter formatter = new SimpleFormatter();
+            hand = new FileHandler( LOG_DIRECTORY, true );
+            SimpleFormatter formatter = new SimpleFormatter( );
             hand.setFormatter( formatter );
-            log.addHandler(hand);   
+            log.addHandler( hand );
         }
         catch( SecurityException e )
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            e.printStackTrace( );
         }
         catch( IOException e )
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            e.printStackTrace( );
         }
 
     }
-    
-    public static Log getInstance()
+
+    public static Log getInstance( )
     {
-        if(instance == null)
+        if( instance == null )
             instance = new Log( );
         return instance;
     }
-    
-    public Logger getLog()
+
+    public Logger getLog( )
     {
         return log;
     }
-    
+
 }

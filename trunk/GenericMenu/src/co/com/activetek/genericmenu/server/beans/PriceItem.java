@@ -10,7 +10,7 @@ public class PriceItem
     private boolean enable;
     private int order;
     private long price;
-    
+
     public PriceItem( int id, int cuantity, String descripcion, boolean enable, int order, long price )
     {
         super( );
@@ -70,7 +70,7 @@ public class PriceItem
     {
         this.enable = enable;
     }
-    public JSONObject getJSON()
+    public JSONObject getJSON( )
     {
         JSONObject object = new JSONObject( );
         object.put( "id", id );
@@ -80,10 +80,10 @@ public class PriceItem
         object.put( "descripcion", descripcion );
         return object;
     }
-    public String toString()
+    public String toString( )
     {
         return cuantity + " " + descripcion + " " + price;
-        
+
     }
 
 }
