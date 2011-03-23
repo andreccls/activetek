@@ -1,0 +1,51 @@
+package co.com.activetek.genericmenu.server;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+/**
+ * Clase encargada escuchar las conexiones de los nuevos clietes, y crear un socket y thread para cada uno
+ * @author daniel.rodriguez
+ * 
+ */
+public class ListenerThread extends Thread
+{
+
+    /**
+     * referencia a la clase principal del mundo
+     */
+    private GenericMenuServer main;
+    private int port;
+
+    private ServerSocket serverSocket;
+    private static BufferedReader read;
+    private static PrintWriter write;
+
+    public ListenerThread( GenericMenuServer genericMenuServer, int puerto )
+    {
+        this.main = genericMenuServer;
+        this.port = puerto;
+    }
+
+    public void run( )
+    {
+        try
+        {
+            serverSocket = new ServerSocket( port );
+            while( true )
+            {
+                Socket newSocket = serverSocket.accept( );
+            }
+        }
+        catch( IOException e )
+        {
+            // TODO Que se deberia hacer con esta excepcion??
+            e.printStackTrace( );
+        }
+
+    }
+
+}

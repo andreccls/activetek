@@ -180,7 +180,7 @@ public class OsakiMenu extends JFrame
         try
         {
             //UIManager.setLookAndFeel( "ch.randelshofer.quaqua.QuaquaLookAndFeel" );
-             UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
+             //UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
             // UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
         }
         catch( Exception e )
