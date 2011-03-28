@@ -9,11 +9,13 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.JTree.DynamicUtilTreeNode;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import java.awt.Component;
@@ -48,6 +50,8 @@ import java.util.Vector;
 public class MenuTreePanel extends JPanel
 {
 
+    public final static String NUEVO_ITEM = "Nuevo Item";
+
     private static final long serialVersionUID = 1L;
     private OsakiMenu window;
     private JTree treeMenu = null;
@@ -56,6 +60,11 @@ public class MenuTreePanel extends JPanel
      * usado para cuando se quiere agregar un nuevo item al menu. Este string almacena el padre seleccionado para el nuevo item
      */
     private TreePath selectedNode;
+
+    /**
+     * 
+     */
+    private DefaultMutableTreeNode selectedNodeTreeNode;
 
     JPopupMenu menuTtable = new JPopupMenu( );
     /**
@@ -91,86 +100,31 @@ public class MenuTreePanel extends JPanel
             {
                 Enumeration<TreePath> a = treeMenu.getExpandedDescendants( selectedNode.getParentPath( ) );// se guardan los paths abiertos para poder repintar el argbol y
                                                                                                            // posteriormente volverlos a abrir
-
-                System.out.println( selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ] );
-                // System.out.println( selectedNode.getPath( )[ 0 ].getClass( ) );
                 DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
-                d.add( new DefaultMutableTreeNode( "NEW" ) );
+                MenuItem m = ( MenuItem )d.getUserObject( );
+                System.out.println( m.getClass( ) );
+                m.add( new MenuItem( 100, "nombre", "description", true, "icon", null, m, null ) );
+
+                DefaultMutableTreeNode nuevo = new DefaultMutableTreeNode( NUEVO_ITEM );
+                selectedNodeTreeNode = nuevo;
+
+                d.add( nuevo );
                 ( ( DefaultTreeModel )treeMenu.getModel( ) ).reload( );
                 treeMenu.repaint( );
-
-                // treeMenu.startEditingAtPath( d ) ;
-                // repaint( );
-                // System.out.println( treeMenu.getLastSelectedPathComponent( ) );
-                // updateTree( );
 
                 while( a.hasMoreElements( ) )// vuelve a abrir los paths que estaban abiertos abntes de que se comenzara la edicion
                 {
                     TreePath p = a.nextElement( );
-                    System.out.println( p );
                     treeMenu.expandPath( p );
                 }
-
-                TreePath tp = treeMenu.getNextMatch( "N", treeMenu.getRowCount( ) - 1, Position.Bias.Backward );
+                System.out.println( treeMenu.getLeadSelectionRow( ) );
+                TreePath tp = treeMenu.getNextMatch( NUEVO_ITEM, treeMenu.getRowCount( ) - 1, Position.Bias.Backward ); // TODO no deberia buscar en todo el arbol sino desde
+                                                                                                                        // la parte de abajo de la rama en la que se agrefo el
+                                                                                                                        // nuevo item
                 treeMenu.startEditingAtPath( tp );
-                System.out.println( "tp: " + tp );
             }
         } );
         menuTtable.add( itemAdd );
-    }
-
-    private void updateTree( )
-    {
-        treeMenu = new JTree( createNodes( ) );
-        // treeMenu.invalidate( );
-        // treeMenu.validate( );
-        // treeMenu.repaint( );
-        //
-        // treeMenu.setRowHeight(300);
-        // // repaint this puppy
-        // treeMenu.repaint();
-        ( ( DefaultTreeModel )treeMenu.getModel( ) ).reload( );
-        // window.repaint( );
-        // treeMenu.setModel( new DefaultTreeModel( createNodes( )) );
-        // treeMenu.revalidate( );
-        // this.repaint( );
-        System.out.println( "repainted" );
-    }
-
-    private DefaultMutableTreeNode createNodes( )
-    {
-        DefaultMutableTreeNode top = new DefaultMutableTreeNode( "top" );
-        DefaultMutableTreeNode category = null;
-        DefaultMutableTreeNode book = null;
-
-        category = new DefaultMutableTreeNode( "Books for Java Programmers" );
-        top.add( category );
-
-        // original Tutorial
-        book = new DefaultMutableTreeNode( "The Java Tutorial: A Short Course on the Basics tutorial.html" );
-        category.add( book );
-
-        // Tutorial Continued
-        book = new DefaultMutableTreeNode( ( "The Java Tutorial Continued: The Rest of the JDK tutorialcont.html" ) );
-        category.add( book );
-
-        // JFC Swing Tutorial
-        book = new DefaultMutableTreeNode( "The JFC Swing Tutorial: A Guide to Constructing GUIs swingtutorial.html" );
-        category.add( book );
-
-        // ...add more books for programmers...
-
-        category = new DefaultMutableTreeNode( "Books for Java Implementers" );
-        top.add( category );
-
-        // VM
-        book = new DefaultMutableTreeNode( "The Java Virtual Machine Specification vm.html" );
-        category.add( book );
-
-        // Language Spec
-        book = new DefaultMutableTreeNode( "The Java Language Specification jls.html" );
-        category.add( book );
-        return top;
     }
 
     /**
@@ -185,9 +139,10 @@ public class MenuTreePanel extends JPanel
 
             // treeMenu = new JTree( window.getMenuTree( ) );
             treeMenu = new JTree( window.getMenuTree( ) );
+            treeMenu.setModel( new menuItemModel( ( TreeNode )treeMenu.getModel( ).getRoot( ) ) );
             // treeMenu.getModel( ).addTreeModelListener( new menuItemListener( treeMenu ) );
             // treeMenu.setCellRenderer( new menuItemRender( ) );
-            // treeMenu.setCellEditor( new menuItemEditor( treeMenu ) );
+            // treeMenu.setCellEditor( new menuItemEditor( new JTextField( "CONSTRUCTOR!!!") ) );
             treeMenu.setEditable( true );// TODO cambiar para que solo lo tenga el administrador
             treeMenu.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
             treeMenu.setRootVisible( true );
@@ -256,8 +211,35 @@ public class MenuTreePanel extends JPanel
     // Otras clases
     // -----------------------------------------------------------------------------------
     /**
-     * 
+     * Clase usada para capturar los cambios hehcos al menu
      */
+    class menuItemModel extends DefaultTreeModel
+    {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+        public menuItemModel( TreeNode root )
+        {
+            super( root );
+        }
+        /**
+         * Eschucha el MenuItem para el cual se a cambiado el nombre, y lo persiste en el bean
+         */
+        public void valueForPathChanged( TreePath path, Object newValue )
+        {
+            System.out.println( ((MenuItem)((DynamicUtilTreeNode)( path.getPath( )[ path.getPath( ).length - 1 ] )).getUserObject( )));
+            ((MenuItem)((DynamicUtilTreeNode)( path.getPath( )[ path.getPath( ).length - 1 ] )).getUserObject( )).setNombre( newValue.toString( ) );
+            System.out.println( path );
+            System.out.println( newValue );
+        }
+
+    }
+
+    /**
+     * Esta clase a final tampoco me sirvio
+     */
+    @Deprecated
     class menuItemEditor extends DefaultCellEditor
     {
 
@@ -265,28 +247,6 @@ public class MenuTreePanel extends JPanel
         {
             super( textField );
         }
-
-        //
-        // @Override
-        // public Component getTreeCellEditorComponent( JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row )
-        // {
-        // System.out.println(hashCode( ) + " getTreeCellEditorComponent");
-        // Component editor = render.getTreeCellRendererComponent( tree, value, isSelected, expanded, leaf, row, true );
-        //
-        // ItemListener itemListener = new ItemListener( )
-        // {
-        // public void itemStateChanged( ItemEvent itemEvent )
-        // {
-        // if( stopCellEditing( ) )
-        // {
-        // fireEditingStopped( );
-        // }
-        // }
-        // };
-        //
-        // return editor;
-        // }
-
     }
 
     /**
@@ -307,40 +267,59 @@ public class MenuTreePanel extends JPanel
         }
 
     }
+
+    /**
+     * Deprecado poarque al parecer esta no fue la solucion
+     * @author daniel.rodriguez
+     * 
+     */
+    @Deprecated
     class menuItemListener implements TreeModelListener
     {
 
-        JTree tree_;
         public menuItemListener( JTree tree )
         {
-            tree_ = tree;
+
         }
         @Override
         public void treeNodesChanged( TreeModelEvent e )
         {
             // TODO Auto-generated method stub
-            tree_.firePropertyChange( JTree.ROOT_VISIBLE_PROPERTY, !tree_.isRootVisible( ), tree_.isRootVisible( ) );
+            // System.out.println("treeNodesChanged");
+            // System.out.println(e.getPath( )[0].getClass( ));
+            // System.out.println(((DefaultTreeModel)e.getSource( )));
+
+            System.out.println( e.getTreePath( ) );
+            Object[] o = e.getPath( );
+            for( Object object : o )
+            {
+                System.out.println( object );
+            }
+            System.out.println( ( ( ( ( DefaultMutableTreeNode )e.getPath( )[ e.getPath( ).length - 1 ] ).getUserObject( ) ) ).getClass( ) );
+            System.out.println( ( ( ( ( DefaultMutableTreeNode )e.getPath( )[ e.getPath( ).length - 1 ] ).getUserObject( ) ) ) );
+            System.out.println( "" );
+            // System.out.println( ((MenuItem)(((DefaultMutableTreeNode)e.getPath( )[e.getPath( ).length -1]).getUserObject( ))).isEnable( ) );
         }
 
         @Override
         public void treeNodesInserted( TreeModelEvent e )
         {
             // TODO Auto-generated method stub
-
+            System.out.println( "treeNodesInserted" );
         }
 
         @Override
         public void treeNodesRemoved( TreeModelEvent e )
         {
             // TODO Auto-generated method stub
-
+            System.out.println( "treeNodesRemoved" );
         }
 
         @Override
         public void treeStructureChanged( TreeModelEvent e )
         {
             // TODO Auto-generated method stub
-
+            System.out.println( "TreeModelEvent" );
         }
 
     }

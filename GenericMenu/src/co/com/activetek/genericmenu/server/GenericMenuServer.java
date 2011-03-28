@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
+import co.com.activetek.genericmenu.server.exception.AnotherInstanceException;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
 import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
@@ -28,7 +29,7 @@ public class GenericMenuServer
     private Vector<Table> tables;
     private ListenerThread listener;
 
-    public GenericMenuServer( ) throws SQLException, GenericMenuException
+    public GenericMenuServer( ) throws SQLException, GenericMenuException, AnotherInstanceException
     {
         GenericMenuDAO.getInstance( );// para verificar que la base de datos esta arriba
         try
@@ -43,21 +44,28 @@ public class GenericMenuServer
             prop.load( in );
             in.close( );
 
-            listener = new ListenerThread( this, Integer.parseInt( prop.getProperty( "osaki.server.port" ) ) );
+            try
+            {
+                listener = new ListenerThread( this, Integer.parseInt( prop.getProperty( "osaki.server.port" ) ) );
+            }
+            catch( IOException e )
+            {
+                throw new AnotherInstanceException( "Error iniciando el servidor, revise que no halla otra instancia corriendo \n"  +  e.getMessage( ));
+            }
             listener.start( );
         }
         catch( ArrayIndexOutOfBoundsException e )
         {
-            throw new GenericMenuException( "No se ha definido ningun menu en el sistema" );
+            throw new GenericMenuException( "No se ha definido ningun menu en el sistema \n"  +  e.getMessage( ) );
         }
         catch( FileNotFoundException e )
         {
-            throw new GenericMenuException( "No se encuentra el archivo de propiedadades \n contacte al administrador del sistema" );
+            throw new GenericMenuException( "No se encuentra el archivo de propiedadades \n contacte al administrador del sistema \n"  +  e.getMessage( ) );
         }
         catch( IOException e )
         {
             e.printStackTrace( );
-            throw new GenericMenuException( "Error inesperado cargando el archivo de propiedades" );
+            throw new GenericMenuException( "Error inesperado cargando el archivo de propiedades \n"  +  e.getMessage( ));
         }
     }
     public Vector<MenuItem> getChildren( MenuItem parent ) throws SQLException
@@ -65,11 +73,6 @@ public class GenericMenuServer
         return GenericMenuDAO.getInstance( ).getChildren( parent );
     }
 
-    // TODO eliminar esta cosa
-    public final static void main( String[] a ) throws SQLException, GenericMenuException
-    {
-        new GenericMenuServer( ).getJSon( );
-    }
     public MenuItem getMenuTree( )
     {
         return root;
