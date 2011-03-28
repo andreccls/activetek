@@ -24,17 +24,17 @@ public class ListenerThread extends Thread
     private static BufferedReader read;
     private static PrintWriter write;
 
-    public ListenerThread( GenericMenuServer genericMenuServer, int puerto )
+    public ListenerThread( GenericMenuServer genericMenuServer, int puerto ) throws IOException
     {
         this.main = genericMenuServer;
         this.port = puerto;
+        serverSocket = new ServerSocket( port );
     }
 
     public void run( )
     {
         try
-        {
-            serverSocket = new ServerSocket( port );
+        {            
             while( true )
             {
                 Socket newSocket = serverSocket.accept( );

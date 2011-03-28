@@ -79,9 +79,13 @@ public class ProductInfoPanel extends JPanel
 
     public void updateSelectedItem( MenuItem selected )
     {
-        labelNombre.setText( selected.getName( ) );
-        productInfoImagePanel.setImages( selected.getImages( ) );
-        prodcutInfoDetailPanel.setSelectedItem( selected );
+        if(selected != null)
+        {
+            labelNombre.setText( selected.getName( ) );
+            productInfoImagePanel.setImages( selected.getImages( ) );
+            prodcutInfoDetailPanel.setSelectedItem( selected );
+        }
+
     }
 
 } // @jve:decl-index=0:visual-constraint="10,10"

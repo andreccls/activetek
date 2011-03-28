@@ -18,6 +18,7 @@ import co.com.activetek.genericmenu.server.GenericMenuServer;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
+import co.com.activetek.genericmenu.server.exception.AnotherInstanceException;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
 import co.com.activetek.genericmenu.server.util.Log;
 import co.com.activetek.genericmenu.ui.orders.OrdersPanel;
@@ -220,6 +221,12 @@ public class OsakiMenu extends JFrame
             JOptionPane.showMessageDialog( this, e.getMessage( ), "Warning", JOptionPane.WARNING_MESSAGE );
             e.printStackTrace( );
         }
+        catch( AnotherInstanceException e )
+        {
+            JOptionPane.showMessageDialog( this, e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace( );
+            System.exit( 0 );
+        }
         initialize( );
     }
 
@@ -247,6 +254,11 @@ public class OsakiMenu extends JFrame
         return server.getMenuTreeAsVector( );
     }
 
+    /**
+     * Actualiza el panel el atributo selected por el objeto MenuItem que tiene el path dado como parametro
+     * Acutualiza el panel que contiene la informacion del producto (imagenes, precios, etc..) 
+     * @param path
+     */
     public void setSelectedItem( String path )
     {
         selected = server.getMenuItemByPath( path );
