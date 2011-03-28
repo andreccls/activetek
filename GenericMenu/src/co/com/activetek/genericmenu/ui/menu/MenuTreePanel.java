@@ -250,6 +250,7 @@ public class MenuTreePanel extends JPanel
     }
 
     /**
+     * TODO eventualmente esta clase se usara para que los nodos del arbol se vean mas bonitos
      * 
      * @author daniel.rodriguez
      * 
