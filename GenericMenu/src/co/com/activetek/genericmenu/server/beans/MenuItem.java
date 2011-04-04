@@ -10,9 +10,10 @@ import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 public class MenuItem extends Vector<MenuItem>
 {
     /**
-     * Constante que representa los las caterias en el arbol del menu. Es decir las categorias son lso nodos de nivel 2 en el arbol
+     * Constante que representa los las caterias en el arbol del menu. Es decir las categorias son lso nodos de nivel 1 en el arbol (la raiz = 0 )
      */
     public final static int LEVEl_CATEGORY = 1;
+    public final static int LEVEl_ITEM = 2;
 
     private int id;
     private String name;
@@ -22,8 +23,9 @@ public class MenuItem extends Vector<MenuItem>
     private Vector<Image> images;
     private Vector<PriceItem> prices;
     private MenuItem father;
+    private int order;
 
-    public MenuItem( int id, String nombre, String description, boolean enable, String icon, Vector<Image> images, MenuItem father, Vector<PriceItem> prices )
+    public MenuItem( int id, String nombre, String description,int order, boolean enable, String icon, Vector<Image> images, MenuItem father, Vector<PriceItem> prices, boolean persist ) throws SQLException
     {
         super( );
         this.id = id;
@@ -34,6 +36,17 @@ public class MenuItem extends Vector<MenuItem>
         this.images = images;
         this.father = father;
         this.prices = prices;
+        this.order = order;
+        if(persist)
+            GenericMenuDAO.getInstance( ).CRUD( this );
+    }
+    public int getOrder( )
+    {
+        return order;
+    }
+    public void setOrder(int order)
+    {
+        this.order = order;
     }
     public Vector<Image> getImages( )
     {
@@ -51,9 +64,10 @@ public class MenuItem extends Vector<MenuItem>
     {
         return name;
     }
-    public void setNombre( String nombre )
+    public void setName( String nombre ) throws SQLException
     {
         this.name = nombre;
+        GenericMenuDAO.getInstance( ).CRUD( this );
     }
     public String getDescription( )
     {
@@ -180,5 +194,14 @@ public class MenuItem extends Vector<MenuItem>
     public Vector<PriceItem> getPrices( )
     {
         return prices;
+    }
+    public MenuItem getParent()
+    {
+        return father;
+    }
+    public void suprimir( ) throws SQLException
+    {
+        father.remove( this );
+        GenericMenuDAO.getInstance( ).suprimir(this);
     }
 }

@@ -2,6 +2,7 @@ package co.com.activetek.genericmenu.server.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,7 +15,7 @@ import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
-import co.com.activetek.genericmenu.ui.tables.MapTablesPanel;
+
 
 public class GenericMenuDAO
 {
@@ -56,7 +57,7 @@ public class GenericMenuDAO
         while( rs.next( ) )
         {
             int menuitemid = rs.getInt( "menuItem_id" );
-            res.add( new MenuItem( menuitemid, rs.getString( "nombre" ), rs.getString( "description" ), rs.getBoolean( "enable" ), rs.getString( "icon" ), getImages( menuitemid ), parent, getPrices( menuitemid ) ) );
+            res.add( new MenuItem( menuitemid, rs.getString( "nombre" ), rs.getString( "description" ), rs.getInt( "order" ), rs.getBoolean( "enable" ), rs.getString( "icon" ), getImages( menuitemid ), parent, getPrices( menuitemid ),false ) );
         }
 
         return res;
@@ -153,6 +154,50 @@ public class GenericMenuDAO
         else
             return new Table[0][0];
 
+    }
+
+    public void CRUD( Object object ) throws SQLException
+    {
+        String sql = "";
+        if( object instanceof MenuItem )
+        {
+            MenuItem m = (MenuItem)object;
+            Statement st = conn.createStatement( );            
+            sql =  "insert into menuitem (menuitem_id,nombre,description,parentId,`order`,icon,enable) values " +
+            "(" +( m.getId( ) < 0 ? "NULL" : m.getId( ) )+","+
+            "" + ( m.getName( ) == null ? "NULL" :"'"+ m.getName( ) +"'" ) +","+
+            "" + ( m.getDescription( ) == null ? "NULL" :"'"+ m.getDescription( ) +"'" ) +","+
+            "" + m.getParent( ).getId( )+","+
+            "" + m.getOrder( )+","+
+            "" + ( m.getIcon( ) == null ? "NULL" :"'"+ m.getIcon( ) +"'" ) +","+            
+            "" + (m.isEnable( ) ? "1" : "0")+                   
+            ") on duplicate key update nombre = values(nombre),description = values(description) , parentId = values(parentId), `order` = values(`order`), icon = values(icon), enable = values(enable) ";            
+            st.execute( sql );            
+            
+            System.out.println(sql);
+            if(m.getId( ) < 0)
+            {
+                st = conn.createStatement( );
+                ResultSet rs = st.executeQuery( "select menuitem_id from menuitem where nombre = '" + m.getName( ) + "'" );
+                if( rs.next( ) )
+                {
+                    m.setId( rs.getInt( 1 ) );
+                }
+                
+            }
+        }
+    }
+
+    public void suprimir( Object object ) throws SQLException
+    {
+        String sql = "";
+        if( object instanceof MenuItem )
+        {
+            MenuItem m = (MenuItem)object;
+            Statement st = conn.createStatement( );            
+            sql =  "delete from menuitem where menuitem_id = " + m.getId( );            
+            st.executeUpdate( sql );          
+        }
     }
 
 }
