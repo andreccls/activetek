@@ -20,6 +20,7 @@ public class ServerTest
 			System.out.println("Funciona!");
 			Socket socket = s.accept( );
 			System.out.println("llego conexion");
+			int t=-1;
 			read = new BufferedReader( new InputStreamReader( socket.getInputStream( ) ) );
 			write = new PrintWriter( socket.getOutputStream( ) ,true);
 			while(true)
@@ -35,7 +36,15 @@ public class ServerTest
 				else if(b.equals("MESERO"));
 				else if(b.equals("end"));
 				else
+				{
 					write.println(a);
+					write.println("arrive");
+					t++;
+					if(t>0)
+					{
+						write.println("ADD:"+t+":0:1:1");
+					}
+				}
 			}
 		}
 	}
