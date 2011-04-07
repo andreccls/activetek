@@ -184,14 +184,16 @@ public class Gallery2 extends Activity implements OnClickListener{
 			text.setText(wrap.get(position).getName());
 			text.setGravity(Gravity.CENTER);
 			text.setTextColor(Color.GRAY);
+			text.setTextSize(14);
 			// Introducimos la descripción del menuitem
 			desc.setText("Descripción: \n"+wrap.get(position).getDescription());
 			desc.setGravity(Gravity.CENTER);
 			desc.setTextColor(Color.GRAY);
+			desc.setTextSize(14);
 			i.setImageBitmap(wrap.get(position).getImages().get(0));
 			i.setScaleType(ImageView.ScaleType.FIT_XY);
 			layout.setBackgroundResource(mGalleryItemBackground);
-			layout.setLayoutParams(new Gallery.LayoutParams(400, 220));
+			layout.setLayoutParams(new Gallery.LayoutParams(500, 275));
 
 			return layout;
 		}

@@ -178,6 +178,7 @@ public class Gallery1 extends ActivityGroup implements OnClickListener{
 	    	// Centramos el texto, la gravedad indica la referencia
 	    	text.setGravity(Gravity.CENTER);
 	    	text.setTextColor(Color.GRAY);
+	    	text.setTextSize(20);
 	    	// Fijamos la imagen de la categoría, Revisar!!
 	    	i.setImageResource(R.drawable.food_logo);
 	    	// Ajustamos automáticamente el tamaño de la imágen
@@ -185,7 +186,7 @@ public class Gallery1 extends ActivityGroup implements OnClickListener{
 	        // Ajustamos el fondo de galería
 	        layout.setBackgroundResource(mGalleryItemBackground);
 	        // Definimos el tamaño del item de la galería
-	        layout.setLayoutParams(new Gallery.LayoutParams(300, 220));
+	        layout.setLayoutParams(new Gallery.LayoutParams(400, 320));
 	        
 	        return layout;
 	    }

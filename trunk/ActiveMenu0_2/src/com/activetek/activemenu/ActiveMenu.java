@@ -36,7 +36,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	/**
 	 * Constante que indica la dirección IP del servidor
 	 */
-	public final static String SERVER_IP="192.168.0.199";
+	public final static String SERVER_IP="157.253.125.73";
 	
 	/**
 	 * Diálogo de espera
@@ -97,10 +97,11 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	public void run() {
 		try {
 			//Primero ejecutamos una consola virtual
-			process = Runtime.getRuntime().exec("sh");
+			process = Runtime.getRuntime().exec("su sh");
 			//Obtenemos la línea de escritura sobre la consola
 			OutputStream os = process.getOutputStream();
 			//Introducimos el comando a ser utilizado
+			//writeLine( os,"/data/data/eu.kowalczuk.rsync4android/files/rsync -vHrltDz --chmod=ugo+rwx --no-perms --delete-after -e \"/data/data/eu.kowalczuk.rsync4android/files/ssh -y -p 22 -i '/data/menu/dss_key'\" juan@192.168.0.199:/home/juan/Luisa/menu/ /data/menu/ && exit");
 			writeLine( os,"sleep 1 && exit");
 			// iniciamos ejecución sobre consola
 			os.flush();
@@ -174,12 +175,13 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	 * Este método controla los puntos de retorno con el boton back
 	 * está sobreescrito para que no haya retornos inesperados
 	 */
+	/**
 	@Override
 	public void onBackPressed() {
 
 		return;
 	}
-
+*/
 	/**
 	 * Gestor de Contenidos
 	 */

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:cacheColorHint="#00000000"
+  android:listSelector="@android:color/transparent"
+  android:orientation="vertical">
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:cacheColorHint="#00000000"
+    android:listSelector="@android:color/transparent" 
+    android:layout_weight="1"
+    android:id="@+id/tabcontainer"
+    >
+    </LinearLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:cacheColorHint="#00000000"
+    android:listSelector="@android:color/transparent" 
+    android:layout_weight="5"
+    >
+    <Button
+     android:text="Confirmar"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:id="@+id/btnConfirm"
+      />
+      <Button
+     android:text="Cancelar"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:id="@+id/btnCancel"
+      />
+    </LinearLayout>
+    
+</LinearLayout>

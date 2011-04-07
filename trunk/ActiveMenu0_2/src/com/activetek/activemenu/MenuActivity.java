@@ -41,7 +41,7 @@ public class MenuActivity extends AbstractActivityGroup{
 	 * Instancia de envío de mensajes
 	 */
 	private Sender send;
-	
+
 	/**
 	 * Instancia de recepción de mensajes
 	 */
@@ -51,7 +51,7 @@ public class MenuActivity extends AbstractActivityGroup{
 	 * Identificaciòn de usuario
 	 */
 	int id;
-	
+
 	/**
 	 * Conteo de Usuarios 
 	 */
@@ -108,6 +108,14 @@ public class MenuActivity extends AbstractActivityGroup{
 						Toast.LENGTH_SHORT).show(); 
 				// enviamos un mensaje al servidor indicando el fin del pedido
 				send.getWrite().println("end:"+id);
+				if(id==0)
+				{
+					// Preparar la siguiente actividad
+					Intent in= new Intent(MenuActivity.this, SelectionsActivity.class);
+					in.putExtra("count", count);
+					// Iniciar actividad y ceder el runtime a ella
+					MenuActivity.this.startActivityForResult(in,1);
+				}
 			}
 
 		});
@@ -123,7 +131,21 @@ public class MenuActivity extends AbstractActivityGroup{
 		lay.addView(v);
 	}
 
-
+	/**
+	 * Este método verifica el resultado de las actividades generadas
+	 */
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        super.onActivityResult(requestCode, resultCode, intent);
+        if(resultCode==1)
+        {
+        	rec.setOwner(this);
+        }
+	
+	}
+	
+	
 
 	/**
 	 * Adaptador de Lista inteligente
@@ -185,6 +207,7 @@ public class MenuActivity extends AbstractActivityGroup{
 				}
 
 			});
+
 			return view;
 		}        
 
@@ -206,9 +229,9 @@ public class MenuActivity extends AbstractActivityGroup{
 			}
 			return temp;
 		}
-		
+
 		public int getCount() {
-			return smartList2.size();
+			return subList(id).size();
 		}
 
 		public Object getItem(int position) {

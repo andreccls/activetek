@@ -1,0 +1,4 @@
+1. Modificar Json para incluir descripcion en el precio, y modificar parseo del json.
+2. Modificar clase price para identificar descripciones alternativas, sin unidades.
+3. Completar smartlist y completar manejo de mensajes del servidor
+
