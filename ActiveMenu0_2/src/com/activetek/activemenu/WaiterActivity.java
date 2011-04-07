@@ -2,6 +2,7 @@ package com.activetek.activemenu;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -88,6 +89,10 @@ public class WaiterActivity extends AbstractActivityGroup{
 				imageView.setLayoutParams(new GridView.LayoutParams(120, 120));
 				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 				imageView.setPadding(10, 10, 10, 10);
+				TypedArray a = mContext.obtainStyledAttributes(R.styleable.HelloGallery);
+				int mGalleryItemBackground = a.getResourceId(
+						R.styleable.HelloGallery_android_galleryItemBackground, 0);
+				imageView.setBackgroundResource(mGalleryItemBackground);
 			} else {
 				imageView = (ImageView) convertView;
 			}

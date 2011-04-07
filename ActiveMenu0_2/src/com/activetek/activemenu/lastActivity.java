@@ -43,7 +43,7 @@ public class lastActivity extends Activity{
 			RadioButton rad=new RadioButton(this);
 			// Creamos cada RadioButton con la cantidad de unidades, precio y descripción
 			rad.setText(it.getPrices().get(i).getUnits()+" Unidades, Precio: "+it.getPrices().get(i).getCost()+"\nDetalles: "+it.getPrices().get(i).getDescription());
-			rad.setTextSize(10);
+			rad.setTextSize(16);
 			rad.setTextColor(Color.BLACK);
 			final int k=i;
 			// Creamos el Listener para cuando se haga click en cualquier radiobutton
