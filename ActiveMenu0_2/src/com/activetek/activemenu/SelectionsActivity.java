@@ -5,6 +5,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,7 +18,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -76,6 +76,9 @@ public class SelectionsActivity extends AbstractActivityGroup {
 						Toast.LENGTH_SHORT).show(); 
 				// enviamos un mensaje al servidor indicando el fin del pedido
 				send.getWrite().println("confirm");
+				Intent in= new Intent(SelectionsActivity.this, ExtrasActivity.class);
+				startActivity(in);
+				finish();
 			}
 
 		});
@@ -146,6 +149,11 @@ public class SelectionsActivity extends AbstractActivityGroup {
 		super.onDestroy();
 	}
 
+	@Override
+	public void onBackPressed() {
+
+		return;
+	}
 
 
 	/**

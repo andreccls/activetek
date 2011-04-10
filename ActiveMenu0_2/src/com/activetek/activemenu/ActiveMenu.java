@@ -36,7 +36,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	/**
 	 * Constante que indica la dirección IP del servidor
 	 */
-	public final static String SERVER_IP="157.253.125.73";
+	public final static String SERVER_IP="192.168.0.106";
 	
 	/**
 	 * Diálogo de espera
