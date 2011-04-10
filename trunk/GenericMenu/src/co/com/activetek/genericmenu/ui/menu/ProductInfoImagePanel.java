@@ -6,18 +6,25 @@ import javax.swing.border.TitledBorder;
 
 import java.awt.BorderLayout;
 import java.awt.Panel;
+
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
 import javax.swing.JCheckBox;
 import javax.swing.JButton;
 import co.com.activetek.genericmenu.server.beans.Image;
+import co.com.activetek.genericmenu.ui.OsakiMenu;
 import co.com.activetek.genericmenu.ui.utils.MyImageIcon;
 import java.util.Vector;
 import javax.swing.BoxLayout;
+
+import com.sun.java.swing.plaf.windows.resources.windows;
 
 /**
  * Clase que contiene las imagenes del producto
@@ -41,14 +48,16 @@ public class ProductInfoImagePanel extends JPanel
     private JButton buttonNext = null;
     private Vector<Image> images; // @jve:decl-index=0:
     private int image;
+    private OsakiMenu window;
 
     /**
      * This is the default constructor
      */
-    public ProductInfoImagePanel( )
+    public ProductInfoImagePanel(OsakiMenu window )
     {
         super( );
-        initialize( );
+        this.window = window;
+        initialize( );        
     }
 
     /**
@@ -133,6 +142,21 @@ public class ProductInfoImagePanel extends JPanel
         if( buttonAdd == null )
         {
             buttonAdd = new JButton( "Agregar Imagenes" );
+            buttonAdd.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    final JFileChooser fc = new JFileChooser();
+
+                    int returnVal = fc.showOpenDialog(window);
+
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        File file = fc.getSelectedFile();
+                        //This is where a real application would open the file.
+                        System.out.println("Opening: " + file.getName() + "." );
+                    } else {
+                        System.out.println("Open command cancelled by user.");
+                    }
+                }
+            });
         }
         return buttonAdd;
     }
