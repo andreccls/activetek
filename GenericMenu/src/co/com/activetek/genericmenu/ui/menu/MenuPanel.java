@@ -66,7 +66,7 @@ public class MenuPanel extends JPanel
     {
         if( productInfo == null )
         {
-            productInfo = new ProductInfoPanel( );
+            productInfo = new ProductInfoPanel( window );
         }
         return productInfo;
     }

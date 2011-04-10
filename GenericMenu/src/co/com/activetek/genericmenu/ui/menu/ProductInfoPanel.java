@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 
 import co.com.activetek.genericmenu.server.beans.Image;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.ui.OsakiMenu;
 
 import java.awt.Font;
 import java.awt.GridBagLayout;
@@ -20,14 +21,15 @@ public class ProductInfoPanel extends JPanel
     private JLabel labelNombre = null;
     private ProductInfoImagePanel productInfoImagePanel = null;
     private ProdcutInfoDetailPanel prodcutInfoDetailPanel = null;
-
+    private OsakiMenu window;
     /**
      * This is the default constructor
      */
-    public ProductInfoPanel( )
+    public ProductInfoPanel( OsakiMenu window )
     {
         super( );
         initialize( );
+        this.window = window;
     }
 
     /**
@@ -58,7 +60,7 @@ public class ProductInfoPanel extends JPanel
     {
         if( productInfoImagePanel == null )
         {
-            productInfoImagePanel = new ProductInfoImagePanel( );
+            productInfoImagePanel = new ProductInfoImagePanel( window  );
         }
         return productInfoImagePanel;
     }
