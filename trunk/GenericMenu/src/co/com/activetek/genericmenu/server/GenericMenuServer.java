@@ -20,7 +20,7 @@ import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
 public class GenericMenuServer
 {
-    public final static String IMAGES_PATH = "./OsakiMenu/GenericMenu";
+    public final static String IMAGES_PATH = "./images/menu";
     
     public final static String PROPERTIES = "./OsakiMenu.properties";
 
