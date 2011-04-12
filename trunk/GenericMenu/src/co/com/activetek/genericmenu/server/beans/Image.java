@@ -8,14 +8,15 @@ public class Image
     private String url;
     private boolean enable;
     private int order;
-
-    public Image( int id, String url, boolean enable, int order )
+    private int menuItemId;
+    public Image( int id, String url, boolean enable, int order,int menuItemId )
     {
         super( );
         this.id = id;
         this.url = url;
         this.enable = enable;
         this.order = order;
+        this.menuItemId = menuItemId;
     }
     public String toString( )
     {

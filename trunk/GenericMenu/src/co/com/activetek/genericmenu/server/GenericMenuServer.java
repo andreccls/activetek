@@ -11,16 +11,18 @@ import java.util.Vector;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import co.com.activetek.genericmenu.server.beans.Image;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
 import co.com.activetek.genericmenu.server.exception.AnotherInstanceException;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
+import co.com.activetek.genericmenu.server.util.FileUtil;
 import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
 public class GenericMenuServer
 {
-    public final static String IMAGES_PATH = "./images/menu";
+    public final static String IMAGES_PATH = "./images/menu/";
     
     public final static String PROPERTIES = "./OsakiMenu.properties";
 
@@ -125,8 +127,9 @@ public class GenericMenuServer
         return null;
     }
     public void addMenuImtemImage( File file, MenuItem selected )
-    {
-        
+    {        
+        FileUtil.copyfile( file.getAbsolutePath( ), IMAGES_PATH + file.getName( ) );
+        Image image = new Image( -1, IMAGES_PATH + file.getName( ), true , -1, selected.getId( ) );
     }
 
 }
