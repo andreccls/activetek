@@ -23,7 +23,7 @@ import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 public class GenericMenuServer
 {
     public final static String IMAGES_PATH = "./images/menu/";
-    
+
     public final static String PROPERTIES = "./OsakiMenu.properties";
 
     /**
@@ -55,22 +55,22 @@ public class GenericMenuServer
             }
             catch( IOException e )
             {
-                throw new AnotherInstanceException( "Error iniciando el servidor, revise que no halla otra instancia corriendo \n"  +  e.getMessage( ));
+                throw new AnotherInstanceException( "Error iniciando el servidor, revise que no halla otra instancia corriendo \n" + e.getMessage( ) );
             }
             listener.start( );
         }
         catch( ArrayIndexOutOfBoundsException e )
         {
-            throw new GenericMenuException( "No se ha definido ningun menu en el sistema \n"  +  e.getMessage( ) );
+            throw new GenericMenuException( "No se ha definido ningun menu en el sistema \n" + e.getMessage( ) );
         }
         catch( FileNotFoundException e )
         {
-            throw new GenericMenuException( "No se encuentra el archivo de propiedadades \n contacte al administrador del sistema \n"  +  e.getMessage( ) );
+            throw new GenericMenuException( "No se encuentra el archivo de propiedadades \n contacte al administrador del sistema \n" + e.getMessage( ) );
         }
         catch( IOException e )
         {
             e.printStackTrace( );
-            throw new GenericMenuException( "Error inesperado cargando el archivo de propiedades \n"  +  e.getMessage( ));
+            throw new GenericMenuException( "Error inesperado cargando el archivo de propiedades \n" + e.getMessage( ) );
         }
     }
     public Vector<MenuItem> getChildren( MenuItem parent ) throws SQLException
@@ -126,10 +126,11 @@ public class GenericMenuServer
     {
         return null;
     }
-    public void addMenuImtemImage( File file, MenuItem selected )
-    {        
+    public void addMenuImtemImage( File file, MenuItem selected ) throws SQLException
+    {
         FileUtil.copyfile( file.getAbsolutePath( ), IMAGES_PATH + file.getName( ) );
-        Image image = new Image( -1, IMAGES_PATH + file.getName( ), true , -1, selected.getId( ) );
+        Image image = new Image( -1, IMAGES_PATH + file.getName( ), true, -1, selected.getId( ) );
+        GenericMenuDAO.getInstance( ).CRUD( image );
     }
 
 }
