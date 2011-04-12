@@ -83,7 +83,7 @@ public class GenericMenuDAO
         Vector<Image> res = new Vector<Image>( );
         while( rs.next( ) )
         {
-            res.add( new Image( rs.getInt( "image_id" ), rs.getString( "url" ), rs.getBoolean( "enable" ), rs.getInt( "image_order" ) ) );
+            res.add( new Image( rs.getInt( "image_id" ), rs.getString( "url" ), rs.getBoolean( "enable" ), rs.getInt( "image_order" ), rs.getInt( "menuitem_id" ) ) );
         }
 
         return res;

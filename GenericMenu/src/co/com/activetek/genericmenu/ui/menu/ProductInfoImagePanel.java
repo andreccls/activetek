@@ -152,12 +152,11 @@ public class ProductInfoImagePanel extends JPanel
                     if( status == JFileChooser.APPROVE_OPTION )
                     {
                         File selectedFile = fileChooser.getSelectedFile( );
-                        System.out.println( selectedFile.getParent( ) );
-                        System.out.println( selectedFile.getName( ) );
+                        window.addMenuImtemImage( selectedFile );
                     }
                     else if( status == JFileChooser.CANCEL_OPTION )
                     {
-                        System.out.println( JFileChooser.CANCEL_OPTION );
+                        
                     }
                 }
             } );
