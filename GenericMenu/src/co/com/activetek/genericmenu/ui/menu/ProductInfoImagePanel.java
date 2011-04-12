@@ -145,22 +145,19 @@ public class ProductInfoImagePanel extends JPanel
             {
                 public void actionPerformed( ActionEvent e )
                 {
-                    final JFileChooser fc = new JFileChooser( );
-
-                    int returnVal = fc.showOpenDialog( window );
-                    fc.addChoosableFileFilter( new ImageFilter( ) );// TODO por alguna extraña razon este filtro no esta funcionando
-                    // TODO como default tiene que salir el pantallaso miniatura de las imagenes con el look and feel de windows
-                    fc.setAcceptAllFileFilterUsed( false );
-
-                    if( returnVal == JFileChooser.APPROVE_OPTION )
+                    JFileChooser fileChooser = new JFileChooser( "." );
+                    FileFilter filter1 = new ExtensionFileFilter( "Imagenes", new String[]{ "JPG", "JPEG", "BMP" } );
+                    fileChooser.setFileFilter( filter1 );
+                    int status = fileChooser.showOpenDialog( null );
+                    if( status == JFileChooser.APPROVE_OPTION )
                     {
-                        File file = fc.getSelectedFile( );
-                        // This is where a real application would open the file.
-                        window.addMenuImtemImage( file );
+                        File selectedFile = fileChooser.getSelectedFile( );
+                        System.out.println( selectedFile.getParent( ) );
+                        System.out.println( selectedFile.getName( ) );
                     }
-                    else
+                    else if( status == JFileChooser.CANCEL_OPTION )
                     {
-                        System.out.println( "Open command cancelled by user." );
+                        System.out.println( JFileChooser.CANCEL_OPTION );
                     }
                 }
             } );
@@ -287,65 +284,64 @@ public class ProductInfoImagePanel extends JPanel
             buttonBack.setEnabled( true );
         }
     }
+}
 
-    public class ImageFilter extends FileFilter
+class ExtensionFileFilter extends FileFilter
+{
+    String description;
+
+    String extensions[];
+
+    public ExtensionFileFilter( String description, String extension )
     {
+        this( description, new String[]{ extension } );
+    }
 
-        // Accept all directories and all gif, jpg, tiff, or png files.
-        public boolean accept( File f )
+    public ExtensionFileFilter( String description, String extensions[] )
+    {
+        if( description == null )
         {
-            if( f.isDirectory( ) )
-            {
-                return true;
-            }
-
-            String extension = Utils.getExtension( f );
-            if( extension != null )
-            {
-                if( extension.equals( Utils.tiff ) || extension.equals( Utils.tif ) || extension.equals( Utils.gif ) || extension.equals( Utils.jpeg ) || extension.equals( Utils.jpg ) || extension.equals( Utils.png ) )
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return false;
+            this.description = extensions[ 0 ];
         }
-
-        // The description of this filter
-        public String getDescription( )
+        else
         {
-            return "Just Images";
+            this.description = description;
+        }
+        this.extensions = ( String[] )extensions.clone( );
+        toLower( this.extensions );
+    }
+
+    private void toLower( String array[] )
+    {
+        for( int i = 0, n = array.length; i < n; i++ )
+        {
+            array[ i ] = array[ i ].toLowerCase( );
         }
     }
 
-    public static class Utils
+    public String getDescription( )
     {
+        return description;
+    }
 
-        public final static String jpeg = "jpeg";
-        public final static String jpg = "jpg";
-        public final static String gif = "gif";
-        public final static String tiff = "tiff";
-        public final static String tif = "tif";
-        public final static String png = "png";
-
-        /*
-         * Get the extension of a file.
-         */
-        public static String getExtension( File f )
+    public boolean accept( File file )
+    {
+        if( file.isDirectory( ) )
         {
-            String ext = null;
-            String s = f.getName( );
-            int i = s.lastIndexOf( '.' );
-
-            if( i > 0 && i < s.length( ) - 1 )
-            {
-                ext = s.substring( i + 1 ).toLowerCase( );
-            }
-            return ext;
+            return true;
         }
+        else
+        {
+            String path = file.getAbsolutePath( ).toLowerCase( );
+            for( int i = 0, n = extensions.length; i < n; i++ )
+            {
+                String extension = extensions[ i ];
+                if( ( path.endsWith( extension ) && ( path.charAt( path.length( ) - extension.length( ) - 1 ) ) == '.' ) )
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
