@@ -1,5 +1,6 @@
 package co.com.activetek.genericmenu.server;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,6 +20,8 @@ import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
 public class GenericMenuServer
 {
+    public final static String IMAGES_PATH = "./OsakiMenu/GenericMenu";
+    
     public final static String PROPERTIES = "./OsakiMenu.properties";
 
     /**
@@ -120,6 +123,10 @@ public class GenericMenuServer
     public Vector<MenuItem> getMenuTreeAsVector( )
     {
         return null;
+    }
+    public void addMenuImtemImage( File file, MenuItem selected )
+    {
+        
     }
 
 }
