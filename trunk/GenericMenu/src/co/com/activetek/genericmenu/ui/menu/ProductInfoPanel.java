@@ -28,8 +28,8 @@ public class ProductInfoPanel extends JPanel
     public ProductInfoPanel( OsakiMenu window )
     {
         super( );
-        initialize( );
         this.window = window;
+        initialize( );        
     }
 
     /**

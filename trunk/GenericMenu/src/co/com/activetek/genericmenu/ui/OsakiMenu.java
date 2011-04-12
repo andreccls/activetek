@@ -27,6 +27,7 @@ import co.com.activetek.genericmenu.ui.menu.MenuPanel;
 import co.com.activetek.genericmenu.ui.tables.MapTablesPanel;
 import java.awt.Point;
 import java.awt.Dimension;
+import java.io.File;
 import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -297,4 +298,8 @@ public class OsakiMenu extends JFrame
         return null;
     }
 
-} // @jve:decl-index=0:visual-constraint="258,54"
+    public void addMenuImtemImage( File file )
+    {
+        server.addMenuImtemImage( file, selected );
+    }
+} 
