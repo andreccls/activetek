@@ -300,6 +300,14 @@ public class OsakiMenu extends JFrame
 
     public void addMenuImtemImage( File file )
     {
-        server.addMenuImtemImage( file, selected );
+        try
+        {
+            server.addMenuImtemImage( file, selected );
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado agregando la nueva imagen, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace( );
+        }
     }
 } 

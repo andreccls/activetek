@@ -174,7 +174,6 @@ public class GenericMenuDAO
             ") on duplicate key update nombre = values(nombre),description = values(description) , parentId = values(parentId), `order` = values(`order`), icon = values(icon), enable = values(enable) ";            
             st.execute( sql );            
             
-            System.out.println(sql);
             if(m.getId( ) < 0)
             {
                 st = conn.createStatement( );
@@ -185,6 +184,19 @@ public class GenericMenuDAO
                 }
                 
             }
+            System.out.println(sql);
+        }
+        else if( object instanceof Image )
+        {
+            Image i = (Image)object;
+            Statement st = conn.createStatement( );
+            sql = "insert into image (image_id,url,enable,menuitem_id,image_order) vaoues "+
+            " ("+(i.getId( ) < 0 ? "NULL" : i.getId( ))+","+
+            i.getUrl( )+","+
+            (i.isEnable( )?1:0)+","+
+            i.getMenuItemId( )+","+
+            
+            ")";
         }
     }
 
