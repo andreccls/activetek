@@ -141,7 +141,7 @@ public class ProdcutInfoDetailPanel extends JPanel
     {
         if( checkBoxEnableProduct == null )
         {
-            checkBoxEnableProduct = new JCheckBox( "mostrar" );
+            checkBoxEnableProduct = new JCheckBox( "Mostrar" );
             checkBoxEnableProduct.addItemListener( new ItemListener( )
             {
                 
@@ -154,7 +154,7 @@ public class ProdcutInfoDetailPanel extends JPanel
                     }
                     catch( SQLException e )
                     {
-                        JOptionPane.showMessageDialog( window, "Error inesperado tratando de actualizar el item \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );                    
+                       JOptionPane.showMessageDialog( window, "Error inesperado tratando de actualizar el item \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );                    
                         e.printStackTrace();                        
                     }
                 }
