@@ -5,6 +5,7 @@ import java.util.Vector;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import co.com.activetek.genericmenu.server.util.FileUtil;
 import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
 public class MenuItem extends Vector<MenuItem>
@@ -205,5 +206,12 @@ public class MenuItem extends Vector<MenuItem>
     {
         father.remove( this );
         GenericMenuDAO.getInstance( ).suprimir(this);
+    }
+    public void deleteMenuItemImage( int image ) throws SQLException
+    {
+        Image i = images.get( image );
+        GenericMenuDAO.getInstance( ).suprimir( i );
+        FileUtil.deleteFile( i.getUrl( ) );
+        images.remove( image );        
     }
 }
