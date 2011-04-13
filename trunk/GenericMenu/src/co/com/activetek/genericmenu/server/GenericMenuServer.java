@@ -133,5 +133,9 @@ public class GenericMenuServer
         selected.getImages( ).add( image );
         GenericMenuDAO.getInstance( ).CRUD( image );
     }
+    public void deleteMenuItemImage( int image, MenuItem selected ) throws SQLException
+    {
+        selected.deleteMenuItemImage( image );
+    }
 
 }

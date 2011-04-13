@@ -222,6 +222,14 @@ public class GenericMenuDAO
             sql =  "delete from menuitem where menuitem_id = " + m.getId( );            
             st.executeUpdate( sql );          
         }
+        else if(object instanceof Image)
+        {
+            Image i = (Image)object;
+            Statement st = conn.createStatement( );            
+            sql =  "delete from image where image_id = " + i.getId( );            
+            st.executeUpdate( sql );
+        }
+            
     }
 
 }

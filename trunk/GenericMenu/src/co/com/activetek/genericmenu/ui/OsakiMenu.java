@@ -310,4 +310,17 @@ public class OsakiMenu extends JFrame
             e.printStackTrace( );
         }
     }
+
+    public void deleteMenuItemImage( int image )
+    {
+        try
+        {
+            server.deleteMenuItemImage( image, selected );
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado tratando de eliminar la imagen, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace();
+        }
+    }
 } 

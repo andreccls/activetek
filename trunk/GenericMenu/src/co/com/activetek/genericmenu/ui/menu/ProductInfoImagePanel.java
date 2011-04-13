@@ -45,7 +45,7 @@ public class ProductInfoImagePanel extends JPanel
     private JPanel panelButtonsNextBack = null;
     private JButton buttonBack = null;
     private JButton buttonNext = null;
-    private Vector<Image> images; // @jve:decl-index=0:
+    private Vector<Image> images; 
     private int image;
     private OsakiMenu window;
 
@@ -128,6 +128,15 @@ public class ProductInfoImagePanel extends JPanel
         if( buttonDelete == null )
         {
             buttonDelete = new JButton( "Eliminar imagen" );
+            buttonDelete.addActionListener( new ActionListener( )
+            {                
+                @Override
+                public void actionPerformed( ActionEvent arg0 )
+                {
+                    window.deleteMenuItemImage(image);
+                }
+            });
+            
         }
         return buttonDelete;
     }
