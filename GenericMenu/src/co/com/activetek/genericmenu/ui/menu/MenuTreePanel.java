@@ -114,7 +114,7 @@ public class MenuTreePanel extends JPanel
                     
                     DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
                     MenuItem padre = ( MenuItem )d.getUserObject( );
-                    MenuItem newSon = new MenuItem( -1, NUEVO_ITEM , "description", 2,true, "icon", null, padre, null, true );    
+                    MenuItem newSon = new MenuItem( -1, NUEVO_ITEM , "description", 2,true, "icon", null, padre, null, true );    //TODO cambiar por los valores que deberia entrar por default
                    
                     padre.add( newSon );
     
