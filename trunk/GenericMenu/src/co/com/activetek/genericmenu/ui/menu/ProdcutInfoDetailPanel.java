@@ -10,11 +10,15 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.JCheckBox;
 import java.awt.GridBagConstraints;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
@@ -22,6 +26,7 @@ import javax.swing.JTable;
 
 import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
+import co.com.activetek.genericmenu.ui.OsakiMenu;
 
 /**
  * Este panel muestra los detalles del producto (opciones de precios) especidficiones, ademas permite borrar y activar/desactivar el producto
@@ -50,15 +55,18 @@ public class ProdcutInfoDetailPanel extends JPanel
     private JTable jTable = null;
     private PricesTableRender pricesTableRender = null;
 
+    private MenuItem selected;
+    private OsakiMenu window;
     // --------------------------------------------------------------------------------------------
     // Constructores
     // --------------------------------------------------------------------------------------------
     /**
      * This is the default constructor
      */
-    public ProdcutInfoDetailPanel( )
+    public ProdcutInfoDetailPanel( OsakiMenu window )
     {
         super( );
+        this.window = window;
         initialize( );
     }
 
@@ -133,7 +141,24 @@ public class ProdcutInfoDetailPanel extends JPanel
     {
         if( checkBoxEnableProduct == null )
         {
-            checkBoxEnableProduct = new JCheckBox( "enable" );
+            checkBoxEnableProduct = new JCheckBox( "mostrar" );
+            checkBoxEnableProduct.addItemListener( new ItemListener( )
+            {
+                
+                @Override
+                public void itemStateChanged( ItemEvent arg0 )
+                {                    
+                    try
+                    {
+                        selected.setEnable( checkBoxEnableProduct.isSelected( ) );
+                    }
+                    catch( SQLException e )
+                    {
+                        JOptionPane.showMessageDialog( window, "Error inesperado tratando de actualizar el item \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );                    
+                        e.printStackTrace();                        
+                    }
+                }
+            });
         }
         return checkBoxEnableProduct;
     }
@@ -212,9 +237,11 @@ public class ProdcutInfoDetailPanel extends JPanel
     }
     public void setSelectedItem( MenuItem selected )
     {
+        this.selected = selected;
         pricesTableRender.setSelected( selected );
         textFieldDetails.setText( selected.getDescription( ) );
         jTable.repaint( );
+        checkBoxEnableProduct.setSelected( selected.isEnable( ) );
         this.repaint( );
     }
     // --------------------------------------------------------------------------------------------

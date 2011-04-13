@@ -295,8 +295,7 @@ public class MenuTreePanel extends JPanel
          * Eschucha el MenuItem para el cual se a cambiado el nombre, y lo persiste en el bean
          */
         public void valueForPathChanged( TreePath path, Object newValue )
-        {
-            System.out.println("valueForPathChanged");
+        {         
             Object obj = path.getPath( )[ path.getPath( ).length - 1 ] ;                        
             if( obj instanceof DynamicUtilTreeNode )
             {

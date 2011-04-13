@@ -190,13 +190,25 @@ public class GenericMenuDAO
         {
             Image i = (Image)object;
             Statement st = conn.createStatement( );
-            sql = "insert into image (image_id,url,enable,menuitem_id,image_order) vaoues "+
+            sql = "insert into image (image_id,url,enable,menuitem_id,image_order) values "+
             " ("+(i.getId( ) < 0 ? "NULL" : i.getId( ))+","+
-            i.getUrl( )+","+
+            "'"+i.getUrl( )+"',"+
             (i.isEnable( )?1:0)+","+
             i.getMenuItemId( )+","+
-            
+            1+""+//TODO colocar el orden que debe ir 
             ")";
+            st.execute( sql );
+            
+            if(i.getId( ) < 0)
+            {
+                st = conn.createStatement( );
+                ResultSet rs = st.executeQuery( "select image_id from image where url = '" + i.getUrl( ) + "'" );
+                if( rs.next( ) )
+                {
+                    i.setId( rs.getInt( 1 ) );
+                }
+                
+            }
         }
     }
 
