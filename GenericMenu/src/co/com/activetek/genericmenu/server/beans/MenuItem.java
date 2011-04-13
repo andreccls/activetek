@@ -81,9 +81,10 @@ public class MenuItem extends Vector<MenuItem>
     {
         return enable;
     }
-    public void setEnable( boolean enable )
+    public void setEnable( boolean enable ) throws SQLException
     {
         this.enable = enable;
+        GenericMenuDAO.getInstance( ).CRUD( this );
     }
     public String getIcon( )
     {

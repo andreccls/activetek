@@ -130,6 +130,7 @@ public class GenericMenuServer
     {
         FileUtil.copyfile( file.getAbsolutePath( ), IMAGES_PATH + file.getName( ) );
         Image image = new Image( -1, IMAGES_PATH + file.getName( ), true, -1, selected.getId( ) );
+        selected.getImages( ).add( image );
         GenericMenuDAO.getInstance( ).CRUD( image );
     }
 

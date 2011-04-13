@@ -74,7 +74,7 @@ public class ProductInfoPanel extends JPanel
     {
         if( prodcutInfoDetailPanel == null )
         {
-            prodcutInfoDetailPanel = new ProdcutInfoDetailPanel( );
+            prodcutInfoDetailPanel = new ProdcutInfoDetailPanel( window );
         }
         return prodcutInfoDetailPanel;
     }
