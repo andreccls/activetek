@@ -73,9 +73,10 @@ public class MenuItem extends Vector<MenuItem>
     {
         return details;
     }
-    public void setDescription( String description )
+    public void setDescription( String description ) throws SQLException
     {
         this.details = description;
+        GenericMenuDAO.getInstance( ).CRUD( this );
     }
     public boolean isEnable( )
     {

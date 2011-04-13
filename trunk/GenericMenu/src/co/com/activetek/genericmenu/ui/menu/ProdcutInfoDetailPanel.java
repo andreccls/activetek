@@ -10,6 +10,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.JCheckBox;
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
@@ -27,6 +29,7 @@ import javax.swing.JTable;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.ui.OsakiMenu;
+import java.awt.Insets;
 
 /**
  * Este panel muestra los detalles del producto (opciones de precios) especidficiones, ademas permite borrar y activar/desactivar el producto
@@ -57,6 +60,7 @@ public class ProdcutInfoDetailPanel extends JPanel
 
     private MenuItem selected;
     private OsakiMenu window;
+    private JButton btnGuardar;
     // --------------------------------------------------------------------------------------------
     // Constructores
     // --------------------------------------------------------------------------------------------
@@ -82,6 +86,7 @@ public class ProdcutInfoDetailPanel extends JPanel
     {
 
         GridBagConstraints gridBagConstraints0 = new GridBagConstraints( );// Para la table de precios
+        gridBagConstraints0.insets = new Insets( 0, 0, 5, 0 );
         gridBagConstraints0.fill = GridBagConstraints.BOTH;
         gridBagConstraints0.gridx = 0;
         gridBagConstraints0.gridy = 0;
@@ -90,6 +95,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         gridBagConstraints0.gridwidth = 2;
 
         GridBagConstraints gridBagConstraints1 = new GridBagConstraints( );// Para el label detalles
+        gridBagConstraints1.insets = new Insets( 0, 0, 5, 5 );
         gridBagConstraints1.fill = GridBagConstraints.BOTH;
         gridBagConstraints1.gridx = 0;
         gridBagConstraints1.gridy = 1;
@@ -97,6 +103,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         gridBagConstraints1.gridheight = 1;
 
         GridBagConstraints gridBagConstraints2 = new GridBagConstraints( );// Para el textField de detalles
+        gridBagConstraints2.insets = new Insets( 0, 0, 5, 0 );
         gridBagConstraints2.fill = GridBagConstraints.BOTH;
         gridBagConstraints2.gridx = 0;
         gridBagConstraints2.gridy = 2;
@@ -105,6 +112,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         gridBagConstraints2.gridwidth = 2;
 
         GridBagConstraints gridBagConstraints3 = new GridBagConstraints( );// Para el chek de enable
+        gridBagConstraints3.insets = new Insets( 0, 0, 0, 5 );
         gridBagConstraints3.fill = GridBagConstraints.BOTH;
         gridBagConstraints3.gridx = 0;
         gridBagConstraints3.gridy = 3;
@@ -127,6 +135,11 @@ public class ProdcutInfoDetailPanel extends JPanel
 
         this.add( getJScrollPane( ), gridBagConstraints0 );
         this.add( labelDetails, gridBagConstraints1 );
+        GridBagConstraints gbc_btnGuardar = new GridBagConstraints( );
+        gbc_btnGuardar.insets = new Insets( 0, 0, 5, 0 );
+        gbc_btnGuardar.gridx = 1;
+        gbc_btnGuardar.gridy = 1;
+        add( getBtnGuardar( ), gbc_btnGuardar );
         this.add( getScrollPaneDetails( ), gridBagConstraints2 );
         this.add( getCheckBoxEnableProduct( ), gridBagConstraints3 );
         this.add( getButtonDeleteProduct( ), gridBagConstraints4 );
@@ -144,25 +157,49 @@ public class ProdcutInfoDetailPanel extends JPanel
             checkBoxEnableProduct = new JCheckBox( "Mostrar" );
             checkBoxEnableProduct.addItemListener( new ItemListener( )
             {
-                
+
                 @Override
                 public void itemStateChanged( ItemEvent arg0 )
-                {                    
+                {
                     try
                     {
                         selected.setEnable( checkBoxEnableProduct.isSelected( ) );
                     }
                     catch( SQLException e )
                     {
-                       JOptionPane.showMessageDialog( window, "Error inesperado tratando de actualizar el item \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );                    
-                        e.printStackTrace();                        
+                        JOptionPane.showMessageDialog( window, "Error inesperado tratando de actualizar el item \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+                        e.printStackTrace( );
                     }
                 }
-            });
+            } );
         }
         return checkBoxEnableProduct;
     }
-
+    private JButton getBtnGuardar( )
+    {
+        if( btnGuardar == null )
+        {
+            btnGuardar = new JButton( "Guardar" );
+            btnGuardar.addActionListener( new ActionListener( )
+            {
+                
+                @Override
+                public void actionPerformed( ActionEvent e )
+                {
+                    try
+                    {
+                        selected.setDescription( textFieldDetails.getText( ) );
+                    }
+                    catch( SQLException e1 )
+                    {
+                        JOptionPane.showMessageDialog( window, "Error inesperado tratando de actualizar el item \n " + e1.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+                        e1.printStackTrace();
+                    }                             
+                }
+            });
+        }
+        return btnGuardar;
+    }
     /**
      * This method initializes buttonDeleteProduct
      * 
@@ -187,7 +224,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         if( textFieldDetails == null )
         {
             textFieldDetails = new JTextArea( "Relleno de langostinos frescos blanqueados, con mango dulce, kani-kama, mix de lechugas y salsa dinamita, cubierto de masago " );
-            textFieldDetails.setEnabled( false );// TODO cambiar con la cuenta de administardor
+            textFieldDetails.setEnabled( true );// TODO cambiar con la cuenta de administardor
             textFieldDetails.setLineWrap( true );
         }
         return textFieldDetails;
@@ -314,5 +351,4 @@ public class ProdcutInfoDetailPanel extends JPanel
         }
 
     }
-
 }
