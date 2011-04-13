@@ -323,4 +323,17 @@ public class OsakiMenu extends JFrame
             e.printStackTrace();
         }
     }
+
+    public void changeImageItemEnable( int image, boolean isselected )
+    {
+        try
+        {
+            server.changeImageItemEnable(image, selected ,isselected);
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado tratando de modificar la imagen, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace();
+        }
+    }
 } 

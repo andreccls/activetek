@@ -15,6 +15,8 @@ import javax.swing.SwingConstants;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 
 import javax.swing.JCheckBox;
@@ -45,7 +47,7 @@ public class ProductInfoImagePanel extends JPanel
     private JPanel panelButtonsNextBack = null;
     private JButton buttonBack = null;
     private JButton buttonNext = null;
-    private Vector<Image> images; 
+    private Vector<Image> images;
     private int image;
     private OsakiMenu window;
 
@@ -113,7 +115,16 @@ public class ProductInfoImagePanel extends JPanel
     {
         if( checkBoxEneble == null )
         {
-            checkBoxEneble = new JCheckBox( "enable" );
+            checkBoxEneble = new JCheckBox( "Mostrar" );
+            checkBoxEneble.addItemListener( new ItemListener( )
+            {
+                
+                @Override
+                public void itemStateChanged( ItemEvent arg0 )
+                {                    
+                    window.changeImageItemEnable(image , checkBoxEneble.isSelected( ));
+                }
+            });
         }
         return checkBoxEneble;
     }
@@ -129,14 +140,14 @@ public class ProductInfoImagePanel extends JPanel
         {
             buttonDelete = new JButton( "Eliminar imagen" );
             buttonDelete.addActionListener( new ActionListener( )
-            {                
+            {
                 @Override
                 public void actionPerformed( ActionEvent arg0 )
                 {
-                    window.deleteMenuItemImage(image);
+                    window.deleteMenuItemImage( image );
                 }
-            });
-            
+            } );
+
         }
         return buttonDelete;
     }
@@ -165,7 +176,7 @@ public class ProductInfoImagePanel extends JPanel
                     }
                     else if( status == JFileChooser.CANCEL_OPTION )
                     {
-                        
+
                     }
                 }
             } );
@@ -267,6 +278,8 @@ public class ProductInfoImagePanel extends JPanel
             image = -1;
             labelImages.setIcon( MyImageIcon.getInstance( ).setSize( new ImageIcon( NO_IMAGE ).getImage( ), WIDHT, HEIGHT, this ) );
         }
+        if( images != null && image >= 0)
+            checkBoxEneble.setSelected( images.get( image ).isEnable( ) );
         updateButtons( );
     }
     public void updateButtons( )

@@ -138,4 +138,9 @@ public class GenericMenuServer
         selected.deleteMenuItemImage( image );
     }
 
+    public void changeImageItemEnable( int image, MenuItem selected, boolean enable ) throws SQLException
+    {        
+        selected.changeImageItemEnable(image, enable);
+    }
+
 }

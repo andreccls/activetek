@@ -196,7 +196,7 @@ public class GenericMenuDAO
             (i.isEnable( )?1:0)+","+
             i.getMenuItemId( )+","+
             1+""+//TODO colocar el orden que debe ir 
-            ")";
+            ") on duplicate key update url = values(url), enable = values(enable), image_order = values(image_order)";            
             st.execute( sql );
             
             if(i.getId( ) < 0)
@@ -209,6 +209,7 @@ public class GenericMenuDAO
                 }
                 
             }
+            System.out.println(sql);
         }
     }
 
