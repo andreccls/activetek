@@ -214,4 +214,10 @@ public class MenuItem extends Vector<MenuItem>
         FileUtil.deleteFile( i.getUrl( ) );
         images.remove( image );        
     }
+    public void changeImageItemEnable( int image, boolean enable ) throws SQLException
+    {
+        Image i = images.get( image );      
+        i.setEnable( enable ); 
+        GenericMenuDAO.getInstance( ).CRUD( i );
+    }
 }
