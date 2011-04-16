@@ -220,6 +220,7 @@ public class OsakiMenu extends JFrame
         catch( GenericMenuException e )
         {
             JOptionPane.showMessageDialog( this, e.getMessage( ), "Warning", JOptionPane.WARNING_MESSAGE );
+            System.exit( 0 );
             e.printStackTrace( );
         }
         catch( AnotherInstanceException e )
