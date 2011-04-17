@@ -210,7 +210,7 @@ public class MenuTreePanel extends JPanel
             treeMenu.setEditable( true );// TODO cambiar para que solo lo tenga el administrador
             treeMenu.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
             treeMenu.setRootVisible( true );
-            treeMenu.addMouseListener( new MouseListener( )
+            treeMenu.addMouseListener( new MouseListener( )//TODO poner listener para el teclado
             {
 
                 public void mouseReleased( MouseEvent e )
