@@ -1,5 +1,6 @@
 package co.com.activetek.genericmenu.ui.menu;
 
+import java.awt.Checkbox;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -295,6 +296,7 @@ public class ProdcutInfoDetailPanel extends JPanel
 
         String[] columnNames = { "#Items", "Detalles", "Precio", "Enable" };
         Object[][] data = {}; // { 1, "", 20000, true }, { 1, "", 20000, false } };
+        Vector<PriceItem> prices;
         public PricesTableRender( )
         {
             super( );
@@ -333,11 +335,58 @@ public class ProdcutInfoDetailPanel extends JPanel
         {
             data[ row ][ col ] = value;
             fireTableCellUpdated( row, col );
-            System.out.println( row + " " + col + " " + value );// TODO Aqui se escucha cuando el administrador cambia algo
+
+            String cuantityStr = data[ row ][ 0 ] + "";
+            int cuantitiy = -1;
+            try
+            {
+                if( !cuantityStr.trim( ).equals( "" ) )
+                    cuantitiy = Integer.parseInt( cuantityStr );
+            }
+            catch( NumberFormatException e )
+            {
+                JOptionPane.showMessageDialog( window, "Ingrese una cantidad valida", "ERROR", JOptionPane.ERROR_MESSAGE );
+                return;
+            }
+
+            String descripcion = data[ row ][ 1 ] + "";
+
+            String priceStr = data[ row ][ 2 ] + "";
+            int price = -1;
+            try
+            {
+                if( !priceStr.trim( ).equals( "" ) )
+                    price = Integer.parseInt( priceStr ); 
+            }
+            catch( NumberFormatException e )
+            {
+                JOptionPane.showMessageDialog( window, "Ingrese un valor para el precio valido", "ERROR", JOptionPane.ERROR_MESSAGE );
+                return;
+            }
+
+            boolean enable = new Boolean( value + "" );
+                        
+            try
+            {
+                if( row == data.length - 1)// es un preico nuevo
+                {
+                    PriceItem p = new PriceItem( -1, cuantitiy, descripcion, enable, -1, price, selected.getId( ) );
+                }
+                else
+                {
+                    PriceItem p = prices.get( row );
+                    p.modify( cuantitiy, descripcion, enable, p.getOrder( ), price );//TODO toca solucionar lo del orden 
+                }
+            }
+            catch( SQLException e )
+            {
+                JOptionPane.showMessageDialog( window, "Error inesperado tratando de guardar los cambios \n" + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+                e.printStackTrace();
+            }
         }
         public void setSelected( MenuItem menuitem )
         {
-            Vector<PriceItem> prices = menuitem.getPrices( );
+            prices = menuitem.getPrices( );
             this.data = new Object[prices.size( ) + 1][columnNames.length];
 
             for( int i = 0; i < prices.size( ); i++ )
@@ -348,11 +397,11 @@ public class ProdcutInfoDetailPanel extends JPanel
                 data[ i ][ 2 ] = p.getPrice( );
                 data[ i ][ 3 ] = p.isEnable( );
             }
-            
-            data[ prices.size( )][ 0 ]  = "";
-            data[ prices.size( )][ 1 ]  = "Nuevo Precio";
-            data[ prices.size( )][ 2 ]  = "";
-            data[ prices.size( )][ 3 ]  = true;
+
+            data[ prices.size( ) ][ 0 ] = "";// TODO aqui deberia tener un tono de letra menos relevante, mostrarse solo cuando esta en cuenta de administrador
+            data[ prices.size( ) ][ 1 ] = "Nuevo Precio";
+            data[ prices.size( ) ][ 2 ] = "";
+            data[ prices.size( ) ][ 3 ] = true;
         }
 
     }
