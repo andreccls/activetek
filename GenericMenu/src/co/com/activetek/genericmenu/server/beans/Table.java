@@ -4,7 +4,13 @@ import net.sf.json.JSONObject;
 
 public class Table
 {
+    /**
+     * Id generado automatico por la base de datos
+     */
     private int id;
+    /**
+     * Id usado por el negocio
+     */    
     private int number;
     private int capacity;
     private int x;
