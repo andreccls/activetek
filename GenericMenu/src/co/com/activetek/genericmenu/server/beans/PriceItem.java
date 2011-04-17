@@ -13,10 +13,10 @@ public class PriceItem
     private boolean enable;
     private int order;
     private long price;
-    private int menuItemId;
+    private MenuItem menuItem;
     
     
-    public PriceItem( int id, int cuantity, String descripcion, boolean enable, int order, long price, int  menuItemId) throws SQLException
+    public PriceItem( int id, int cuantity, String descripcion, boolean enable, int order, long price, MenuItem  menuItemId) throws SQLException
     {
         super( );
         this.id = id;
@@ -25,7 +25,7 @@ public class PriceItem
         this.enable = enable;
         this.order = order;
         this.price = price;
-        this.menuItemId = menuItemId;
+        this.menuItem = menuItemId;
         if(id <0)
             GenericMenuDAO.getInstance( ).CRUD( this );
     }
@@ -38,13 +38,13 @@ public class PriceItem
         this.price = price;
         GenericMenuDAO.getInstance( ).CRUD( this );
     }
-    public int getMenuitemId()
+    public MenuItem getMenuitem()
     {
-        return menuItemId;
+        return menuItem;
     }
-    public void setMenuIemId(int menuItemId)
+    public void setMenuIemId(MenuItem menuItemId)
     {
-        this.menuItemId = menuItemId;
+        this.menuItem = menuItemId;
     }
     public int getOrder( )
     {
@@ -109,6 +109,11 @@ public class PriceItem
     {
         return cuantity + " " + descripcion + " " + price;
 
+    }
+    public void delete( ) throws SQLException
+    {
+        menuItem.deltePrice( this );
+        GenericMenuDAO.getInstance( ).delete( this );
     }
 
 }

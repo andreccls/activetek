@@ -41,6 +41,22 @@ public class MenuItem extends Vector<MenuItem>
         if(persist)
             GenericMenuDAO.getInstance( ).CRUD( this );
     }
+
+    public MenuItem( int id, String nombre, String description,int order, boolean enable, String icon, Vector<Image> images, MenuItem father, boolean persist ) throws SQLException
+    {
+        super( );
+        this.id = id;
+        this.name = nombre;
+        this.details = description;
+        this.enable = enable;
+        this.icon = icon;
+        this.images = images;
+        this.father = father;
+        this.prices = prices;
+        this.order = order;
+        if(persist)
+            GenericMenuDAO.getInstance( ).CRUD( this );
+    }
     public int getOrder( )
     {
         return order;
@@ -123,6 +139,20 @@ public class MenuItem extends Vector<MenuItem>
         }
         return null;
     }
+    public MenuItem findById( int id )
+    {
+        if( this.id == id )
+            return this;
+        
+        for( MenuItem menuItem : this )
+        {
+            MenuItem temp = menuItem.findById( id );
+            if( temp != null )
+                return temp;
+        }
+       
+        return null;
+    }
     public JSONObject getJSON( )
     {
         JSONObject object = new JSONObject( );
@@ -202,15 +232,15 @@ public class MenuItem extends Vector<MenuItem>
     {
         return father;
     }
-    public void suprimir( ) throws SQLException
+    public void delete( ) throws SQLException
     {
         father.remove( this );
-        GenericMenuDAO.getInstance( ).suprimir(this);
+        GenericMenuDAO.getInstance( ).delete(this);
     }
     public void deleteMenuItemImage( int image ) throws SQLException
     {
         Image i = images.get( image );
-        GenericMenuDAO.getInstance( ).suprimir( i );
+        GenericMenuDAO.getInstance( ).delete( i );
         FileUtil.deleteFile( i.getUrl( ) );
         images.remove( image );        
     }
@@ -223,5 +253,13 @@ public class MenuItem extends Vector<MenuItem>
     public void addPriceItem( PriceItem p )
     {
         prices.add( p );
+    }
+    public void setPrices(Vector<PriceItem> prices)
+    {
+        this.prices = prices;
+    }
+    public void deltePrice( PriceItem p )
+    {
+        prices.remove( p );
     }
 }
