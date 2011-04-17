@@ -1,5 +1,6 @@
 package co.com.activetek.genericmenu.server.util;
 
+import java.awt.Menu;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -70,7 +71,7 @@ public class GenericMenuDAO
         Vector<PriceItem> res = new Vector<PriceItem>( );
         while( rs.next( ) )
         {
-            res.add( new PriceItem( rs.getInt( "priceitem_id" ), rs.getInt( "cuantity" ), rs.getString( "description" ), rs.getBoolean( "enable" ), rs.getInt( "price_order" ), rs.getLong( "price" ) ) );
+            res.add( new PriceItem( rs.getInt( "priceitem_id" ), rs.getInt( "cuantity" ), rs.getString( "description" ), rs.getBoolean( "enable" ), rs.getInt( "price_order" ), rs.getLong( "price" ), menuitemid ) );
         }
 
         return res;
@@ -210,6 +211,32 @@ public class GenericMenuDAO
                 
             }
             System.out.println(sql);
+        }
+        else if (object instanceof PriceItem )
+        {
+            PriceItem p = (PriceItem)object;
+            Statement st = conn.createStatement( );
+            sql = "insert into priceitem (priceitem_id,menuitem_id,cuantity,price,description,price_order,enable) values" +
+            "("+p.getId( )+","+
+            ""+p.getMenuitemId( )+","+
+            ""+(p.getCuantity( )<0?"NULL":p.getCuantity( )+"")+","+
+            ""+(p.getPrice( )<0?"NULL":p.getPrice( )+"")+","+
+            "'"+(p.getDescripcion( ) == null ?"NULL":p.getDescripcion( )+"'")+","+
+            ""+p.getOrder( )+","+
+            ""+(p.isEnable( )?"1":"0")+""+            
+            ") on duplicate key update menuitem_id = values(menuitem_id), cuantity = values (cuantity), price = values (price), description  = values (description), price_order = values (price_order), enable = values(enable) ";            
+            System.out.println(sql);
+            st.execute( sql );
+            
+            if(p.getId( )<0)
+            {
+                ResultSet rs = st.executeQuery( "select max(priceitem_id) from menuitem " );
+                if( rs.next( ) )
+                {
+                    p.setId( rs.getInt( 1 ) );
+                }
+            }
+            
         }
     }
 

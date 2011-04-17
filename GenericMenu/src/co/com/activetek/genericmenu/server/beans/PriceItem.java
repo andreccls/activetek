@@ -1,5 +1,8 @@
 package co.com.activetek.genericmenu.server.beans;
 
+import java.sql.SQLException;
+
+import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 import net.sf.json.JSONObject;
 
 public class PriceItem
@@ -10,8 +13,10 @@ public class PriceItem
     private boolean enable;
     private int order;
     private long price;
-
-    public PriceItem( int id, int cuantity, String descripcion, boolean enable, int order, long price )
+    private int menuItemId;
+    
+    
+    public PriceItem( int id, int cuantity, String descripcion, boolean enable, int order, long price, int  menuItemId) throws SQLException
     {
         super( );
         this.id = id;
@@ -20,6 +25,26 @@ public class PriceItem
         this.enable = enable;
         this.order = order;
         this.price = price;
+        this.menuItemId = menuItemId;
+        if(id <0)
+            GenericMenuDAO.getInstance( ).CRUD( this );
+    }
+    public void modify( int cuantity, String descripcion, boolean enable, int order, long price ) throws SQLException
+    {        
+        this.cuantity = cuantity;
+        this.descripcion = descripcion;
+        this.enable = enable;
+        this.order = order;
+        this.price = price;
+        GenericMenuDAO.getInstance( ).CRUD( this );
+    }
+    public int getMenuitemId()
+    {
+        return menuItemId;
+    }
+    public void setMenuIemId(int menuItemId)
+    {
+        this.menuItemId = menuItemId;
     }
     public int getOrder( )
     {
