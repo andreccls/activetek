@@ -371,6 +371,8 @@ public class ProdcutInfoDetailPanel extends JPanel
                 if( row == data.length - 1)// es un preico nuevo
                 {
                     PriceItem p = new PriceItem( -1, cuantitiy, descripcion, enable, -1, price, selected.getId( ) );
+                    selected.addPriceItem( p );
+                    setSelectedItem( selected );
                 }
                 else
                 {
@@ -386,6 +388,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         }
         public void setSelected( MenuItem menuitem )
         {
+            System.out.println(123);
             prices = menuitem.getPrices( );
             this.data = new Object[prices.size( ) + 1][columnNames.length];
 
