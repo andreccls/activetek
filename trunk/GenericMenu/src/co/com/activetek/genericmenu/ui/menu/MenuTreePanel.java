@@ -165,7 +165,7 @@ public class MenuTreePanel extends JPanel
                     
                     DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
                     MenuItem menuItem = ( MenuItem )d.getUserObject( );     
-                    menuItem.suprimir();
+                    menuItem.delete();
                     treeMenu.removeSelectionPath( selectedNode );
                     
                     ( ( DefaultTreeModel )treeMenu.getModel( ) ).removeNodeFromParent( d );

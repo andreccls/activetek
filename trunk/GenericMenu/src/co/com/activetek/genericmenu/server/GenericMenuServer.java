@@ -87,6 +87,10 @@ public class GenericMenuServer
         String[] items = path.split( "," );
         return root.findByName( items[ items.length - 1 ] );
     }
+    public MenuItem findMenuItemById( int id )
+    {
+        return root.findById( id );
+    }
     public Vector<Waitress> getWaitresses( ) throws SQLException
     {
         return waitresses;

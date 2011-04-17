@@ -1,14 +1,15 @@
 package co.com.activetek.genericmenu.ui.menu;
 
-import java.awt.Checkbox;
-import java.awt.Dimension;
+import java.awt.Component;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.JCheckBox;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
@@ -18,12 +19,11 @@ import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.util.Vector;
 
+import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -44,6 +44,10 @@ public class ProdcutInfoDetailPanel extends JPanel
     // Constantes
     // --------------------------------------------------------------------------------------------
     private static final long serialVersionUID = 1L;
+    /**
+     *  Valor uado por PriceTableCellEditor para notificar a PricesTableModel que la accion corresponde a borrar el precio
+     */
+    private static final String DELETE_PRICE_ITEM = "DELETE_PRICE_ITEM";
 
     // --------------------------------------------------------------------------------------------
     // Atributos
@@ -57,7 +61,7 @@ public class ProdcutInfoDetailPanel extends JPanel
     private JScrollPane jScrollPane = null;
 
     private JTable jTable = null;
-    private PricesTableRender pricesTableRender = null;
+    private PricesTableModel pricesTableRender = null;
 
     private MenuItem selected;
     private OsakiMenu window;
@@ -268,8 +272,12 @@ public class ProdcutInfoDetailPanel extends JPanel
     {
         if( jTable == null )
         {
-            pricesTableRender = new PricesTableRender( );
+            pricesTableRender = new PricesTableModel( );
             jTable = new JTable( pricesTableRender );
+            TableColumn deleteButtons = jTable.getColumn( "Eliminar" );
+            deleteButtons.setCellEditor( new PriceTableCellEditor( jTable ) );
+            deleteButtons.setCellRenderer( new PriceTableCellRender( true ) );
+
         }
         return jTable;
     }
@@ -290,14 +298,14 @@ public class ProdcutInfoDetailPanel extends JPanel
      * @author daniel.rodriguez
      * 
      */
-    public class PricesTableRender extends AbstractTableModel
+    public class PricesTableModel extends AbstractTableModel
     {
         private static final long serialVersionUID = 1L;
 
-        String[] columnNames = { "#Items", "Detalles", "Precio", "Enable" };
+        String[] columnNames = { "#Items", "Detalles", "Precio", "Enable", "Eliminar" };
         Object[][] data = {}; // { 1, "", 20000, true }, { 1, "", 20000, false } };
         Vector<PriceItem> prices;
-        public PricesTableRender( )
+        public PricesTableModel( )
         {
             super( );
         }
@@ -333,62 +341,81 @@ public class ProdcutInfoDetailPanel extends JPanel
         }
         public void setValueAt( Object value, int row, int col )
         {
-            data[ row ][ col ] = value;
-            fireTableCellUpdated( row, col );
-
-            String cuantityStr = data[ row ][ 0 ] + "";
-            int cuantitiy = -1;
-            try
+            if(value.toString( ).equals( DELETE_PRICE_ITEM ))
             {
-                if( !cuantityStr.trim( ).equals( "" ) )
-                    cuantitiy = Integer.parseInt( cuantityStr );
-            }
-            catch( NumberFormatException e )
-            {
-                JOptionPane.showMessageDialog( window, "Ingrese una cantidad valida", "ERROR", JOptionPane.ERROR_MESSAGE );
-                return;
-            }
-
-            String descripcion = data[ row ][ 1 ] + "";
-
-            String priceStr = data[ row ][ 2 ] + "";
-            int price = -1;
-            try
-            {
-                if( !priceStr.trim( ).equals( "" ) )
-                    price = Integer.parseInt( priceStr ); 
-            }
-            catch( NumberFormatException e )
-            {
-                JOptionPane.showMessageDialog( window, "Ingrese un valor para el precio valido", "ERROR", JOptionPane.ERROR_MESSAGE );
-                return;
-            }
-
-            boolean enable = new Boolean( value + "" );
-                        
-            try
-            {
-                if( row == data.length - 1)// es un preico nuevo
+                try
                 {
-                    PriceItem p = new PriceItem( -1, cuantitiy, descripcion, enable, -1, price, selected.getId( ) );
-                    selected.addPriceItem( p );
-                    setSelectedItem( selected );
+                    if(row != data.length - 1 )
+                    {                        
+                        PriceItem p = prices.get( row );
+                        p.delete( );
+                        setSelectedItem( selected );
+                    }
                 }
-                else
+                catch( SQLException e )
                 {
-                    PriceItem p = prices.get( row );
-                    p.modify( cuantitiy, descripcion, enable, p.getOrder( ), price );//TODO toca solucionar lo del orden 
+                    JOptionPane.showMessageDialog( window, "Error tratando de eliminar el precio \n Si los errores continuarn contacte al administrador del sistema", "ERROR", JOptionPane.ERROR_MESSAGE );
                 }
             }
-            catch( SQLException e )
+            else
             {
-                JOptionPane.showMessageDialog( window, "Error inesperado tratando de guardar los cambios \n" + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-                e.printStackTrace();
+                data[ row ][ col ] = value;
+                fireTableCellUpdated( row, col );
+
+                String cuantityStr = data[ row ][ 0 ] + "";
+                int cuantitiy = -1;
+                try
+                {
+                    if( !cuantityStr.trim( ).equals( "" ) )
+                        cuantitiy = Integer.parseInt( cuantityStr );
+                }
+                catch( NumberFormatException e )
+                {
+                    JOptionPane.showMessageDialog( window, "Ingrese una cantidad valida", "ERROR", JOptionPane.ERROR_MESSAGE );
+                    return;
+                }
+
+                String descripcion = data[ row ][ 1 ] + "";
+
+                String priceStr = data[ row ][ 2 ] + "";
+                int price = -1;
+                try
+                {
+                    if( !priceStr.trim( ).equals( "" ) )
+                        price = Integer.parseInt( priceStr );
+                }
+                catch( NumberFormatException e )
+                {
+                    JOptionPane.showMessageDialog( window, "Ingrese un valor para el precio valido", "ERROR", JOptionPane.ERROR_MESSAGE );
+                    return;
+                }
+
+                boolean enable = new Boolean( value + "" );
+
+                try
+                {
+                    if( row == data.length - 1 )// es un preico nuevo
+                    {
+                        PriceItem p = new PriceItem( -1, cuantitiy, descripcion, enable, -1, price, selected );
+                        selected.addPriceItem( p );
+                        setSelectedItem( selected );
+                    }
+                    else
+                    {
+                        PriceItem p = prices.get( row );
+                        p.modify( cuantitiy, descripcion, enable, p.getOrder( ), price );// TODO toca solucionar lo del orden
+                    }
+                }
+                catch( SQLException e )
+                {
+                    JOptionPane.showMessageDialog( window, "Error inesperado tratando de guardar los cambios \n" + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+                    e.printStackTrace( );
+                }
             }
+
         }
         public void setSelected( MenuItem menuitem )
-        {
-            System.out.println(123);
+        {            
             prices = menuitem.getPrices( );
             this.data = new Object[prices.size( ) + 1][columnNames.length];
 
@@ -406,6 +433,80 @@ public class ProdcutInfoDetailPanel extends JPanel
             data[ prices.size( ) ][ 2 ] = "";
             data[ prices.size( ) ][ 3 ] = true;
         }
+    }
+
+    /**
+     * 
+     * @author daniel.rodriguez
+     * 
+     */
+    public class PriceTableCellRender extends JButton implements TableCellRenderer
+    {
+        private static final long serialVersionUID = 1L;
+        boolean isBordered = true;
+
+        public PriceTableCellRender( boolean isBordered )
+        {
+            this.isBordered = isBordered;
+            setOpaque( true );
+        }
+
+        public Component getTableCellRendererComponent( JTable table, Object color, boolean isSelected, boolean hasFocus, int row, int column )
+        {
+            return new JButton( "Render" );
+        }
 
     }
+    /**
+     * 
+     * @author daniel.rodriguez
+     * 
+     */
+    public class PriceTableCellEditor extends AbstractCellEditor implements TableCellEditor
+    {
+        private static final long serialVersionUID = 1L;
+        Boolean currentValue;
+        JButton button;
+        protected static final String EDIT = "Editor";
+        private JTable jTable1;
+
+        public PriceTableCellEditor( JTable jTable1 )
+        {
+            button = new JButton( );
+            button.setActionCommand( EDIT );
+            button.addActionListener(new ActionListener( )
+            {
+                
+                @Override
+                public void actionPerformed( ActionEvent e )
+                {
+                   fireEditingStopped( );//Aqui hace que el envento vall al PriceTableModel donde ya sabe que hacer
+                    
+                }
+            });
+            button.setBorderPainted( false );
+            this.jTable1 = jTable1;
+        }
+       
+        // Implement the one CellEditor method that AbstractCellEditor doesn't.
+        public Object getCellEditorValue( )
+        {
+            return DELETE_PRICE_ITEM;
+        }
+
+        // Implement the one method defined by TableCellEditor.
+        public Component getTableCellEditorComponent( JTable table, Object value, boolean isSelected, int row, int column )
+        {
+            // Va a mostrar el botón solo en la última fila.
+            // de otra forma muestra un espacio en blanco.
+            if( row == table.getModel( ).getRowCount( ) - 1 )
+            {
+                currentValue = ( Boolean )value;
+                return button;
+            }
+            return button;
+        }
+
+    }
+
 }

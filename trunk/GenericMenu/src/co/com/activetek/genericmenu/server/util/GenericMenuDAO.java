@@ -58,20 +58,22 @@ public class GenericMenuDAO
         while( rs.next( ) )
         {
             int menuitemid = rs.getInt( "menuItem_id" );
-            res.add( new MenuItem( menuitemid, rs.getString( "nombre" ), rs.getString( "description" ), rs.getInt( "order" ), rs.getBoolean( "enable" ), rs.getString( "icon" ), getImages( menuitemid ), parent, getPrices( menuitemid ),false ) );
+             MenuItem m  = new MenuItem( menuitemid, rs.getString( "nombre" ), rs.getString( "description" ), rs.getInt( "order" ), rs.getBoolean( "enable" ), rs.getString( "icon" ), getImages( menuitemid ), parent, false ) ;
+             m.setPrices( getPrices( m ) );
+             res.add(m);
         }
 
         return res;
     }
 
-    public synchronized Vector<PriceItem> getPrices( int menuitemid ) throws SQLException
+    public synchronized Vector<PriceItem> getPrices( MenuItem menuitem ) throws SQLException
     {
         Statement st = conn.createStatement( );
-        ResultSet rs = st.executeQuery( "SELECT * FROM priceitem WHERE menuitem_id = " + menuitemid + " ORDER BY price_order ASC" );
+        ResultSet rs = st.executeQuery( "SELECT * FROM priceitem WHERE menuitem_id = " + menuitem.getId( ) + " ORDER BY price_order ASC" );
         Vector<PriceItem> res = new Vector<PriceItem>( );
         while( rs.next( ) )
         {
-            res.add( new PriceItem( rs.getInt( "priceitem_id" ), rs.getInt( "cuantity" ), rs.getString( "description" ), rs.getBoolean( "enable" ), rs.getInt( "price_order" ), rs.getLong( "price" ), menuitemid ) );
+            res.add( new PriceItem( rs.getInt( "priceitem_id" ), rs.getInt( "cuantity" ), rs.getString( "description" ), rs.getBoolean( "enable" ), rs.getInt( "price_order" ), rs.getLong( "price" ), menuitem ) );
         }
 
         return res;
@@ -218,7 +220,7 @@ public class GenericMenuDAO
             Statement st = conn.createStatement( );
             sql = "insert into priceitem (priceitem_id,menuitem_id,cuantity,price,description,price_order,enable) values" +
             "("+(p.getId( )<0?"NULL":p.getId( )+"")+","+
-            ""+p.getMenuitemId( )+","+
+            ""+p.getMenuitem( ).getId( )+","+
             ""+(p.getCuantity( )<0?"NULL":p.getCuantity( )+"")+","+
             ""+(p.getPrice( )<0?"NULL":p.getPrice( )+"")+","+
             "'"+(p.getDescripcion( ) == null ?"NULL":p.getDescripcion( )+"'")+","+
@@ -240,7 +242,7 @@ public class GenericMenuDAO
         }
     }
 
-    public void suprimir( Object object ) throws SQLException
+    public void delete( Object object ) throws SQLException
     {
         String sql = "";
         if( object instanceof MenuItem )
@@ -257,7 +259,13 @@ public class GenericMenuDAO
             sql =  "delete from image where image_id = " + i.getId( );            
             st.executeUpdate( sql );
         }
-            
+        else if(object instanceof PriceItem)
+        {
+            PriceItem p = (PriceItem)object;
+            Statement st = conn.createStatement( );
+            sql = "delete from priceitem where priceitem_id = " + p.getId( );
+            st.executeUpdate( sql );
+        }
     }
 
 }
