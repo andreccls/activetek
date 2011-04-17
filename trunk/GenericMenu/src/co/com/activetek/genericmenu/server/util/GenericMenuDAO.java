@@ -20,6 +20,8 @@ import co.com.activetek.genericmenu.server.beans.Waitress;
 
 public class GenericMenuDAO
 {
+    public final static String MAPTABLES_HEIGHT = "mapTables.height";
+    public final static String MAPTABLES_WIDTH = "mapTables.width";
 
     private static GenericMenuDAO instance;
     private Connection conn;
@@ -139,23 +141,34 @@ public class GenericMenuDAO
         Map<String, Table> map = getMapTables( );
 
         Statement st = conn.createStatement( );
-        ResultSet rs = st.executeQuery( "SELECT max(x) as x,max(y) as y from x_table" );
-        if( rs.next( ) )
+        ResultSet rs = st.executeQuery( "SELECT x_key,x_value FROM cfg_menu WHERE x_key IN ('"+MAPTABLES_HEIGHT+"','"+MAPTABLES_WIDTH+"')" );
+        
+        //default values used if the propertie does not exist
+        int x = 5;
+        int y = 6;
+        
+        while(rs.next( ))
         {
-            int x = rs.getInt( "x" );
-            int y = rs.getInt( "y" );
-            Table[][] tables = new Table[x][y];
-            for( int i = 0; i < x; i++ )
+            String key = rs.getString( "x_key" );
+            if(key.equals( "mapTables.height" ))
             {
-                for( int j = 0; j < y; j++ )
-                {
-                    tables[ i ][ j ] = map.get( ( i + 1 ) + ":" + ( j + 1 ) );
-                }
+                y = rs.getInt( "x_value" );
             }
-            return tables;
+            else if(key.equals( "mapTables.width" ))
+            {
+                x = rs.getInt( "x_value" );
+            }
         }
-        else
-            return new Table[0][0];
+        
+        Table[][] tables = new Table[x][y];
+        for( int i = 0; i < x; i++ )
+        {   
+            for( int j = 0; j < y; j++ )
+            {
+                tables[ i ][ j ] = map.get( ( i + 1 ) + ":" + ( j + 1 ) );
+            }
+        }
+        return tables;
 
     }
 
@@ -267,5 +280,17 @@ public class GenericMenuDAO
             st.executeUpdate( sql );
         }
     }
+
+    public void notifyDimensionChanged( int width, int height ) throws SQLException
+    {
+        Statement st = conn.createStatement( );
+        String sql = "update cfg_menu set x_value = " + width + " where x_key = '"+MAPTABLES_WIDTH + "'";
+        st.executeUpdate( sql );
+        
+        sql = "update cfg_menu set x_value = " + height + " where x_key = '"+MAPTABLES_HEIGHT + "'";
+        st.executeUpdate( sql );
+    }
+    
+    
 
 }

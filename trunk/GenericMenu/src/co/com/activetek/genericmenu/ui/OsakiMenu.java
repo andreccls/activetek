@@ -25,6 +25,8 @@ import co.com.activetek.genericmenu.ui.orders.OrdersPanel;
 import co.com.activetek.genericmenu.ui.menu.MenuTreePanel;
 import co.com.activetek.genericmenu.ui.menu.MenuPanel;
 import co.com.activetek.genericmenu.ui.tables.MapTablesPanel;
+import co.com.activetek.genericmenu.ui.tables.TablesPanel;
+
 import java.awt.Point;
 import java.awt.Dimension;
 import java.io.File;
@@ -42,7 +44,7 @@ public class OsakiMenu extends JFrame
     private static final long serialVersionUID = 1L;
     private OrdersPanel ordersPanel = null;
     private MenuPanel menuPanel = null;
-    private MapTablesPanel mapTablesPanel = null;
+    private TablesPanel tablesPanel = null;
     private GenericMenuServer server;
 
     /**
@@ -88,13 +90,13 @@ public class OsakiMenu extends JFrame
      * 
      * @return co.com.activetek.genericmenu.ui.tables.MapTablesPanel
      */
-    private MapTablesPanel getMapTablesPanel( )
+    private TablesPanel getMapTablesPanel( )
     {
-        if( mapTablesPanel == null )
+        if( tablesPanel == null )
         {
-            mapTablesPanel = new MapTablesPanel( this );
+            tablesPanel = new TablesPanel( this );
         }
-        return mapTablesPanel;
+        return tablesPanel;
     }
 
     /**
@@ -336,5 +338,20 @@ public class OsakiMenu extends JFrame
             JOptionPane.showMessageDialog( this, "Error inesperado tratando de modificar la imagen, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
             e.printStackTrace();
         }
+    }
+
+    public void notifyDimensionChanged( int width, int height )
+    {
+        try
+        {
+            server.notifyDimensionChanged( width, height );
+            tablesPanel.refresh( );
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado tratando de almacenar las nuevas dimensiones \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );            
+            e.printStackTrace();
+        }
+        
     }
 } 
