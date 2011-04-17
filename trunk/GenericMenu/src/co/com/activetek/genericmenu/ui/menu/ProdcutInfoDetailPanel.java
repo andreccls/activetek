@@ -182,7 +182,7 @@ public class ProdcutInfoDetailPanel extends JPanel
             btnGuardar = new JButton( "Guardar" );
             btnGuardar.addActionListener( new ActionListener( )
             {
-                
+
                 @Override
                 public void actionPerformed( ActionEvent e )
                 {
@@ -193,10 +193,10 @@ public class ProdcutInfoDetailPanel extends JPanel
                     catch( SQLException e1 )
                     {
                         JOptionPane.showMessageDialog( window, "Error inesperado tratando de actualizar el item \n " + e1.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-                        e1.printStackTrace();
-                    }                             
+                        e1.printStackTrace( );
+                    }
                 }
-            });
+            } );
         }
         return btnGuardar;
     }
@@ -294,7 +294,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         private static final long serialVersionUID = 1L;
 
         String[] columnNames = { "#Items", "Detalles", "Precio", "Enable" };
-        Object[][] data = { { 1, "", 20000, true }, { 1, "", 20000, false } };
+        Object[][] data = {}; // { 1, "", 20000, true }, { 1, "", 20000, false } };
         public PricesTableRender( )
         {
             super( );
@@ -338,7 +338,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         public void setSelected( MenuItem menuitem )
         {
             Vector<PriceItem> prices = menuitem.getPrices( );
-            this.data = new Object[prices.size( )][columnNames.length];
+            this.data = new Object[prices.size( ) + 1][columnNames.length];
 
             for( int i = 0; i < prices.size( ); i++ )
             {
@@ -348,6 +348,11 @@ public class ProdcutInfoDetailPanel extends JPanel
                 data[ i ][ 2 ] = p.getPrice( );
                 data[ i ][ 3 ] = p.isEnable( );
             }
+            
+            data[ prices.size( )][ 0 ]  = "";
+            data[ prices.size( )][ 1 ]  = "Nuevo Precio";
+            data[ prices.size( )][ 2 ]  = "";
+            data[ prices.size( )][ 3 ]  = true;
         }
 
     }
