@@ -217,7 +217,7 @@ public class GenericMenuDAO
             PriceItem p = (PriceItem)object;
             Statement st = conn.createStatement( );
             sql = "insert into priceitem (priceitem_id,menuitem_id,cuantity,price,description,price_order,enable) values" +
-            "("+p.getId( )+","+
+            "("+(p.getId( )<0?"NULL":p.getId( )+"")+","+
             ""+p.getMenuitemId( )+","+
             ""+(p.getCuantity( )<0?"NULL":p.getCuantity( )+"")+","+
             ""+(p.getPrice( )<0?"NULL":p.getPrice( )+"")+","+
@@ -230,7 +230,7 @@ public class GenericMenuDAO
             
             if(p.getId( )<0)
             {
-                ResultSet rs = st.executeQuery( "select max(priceitem_id) from menuitem " );
+                ResultSet rs = st.executeQuery( "select max(priceitem_id) from priceitem " );
                 if( rs.next( ) )
                 {
                     p.setId( rs.getInt( 1 ) );

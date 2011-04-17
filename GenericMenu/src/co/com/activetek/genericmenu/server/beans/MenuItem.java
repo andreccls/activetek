@@ -220,4 +220,8 @@ public class MenuItem extends Vector<MenuItem>
         i.setEnable( enable ); 
         GenericMenuDAO.getInstance( ).CRUD( i );
     }
+    public void addPriceItem( PriceItem p )
+    {
+        prices.add( p );
+    }
 }
