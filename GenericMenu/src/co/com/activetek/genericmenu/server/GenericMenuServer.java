@@ -146,5 +146,9 @@ public class GenericMenuServer
     {        
         selected.changeImageItemEnable(image, enable);
     }
+    public void notifyDimensionChanged( int width, int height ) throws SQLException
+    {
+        GenericMenuDAO.getInstance( ).notifyDimensionChanged( width, height );
+    }
 
 }

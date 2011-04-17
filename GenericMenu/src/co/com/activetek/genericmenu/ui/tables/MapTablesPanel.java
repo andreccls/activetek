@@ -17,15 +17,20 @@ public class MapTablesPanel extends JPanel
     private static final long serialVersionUID = 1L;
     private OsakiMenu window;
     private Table[][] tables;
+    private int width;
+    private int height;
     /**
      * This is the default constructor
      */
-    public MapTablesPanel( OsakiMenu window )
+    public MapTablesPanel( OsakiMenu window, Table[][] tables )
     {
-        super( );
-        this.window = window;
+        super( );        
         tables = window.getMatrixTables( );
-        initialize( );
+        width = tables[ 0 ].length;
+        height = tables.length;
+        this.tables = tables;
+        this.setBorder( BorderFactory.createTitledBorder( null, "Mesas", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font( "Dialog", Font.BOLD, 12 ), new Color( 51, 51, 51 ) ) );
+        refresh( tables );
     }
 
     /**
@@ -33,20 +38,26 @@ public class MapTablesPanel extends JPanel
      * 
      * @return void
      */
-    private void initialize( )
-    {
-        this.setBorder( BorderFactory.createTitledBorder( null, "Mesas", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font( "Dialog", Font.BOLD, 12 ), new Color( 51, 51, 51 ) ) );
-        GridLayout gridLayout = new GridLayout( tables[ 0 ].length, tables.length );
+    public void refresh( Table[][] xtables )
+    {        
+        
+        this.tables = xtables ;
+        width = tables[ 0 ].length;
+        height = tables.length;
+        
+        System.out.println("width: " +width + " height: " +height);
+        GridLayout gridLayout = new GridLayout( tables[ 0 ].length, tables.length );                
         this.setLayout( gridLayout );
-        for( int j = 0; j < tables[ 0 ].length; j++ )// 5
+        
+        gridLayout = ( GridLayout )this.getLayout( );
+        for( int j = 0; j < width; j++ )// 5
         {
-            for( int i = 0; i < tables.length; i++ )// 6
+            for( int i = 0; i < height; i++ )// 6
             {
-                // if(tables[i][j] != null)
-                // System.out.println("i: " + (i+1) + " j: " + (j+1) + "  "+tables[i][j].getX( )+":"+tables[i][j].getY( ));
                 this.add( new TablePanel( tables[ i ][ j ] ) );
             }
         }
+        
     }
 
 }
