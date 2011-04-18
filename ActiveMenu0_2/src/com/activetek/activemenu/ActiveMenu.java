@@ -36,7 +36,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	/**
 	 * Constante que indica la dirección IP del servidor
 	 */
-	public final static String SERVER_IP="192.168.0.199";
+	public final static String SERVER_IP="192.168.0.104";
 
 	/**
 	 * Diálogo de espera
@@ -101,7 +101,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 			//Obtenemos la línea de escritura sobre la consola
 			OutputStream os = process.getOutputStream();
 			//Introducimos el comando a ser utilizado
-			writeLine( os,"/data/data/eu.kowalczuk.rsync4android/files/rsync -vHrltDz --chmod=ugo+rwx --no-perms --delete-after -e \"/data/data/eu.kowalczuk.rsync4android/files/ssh -y -p 22 -i '/data/menu/dss_key'\" juan@192.168.0.199:/home/juan//Proyectos/Android/workspace/GenericMenu/images/ /data/menu/images/ && exit");
+			//writeLine( os,"/data/data/eu.kowalczuk.rsync4android/files/rsync -vHrltDz --chmod=ugo+rwx --no-perms --delete-after -e \"/data/data/eu.kowalczuk.rsync4android/files/ssh -y -p 22 -i '/data/menu/dss_key'\" juan@192.168.0.199:/home/juan//Proyectos/Android/workspace/GenericMenu/images/ /data/menu/images/ && exit");
 			//writeLine( os,"sleep 1 && exit");
 			// iniciamos ejecución sobre consola
 			os.flush();
@@ -325,8 +325,8 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 			}
 
 
-		} catch (JSONException e) {
-			Log.e("Menu", e.toString());
+		} catch (JSONException e) {		    
+			Log.e("Menu", "se totio", e);
 		}
 	}
 
