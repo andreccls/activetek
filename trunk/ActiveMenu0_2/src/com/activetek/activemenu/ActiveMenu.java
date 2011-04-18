@@ -36,18 +36,18 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	/**
 	 * Constante que indica la dirección IP del servidor
 	 */
-	public final static String SERVER_IP="192.168.0.106";
-	
+	public final static String SERVER_IP="192.168.0.199";
+
 	/**
 	 * Diálogo de espera
 	 */
 	private ProgressDialog dialog;
-	
+
 	/**
 	 * Proceso de carga a través de consola
 	 */
 	private Process process;
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -101,8 +101,8 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 			//Obtenemos la línea de escritura sobre la consola
 			OutputStream os = process.getOutputStream();
 			//Introducimos el comando a ser utilizado
-			//writeLine( os,"/data/data/eu.kowalczuk.rsync4android/files/rsync -vHrltDz --chmod=ugo+rwx --no-perms --delete-after -e \"/data/data/eu.kowalczuk.rsync4android/files/ssh -y -p 22 -i '/data/menu/dss_key'\" juan@192.168.0.199:/home/juan/Luisa/menu/ /data/menu/ && exit");
-			writeLine( os,"sleep 1 && exit");
+			writeLine( os,"/data/data/eu.kowalczuk.rsync4android/files/rsync -vHrltDz --chmod=ugo+rwx --no-perms --delete-after -e \"/data/data/eu.kowalczuk.rsync4android/files/ssh -y -p 22 -i '/data/menu/dss_key'\" juan@192.168.0.199:/home/juan//Proyectos/Android/workspace/GenericMenu/images/ /data/menu/images/ && exit");
+			//writeLine( os,"sleep 1 && exit");
 			// iniciamos ejecución sobre consola
 			os.flush();
 			//Esperamos a que el proceso se complete
@@ -138,7 +138,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 		handler.sendEmptyMessage(0);
 	}
 
-	
+
 	/**
 	 * Este método permite escribir líneas sobre un OutputStream
 	 * @param os El OutputStream para escribir
@@ -170,7 +170,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 			finish();
 		}
 	};
-	
+
 	/**
 	 * Este método controla los puntos de retorno con el boton back
 	 * está sobreescrito para que no haya retornos inesperados
@@ -181,7 +181,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 
 		return;
 	}
-*/
+	 */
 	/**
 	 * Gestor de Contenidos
 	 */
@@ -189,7 +189,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	{
 		try {
 			// Intentamos abrir el json principal
-			FileInputStream fis= new FileInputStream("/data/menu/json.txt");
+			FileInputStream fis= new FileInputStream("/data/menu/images/json.txt");
 			// Convertimos el FIS a String para interpretarlo
 			String str = convertStreamToString(fis);
 			// Creamos un JSONObject para explorar
@@ -236,12 +236,17 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 					//Creamos un arreglo vacío para los path's de las imágenes
 					ArrayList<String> arras=new ArrayList<String>();
 					// Recorremos el arreglo de imágenes
-					for(int z=0; z<arraimag.length();z++)
+					if(arraimag.length()==0)
+						arras.add("/data/menu/images/GenericMenu/waitresses/none.jpg");
+					else
 					{
-						// Extraemos cada imágen
-						JSONObject finn=arraimag.getJSONObject(z);
-						//Creamos el path absoluto de las imágenes
-						arras.add("/data/menu"+finn.getString("url"));
+						for(int z=0; z<arraimag.length();z++)
+						{
+							// Extraemos cada imágen
+							JSONObject finn=arraimag.getJSONObject(z);
+							//Creamos el path absoluto de las imágenes
+							arras.add("/data/menu"+finn.getString("url"));
+						}
 					}
 					// Creamos un arreglo vacío para los precios
 					ArrayList<Price> arrapric=new ArrayList<Price>();
@@ -253,7 +258,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 						// Extraemos cada precio
 						JSONObject finn=arraprec.getJSONObject(z);
 						// Creamos objeto Price y lo añadimos al arraylist
-						arrapric.add(new Price(finn.getInt("price"),finn.getInt("cuantity"),finn.getInt("id"),finn.getString("description")));
+						arrapric.add(new Price(finn.getInt("price"),finn.getInt("cuantity"),finn.getInt("id"),finn.getString("descripcion")));
 					}
 					// Extraemos la descripción del MenuItem
 					String desc=fin.getString("details");
@@ -279,7 +284,14 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 				JSONObject obi= foo.getJSONObject(j);
 				//Extraemos los parámetros del mesero
 				String name=obi.getString("nick");
-				String thumb=obi.getString("image1");
+				String thumb;
+				try{
+					thumb=obi.getString("photo");	
+				}
+				catch(Exception e)
+				{
+					thumb="/images/GenericMenu/waitresses/none.jpg";
+				}
 				String prec=obi.getString("id");
 				// Creamos al mesero
 				Waiter w= new Waiter(name,Integer.parseInt(prec),"/data/menu"+thumb);
@@ -298,7 +310,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 				// Extraemos cada objeto
 				JSONObject obi= foo.getJSONObject(j);
 				// Tomamos los parámetros de la mesa
-				String code=obi.getString("code");
+				String code=obi.getString("id");
 				String busy=obi.getString("busy");
 				// Evaluamos si la mesa está ocupada
 				boolean bus=false;
@@ -344,7 +356,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public void onDestroy()
 	{
