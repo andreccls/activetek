@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Vector;
@@ -49,6 +50,8 @@ public class GenericMenuServer
             prop.load( in );
             in.close( );
 
+            writeJson();
+            
             try
             {
                 listener = new ListenerThread( this, Integer.parseInt( prop.getProperty( "osaki.server.port" ) ) );
@@ -65,7 +68,7 @@ public class GenericMenuServer
         }
         catch( FileNotFoundException e )
         {
-            throw new GenericMenuException( "No se encuentra el archivo de propiedadades \n contacte al administrador del sistema \n" + e.getMessage( ) );
+            throw new GenericMenuException( "No se encuentra el archivo de propiedades \n contacte al administrador del sistema \n" + e.getMessage( ) );
         }
         catch( IOException e )
         {
@@ -150,5 +153,10 @@ public class GenericMenuServer
     {
         GenericMenuDAO.getInstance( ).notifyDimensionChanged( width, height );
     }
-
+    public void writeJson() throws FileNotFoundException
+    {
+    	PrintWriter p= new PrintWriter(new File("./images/json.txt"));
+    	p.println(getJSon());
+    	p.close();
+    }
 }
