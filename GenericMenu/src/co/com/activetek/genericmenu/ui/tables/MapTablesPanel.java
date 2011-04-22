@@ -59,7 +59,7 @@ public class MapTablesPanel extends JPanel
         {
             for( int j = 0; j < height; j++ )// 6
             {
-                this.add( new TablePanel( tables[ i ][ j ],i ,j ), " "+i+", "+j+"");             
+                this.add( new TablePanel( tables[ i ][ j ],i ,j , window), " "+i+", "+j+"");             
             }
         }        
         this.doLayout();
@@ -76,7 +76,7 @@ public class MapTablesPanel extends JPanel
             for( int j = 0; j < height; j++ )// 6
             {
             	
-                this.add( new TablePanel( tables[ i ][ j ],i,j ), " "+i+", "+j+"");               
+                this.add( new TablePanel( tables[ i ][ j ],i,j, window ), " "+i+", "+j+"");               
             }
         }     
         this.doLayout();
