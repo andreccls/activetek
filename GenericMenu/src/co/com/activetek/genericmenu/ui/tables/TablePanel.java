@@ -44,6 +44,7 @@ public class TablePanel extends JPanel implements ActionListener
     private final static String MOVE_LEFT = "MOVE_LEFT";
     private final static String MOVE_RIGHT = "MOVE_RIGHT";
     private final static String SET_FREE = "SET_FREE";
+    private final static String EDIT = "EDIT";
 
 	//------------------------------------------------------------------------------------
 	//				ATRIBUTOS
@@ -63,7 +64,7 @@ public class TablePanel extends JPanel implements ActionListener
     private JMenuItem itemMoveLeft = new JMenuItem("Mover izquierda");
     private JMenuItem itemMoveRight = new JMenuItem("Mover derecha");
     private JMenuItem itemFree = new JMenuItem("Liberar Mesa");
-
+    private JMenuItem itemEdit = new JMenuItem("Editar");
     /**
      * la table del mundo que va a ser pintada en este panel
      */
@@ -128,12 +129,21 @@ public class TablePanel extends JPanel implements ActionListener
 			}
 		});
         itemDelete.setActionCommand(DELETE);
+        itemDelete.addActionListener(this);
         itemAdd.setActionCommand(ADD);
+        itemAdd.addActionListener(this);
         itemMoveUp.setActionCommand(MOVE_UP);
+        itemMoveUp.addActionListener(this);
         itemMoveDown.setActionCommand(MOVE_DOWN);
+        itemMoveDown.addActionListener(this);
         itemMoveLeft.setActionCommand(MOVE_LEFT);
+        itemMoveLeft.addActionListener(this);
         itemMoveRight.setActionCommand(MOVE_RIGHT);
+        itemMoveRight.addActionListener(this);
         itemFree.setActionCommand(SET_FREE);
+        itemFree.addActionListener(this);
+        itemEdit.setActionCommand(EDIT);
+        itemEdit.addActionListener(this);
         
         menuTtable.add(itemFree);
         menuTtable.add(new JPopupMenu.Separator());
@@ -144,6 +154,8 @@ public class TablePanel extends JPanel implements ActionListener
         menuTtable.add(itemMoveDown);
         menuTtable.add(itemMoveLeft);
         menuTtable.add(itemMoveRight);
+        menuTtable.add(new JPopupMenu.Separator());
+        menuTtable.add(itemEdit);       
         	
     }
     private JLabel getLabelIcon( )
@@ -239,6 +251,7 @@ public class TablePanel extends JPanel implements ActionListener
     		}
     		itemDelete.setEnabled(true);
     		itemMoveDown.setEnabled(true);
+    		itemEdit.setEnabled(true);
     	}
     	else
     	{
@@ -246,6 +259,7 @@ public class TablePanel extends JPanel implements ActionListener
     		itemMoveDown.setEnabled(false);
     		itemMoveRight.setEnabled(false);
     		itemFree.setEnabled(false);
+    		itemEdit.setEnabled(false);
     	}
     	
     	
