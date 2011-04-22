@@ -29,9 +29,9 @@ public class TablesPanel extends JPanel
     
     public void refresh( )
     {
+    	this.revalidate();
         Table[][] tables = window.getMatrixTables( );
-        mapTablesPanel.refresh( tables );
-        this.revalidate( );        
+        mapTablesPanel.refresh2( );                
     }
     
     

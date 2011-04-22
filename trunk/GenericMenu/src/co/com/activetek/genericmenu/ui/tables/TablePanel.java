@@ -21,6 +21,8 @@ import javax.swing.ImageIcon;
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.ui.utils.MyImageIcon;
 import javax.swing.BorderFactory;
+import javax.swing.border.TitledBorder;
+
 import java.awt.Color;
 import java.awt.SystemColor;
 import java.awt.Font;
@@ -50,6 +52,7 @@ public class TablePanel extends JPanel
     {
         this.table = table;
         initialize( );
+        this.setBorder( BorderFactory.createTitledBorder( null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font( "Dialog", Font.BOLD, 12 ), new Color( 51, 51, 51 ) ) );
     }
 
     private void initialize( )
