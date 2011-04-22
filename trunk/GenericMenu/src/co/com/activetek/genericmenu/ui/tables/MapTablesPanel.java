@@ -43,8 +43,6 @@ public class MapTablesPanel extends JPanel
         height = tables[ 0 ].length;
         width = tables.length;
         
-        System.out.println("width: " +width + " height: " +height);
-        
         double[] widthArray = new double[width];
         double[] heightArray = new double[height];
         
