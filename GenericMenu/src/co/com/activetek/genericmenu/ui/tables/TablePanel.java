@@ -28,29 +28,57 @@ import java.awt.SystemColor;
 import java.awt.Font;
 import java.awt.ComponentOrientation;
 
-public class TablePanel extends JPanel
+public class TablePanel extends JPanel implements ActionListener
 {
+	//------------------------------------------------------------------------------------
+	//				CONSTANTES
+	//------------------------------------------------------------------------------------
     public final static String FREE_TABLE = "./images/GenericMenu/ui/free_table.jpg";
     public final static String BUSY_TABLE = "./images/GenericMenu/ui/busy_table.jpg";
     public final static String WAITING_TABLE = "./images/GenericMenu/ui/waiting_table.jpg";
+    
+    private final static String DELETE = "DELETE";
+    private final static String ADD = "ADD";
+    private final static String MOVE_UP = "MOVE_UP";
+    private final static String MOVE_DOWN = "MOVE_DOWN";
+    private final static String MOVE_LEFT = "MOVE_LEFT";
+    private final static String MOVE_RIGHT = "MOVE_RIGHT";
+    private final static String SET_FREE = "SET_FREE";
 
+	//------------------------------------------------------------------------------------
+	//				ATRIBUTOS
+	//------------------------------------------------------------------------------------
     private static final long serialVersionUID = 1L;
     private JLabel labelNumber = null;
     private JLabel labelIcon = null;
     private JPanel panelDatails = null;
     private JLabel labelCapacity = null;
     private JLabel labelPuestos = null;// solo tiene esta info: setText("puestos")
-    JPopupMenu menuTtable = new JPopupMenu( );
-    JMenuItem itemDelete = new JMenuItem( "delete" );
+    
+    private JPopupMenu menuTtable = new JPopupMenu( );
+    private JMenuItem itemDelete = new JMenuItem( "Eliminar" );
+    private JMenuItem itemAdd = new JMenuItem( "Nueva Mesa" );
+    private JMenuItem itemMoveUp = new JMenuItem("Mover arriba");
+    private JMenuItem itemMoveDown = new JMenuItem("Mover abajo");
+    private JMenuItem itemMoveLeft = new JMenuItem("Mover izquierda");
+    private JMenuItem itemMoveRight = new JMenuItem("Mover derecha");
+    private JMenuItem itemFree = new JMenuItem("Liberar Mesa");
 
     /**
      * la table del mundo que va a ser pintada en este panel
      */
     private Table table;
+    /**
+     * No basta com saber solo la mesa, sino tambien hay que saber las coordenadas para cuando se quiere agregar una mesa en un campo en que table ==  null
+     */
+    private int x;
+    private int y;
 
-    public TablePanel( Table table )
+    public TablePanel( Table table, int x, int y )
     {
         this.table = table;
+        this.x = x;
+        this.y = y;
         initialize( );
         this.setBorder( BorderFactory.createTitledBorder( null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font( "Dialog", Font.BOLD, 12 ), new Color( 51, 51, 51 ) ) );
     }
@@ -63,6 +91,60 @@ public class TablePanel extends JPanel
         this.add( getLabelIcon( ), BorderLayout.CENTER );
         this.add( getLabelNumber( ), BorderLayout.NORTH );
         this.add( getPanelDetails( ), BorderLayout.SOUTH );
+        this.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {	
+				if(e.getButton() == MouseEvent.BUTTON3)
+				{
+					System.out.println(x +","+y);
+					getTableMenu().show(e.getComponent(),e.getX(),e.getY());
+				}
+				
+			}
+		});
+        itemDelete.setActionCommand(DELETE);
+        itemAdd.setActionCommand(ADD);
+        itemMoveUp.setActionCommand(MOVE_UP);
+        itemMoveDown.setActionCommand(MOVE_DOWN);
+        itemMoveLeft.setActionCommand(MOVE_LEFT);
+        itemMoveRight.setActionCommand(MOVE_RIGHT);
+        itemFree.setActionCommand(SET_FREE);
+        
+        menuTtable.add(itemFree);
+        menuTtable.add(new JPopupMenu.Separator());
+        menuTtable.add(itemDelete);
+        menuTtable.add(itemAdd);
+        menuTtable.add(new JPopupMenu.Separator());
+        menuTtable.add(itemMoveUp);
+        menuTtable.add(itemMoveDown);
+        menuTtable.add(itemMoveLeft);
+        menuTtable.add(itemMoveRight);
+        	
     }
     private JLabel getLabelIcon( )
     {
@@ -119,69 +201,63 @@ public class TablePanel extends JPanel
         }
         return panelDatails;
     }
-    // /**
-    // * This method initializes this
-    // *
-    // * @return void
-    // */
-    // private void initializeOld( )
-    // {
-    // labelIcon = new JLabel( );
-    // labelIcon.setText( "" );
-    // labelIcon.setHorizontalTextPosition( SwingConstants.CENTER );
-    // labelIcon.setHorizontalAlignment( SwingConstants.CENTER );
-    // ImageIcon ic = new ImageIcon( "./images/GenericMenu/ui/free_table.jpg" );
-    // labelIcon.setIcon( MyImageIcon.getInstance( ).setSize( ic.getImage( ), 70, 70, this ) );
-    // labelNumber = new JLabel( );
-    // labelNumber.setText( "" + ( x + 1 + y * MapTablesPanel.WIDTH ) );
-    // labelNumber.setHorizontalAlignment( SwingConstants.CENTER );
-    //
-    // itemDelete.addActionListener( new ActionListener( )
-    // {
-    //
-    // public void actionPerformed( ActionEvent e )
-    // {
-    // System.out.println( "delte!!!" );
-    //
-    // }
-    // } );
-    // menuTtable.add( itemDelete );
-    // this.addMouseListener( new MouseListener( )
-    // {
-    //
-    // public void mouseReleased( MouseEvent e )
-    // {
-    //
-    // }
-    //
-    // public void mousePressed( MouseEvent e )
-    // {
-    //
-    // }
-    //
-    // public void mouseExited( MouseEvent e )
-    // {
-    //
-    // }
-    //
-    // public void mouseEntered( MouseEvent e )
-    // {
-    //
-    // }
-    //
-    // public void mouseClicked( MouseEvent e )
-    // {
-    // if( e.getButton( ) == MouseEvent.BUTTON3 )
-    // {
-    // menuTtable.show( e.getComponent( ), e.getX( ), e.getY( ) );
-    // }
-    //
-    // }
-    // } );
-    //
-    // this.setLayout( new BorderLayout( ) );
-    // this.add( labelNumber, BorderLayout.NORTH );
-    // this.add( labelIcon, BorderLayout.CENTER );
-    // }
+   
+    /**
+     * Reotorna las copciones opciones disponibles para la mesa
+     * 
+     * mover arriba, mover abajo, mover izquierda, mover derecha siempre aparecen siempre y cuando un borde no lo impida
+     * Eliminar aparece siempre y cuando la mesa exista.
+     * Crear aparece si la table ==  null
+     * BUSY || WAITING Table: Liberar mesa.
+     * FREE Table: 
+     * @return
+     */
+    private JPopupMenu getTableMenu()
+    {
+    	
+    	
+    	
+		if(y!=0 && table != null)
+    		itemMoveUp.setEnabled(true);
+    	else
+    		itemMoveUp.setEnabled(false);
+    	
+    	if(x!=0 && table != null)
+    		itemMoveLeft.setEnabled(true);
+    	else
+    		itemMoveLeft.setEnabled(false);
+    	
+    	if(table != null)
+    	{
+    		if(table.getState().equals(Table.BUSY) || table.getState().equals(Table.WAITING))
+    		{
+    			itemFree.setEnabled(true);
+    		}
+    		else
+    		{
+    			itemFree.setEnabled(false);
+    		}
+    		itemDelete.setEnabled(true);
+    		itemMoveDown.setEnabled(true);
+    	}
+    	else
+    	{
+    		itemDelete.setEnabled(false);
+    		itemMoveDown.setEnabled(false);
+    		itemMoveRight.setEnabled(false);
+    		itemFree.setEnabled(false);
+    	}
+    	
+    	
+    	
+    	return menuTtable;
+    }
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		String command = arg0.getActionCommand();
+		System.out.println(command);
+		
+	}
 
 }

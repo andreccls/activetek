@@ -1,22 +1,15 @@
 package co.com.activetek.genericmenu.ui.tables;
 
 import javax.swing.JPanel;
-import java.awt.GridLayout;
-import javax.swing.BorderFactory;
-import javax.swing.border.TitledBorder;
 
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.ui.OsakiMenu;
 
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.Graphics;
 
 import layout.TableLayout;
 
-public class MapTablesPanel extends JPanel
+public class MapTablesPanel extends JPanel 
 {
 
     private static final long serialVersionUID = 1L;
@@ -35,8 +28,8 @@ public class MapTablesPanel extends JPanel
         width = tables[ 0 ].length;
         height = tables.length;
         this.tables = tables;
-        this.setBorder( BorderFactory.createTitledBorder( null, "Mesas", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font( "Dialog", Font.BOLD, 12 ), new Color( 51, 51, 51 ) ) );
-        refresh( tables );
+        //this.setBorder( BorderFactory.createTitledBorder( null, "Mesas", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font( "Dialog", Font.BOLD, 12 ), new Color( 51, 51, 51 ) ) );
+        init( );
     }
 
     /**
@@ -44,20 +37,19 @@ public class MapTablesPanel extends JPanel
      * 
      * @return void
      */
-    public void refresh( Table[][] xtables )
-    {        
+    public void init(  )
+    {           
         
-        this.tables = xtables ;
-        width = tables[ 0 ].length;
-        height = tables.length;
+        height = tables[ 0 ].length;
+        width = tables.length;
         
         System.out.println("width: " +width + " height: " +height);
         
-        double[] widthArray = new double[height];
-        double[] heightArray = new double[width];
+        double[] widthArray = new double[width];
+        double[] heightArray = new double[height];
         
-        java.util.Arrays.fill(widthArray, 100);
-        java.util.Arrays.fill(heightArray, 100);
+        java.util.Arrays.fill(widthArray, 0);
+        java.util.Arrays.fill(heightArray, 0);
         layout = new TableLayout();
         layout.setColumn(widthArray);
         layout.setRow(widthArray);
@@ -65,38 +57,50 @@ public class MapTablesPanel extends JPanel
         
         this.setLayout( layout );
         
-        for( int j = 0; j < width; j++ )// 5
+        for( int i = 0; i < width; i++ )// 5
         {
-            for( int i = 0; i < height; i++ )// 6
+            for( int j = 0; j < height; j++ )// 6
             {
-            	GridBagConstraints bgc = new GridBagConstraints();
-            	bgc.insets = new Insets( 0, 0, 0, 0 );
-            	bgc.fill = GridBagConstraints.BOTH;
-            	bgc.gridx = i;
-            	bgc.gridy = j;
-            	bgc.weightx = 1;
-            	bgc.weighty = 1;
-            	bgc.gridwidth = 1;
-            	bgc.gridheight = 1;
-            	
-                this.add( new TablePanel( tables[ i ][ j ] ), " "+i+", "+j+"");
-                System.out.println(" "+i+", "+j+"");
+                this.add( new TablePanel( tables[ i ][ j ],i ,j ), " "+i+", "+j+"");             
             }
-        }
-        this.setBorder( BorderFactory.createTitledBorder( null, "Mesas", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font( "Dialog", Font.BOLD, 12 ), new Color( 51, 51, 51 ) ) );
+        }        
         this.doLayout();
-        this.repaint();
-        this.revalidate();
+        this.repaint();        
     }
-    public void refresh2()
+    public void refresh(Table[][] xtables)
     {
-    	layout.insertColumn(height -3 , 100);
-    	
-    	for(int i = 0 ; i < width; i++)
-    	{
-    		this.add(new TablePanel(null), (height-3)+","+i);
-    	}
-    	this.doLayout();
-    	this.repaint();
+    	tables = xtables;
+    	height = tables[ 0 ].length;
+    	width = tables.length;
+        
+        for( int i = 0; i < width; i++ )// 5
+        {
+            for( int j = 0; j < height; j++ )// 6
+            {
+            	
+                this.add( new TablePanel( tables[ i ][ j ],i,j ), " "+i+", "+j+"");               
+            }
+        }     
+        this.doLayout();
+        this.repaint();        
+        
+    }
+    /**
+     * Se reimplementa este motodo con el fin de que el panel se ajuse al ancho de la ventana
+     */
+    public void paintComponent(Graphics g )//TODO hay un bug cuando se quiere cambiar la altura no actualiza correctamente
+    {   	
+        double[] widthArray = new double[width];
+        double[] heightArray = new double[height];
+        
+        java.util.Arrays.fill(widthArray, this.getWidth()/width);
+        java.util.Arrays.fill(heightArray, this.getHeight()/height);
+        
+        layout.setColumn(widthArray);
+        layout.setRow(widthArray);
+        
+        this.doLayout();
+        this.revalidate();
+    	super.paintComponent(g);
     }
 }

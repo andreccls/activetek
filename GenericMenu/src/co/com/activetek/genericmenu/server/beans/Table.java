@@ -4,10 +4,28 @@ import net.sf.json.JSONObject;
 
 public class Table
 {
+	//------------------------------------------------------------------------------------
+	//				CONSTANTES
+	//------------------------------------------------------------------------------------
+	/**
+	 * Representa el estado en que la mesa esta libre
+	 */
+	public final static String FREE = "free";
+	/**
+	 * Representa el estado para una que se encuentra ocupada y el pedido ya ha sido llevado a la mesa
+	 */
+	public final static String BUSY = "busy";
+	/**
+	 * Representa el estado para una mesa en que los clientes ya hicieron el pedido y se encuentran esperando la orden
+	 */
+	public final static String WAITING = "waiting";
     /**
      * Id generado automatico por la base de datos
      */
-    private int id;
+	//------------------------------------------------------------------------------------
+	//				ATRIBUTOS
+	//------------------------------------------------------------------------------------
+	private int id;
     /**
      * Id usado por el negocio
      */    
@@ -18,6 +36,9 @@ public class Table
     private String state;
     private boolean enable;
 
+	//------------------------------------------------------------------------------------
+	//				CONSTRUCTOR
+	//------------------------------------------------------------------------------------
     public Table( int id, int number, int capacity, int x, int y, String state, boolean enable )
     {
         super( );
@@ -29,6 +50,10 @@ public class Table
         this.state = state;
         this.enable = enable;
     }
+    
+	//------------------------------------------------------------------------------------
+	//				METODOS
+	//------------------------------------------------------------------------------------
     public int getId( )
     {
         return id;

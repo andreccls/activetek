@@ -31,7 +31,7 @@ public class TablesPanel extends JPanel
     {
     	this.revalidate();
         Table[][] tables = window.getMatrixTables( );
-        mapTablesPanel.refresh2( );                
+        mapTablesPanel.refresh( tables);                
     }
     
     
