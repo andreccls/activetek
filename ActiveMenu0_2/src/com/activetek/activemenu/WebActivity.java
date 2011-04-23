@@ -43,6 +43,5 @@ public class WebActivity extends AbstractActivityGroup{
 		return true;
 		}
 	}
-
 }
 

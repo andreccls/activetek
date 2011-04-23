@@ -36,7 +36,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	/**
 	 * Constante que indica la dirección IP del servidor
 	 */
-	public final static String SERVER_IP="192.168.0.104";
+	public final static String SERVER_IP="192.168.0.199";
 
 	/**
 	 * Diálogo de espera
@@ -102,7 +102,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 			OutputStream os = process.getOutputStream();
 			//Introducimos el comando a ser utilizado
 			//writeLine( os,"/data/data/eu.kowalczuk.rsync4android/files/rsync -vHrltDz --chmod=ugo+rwx --no-perms --delete-after -e \"/data/data/eu.kowalczuk.rsync4android/files/ssh -y -p 22 -i '/data/menu/dss_key'\" juan@192.168.0.199:/home/juan//Proyectos/Android/workspace/GenericMenu/images/ /data/menu/images/ && exit");
-			//writeLine( os,"sleep 1 && exit");
+			writeLine( os,"sleep 1 && exit");
 			// iniciamos ejecución sobre consola
 			os.flush();
 			//Esperamos a que el proceso se complete
@@ -261,7 +261,15 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 						arrapric.add(new Price(finn.getInt("price"),finn.getInt("cuantity"),finn.getInt("id"),finn.getString("descripcion")));
 					}
 					// Extraemos la descripción del MenuItem
-					String desc=fin.getString("details");
+					String desc;
+					try
+					{
+						desc=fin.getString("details");
+					}
+					catch (Exception e)
+					{
+						desc="";
+					}
 					// Creamos el MenuItem y lo añadimos al arrayList
 					// Se está creando con un código fijo
 					arr.add(new MenuItem(name,15,arras,arrapric,desc));
