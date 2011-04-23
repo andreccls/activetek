@@ -13,11 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class TableActivity extends AbstractActivityGroup{
 
@@ -198,7 +198,6 @@ public class TableActivity extends AbstractActivityGroup{
 		Log.d("TableActivity", message);
 		if (!message.equals("MAESTRO"))
 			slaveIndex=Integer.parseInt(message.substring(message.indexOf(":"))+1,message.length());
-
 	}
 	@Override
 	public void onDestroy()

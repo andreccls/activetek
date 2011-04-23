@@ -52,7 +52,6 @@ public class Receiver extends Thread{
 			Log.d("Receiver", e.getMessage());
 		}
 	}
-	
 	public void run()
 	{
 		String message="";
@@ -64,7 +63,29 @@ public class Receiver extends Thread{
 				// TODO Auto-generated catch block
 				Log.d("Receiver", e.getMessage());
 			}
-			owner.notifier(message);
+			if(message!=null)
+				owner.notifier(message);
+			else
+			{
+				owner.toastHandler.post(owner.toastRunnable);
+				boolean success=false;
+				while(!success)
+				{
+					try
+					{
+						Socket s=new Socket(ActiveMenu.SERVER_IP,9999);
+						setSocket(s);
+						Sender send=Sender.getInstance();
+						send.setSocket(s);
+						success=true;
+					}
+					catch(Exception e)
+					{
+						success=false;
+					}
+				}
+				owner.toastHandler.post(owner.toastRunnable2);
+			}
 		}
 	}
 }
