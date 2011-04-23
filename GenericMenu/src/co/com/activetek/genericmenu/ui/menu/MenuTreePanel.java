@@ -159,10 +159,7 @@ public class MenuTreePanel extends JPanel
                 {
                     Enumeration<TreePath> a = treeMenu.getExpandedDescendants( selectedNode.getParentPath( ).getParentPath( ) );// se guardan los paths abiertos para poder repintar el argbol y
                                                                                                                 // posteriormente volverlos a abrir
-                    
-                  
-                    
-                    
+
                     DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
                     MenuItem menuItem = ( MenuItem )d.getUserObject( );     
                     menuItem.delete();

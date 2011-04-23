@@ -1,5 +1,8 @@
 package co.com.activetek.genericmenu.server.beans;
 
+import java.sql.SQLException;
+
+import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 import net.sf.json.JSONObject;
 
 public class Table
@@ -39,7 +42,7 @@ public class Table
 	//------------------------------------------------------------------------------------
 	//				CONSTRUCTOR
 	//------------------------------------------------------------------------------------
-    public Table( int id, int number, int capacity, int x, int y, String state, boolean enable )
+    public Table( int id, int number, int capacity, int x, int y, String state, boolean enable ) throws SQLException
     {
         super( );
         this.id = id;
@@ -49,6 +52,8 @@ public class Table
         this.y = y;
         this.state = state;
         this.enable = enable;
+        if(id < 0)
+            GenericMenuDAO.getInstance( ).CRUD( this );
     }
     
 	//------------------------------------------------------------------------------------
@@ -66,17 +71,19 @@ public class Table
     {
         return number;
     }
-    public void setNumber( int number )
+    public void setNumber( int number ) throws SQLException
     {
         this.number = number;
+        GenericMenuDAO.getInstance( ).CRUD( this );
     }
     public int getCapacity( )
     {
         return capacity;
     }
-    public void setCapacity( int capacity )
+    public void setCapacity( int capacity ) throws SQLException
     {
         this.capacity = capacity;
+        GenericMenuDAO.getInstance( ).CRUD( this );
     }
     public int getX( )
     {
@@ -120,6 +127,11 @@ public class Table
     public String toString( )
     {
         return x + "," + y;
+    }
+
+    public void delete( ) throws SQLException
+    {
+        GenericMenuDAO.getInstance( ).delete( this );        
     }
 
 }

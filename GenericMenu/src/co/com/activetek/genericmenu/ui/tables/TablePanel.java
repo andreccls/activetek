@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -14,6 +15,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
@@ -25,9 +27,11 @@ import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.SystemColor;
 import java.awt.Font;
 import java.awt.ComponentOrientation;
+import java.sql.SQLException;
 
 public class TablePanel extends JPanel implements ActionListener
 {
@@ -68,6 +72,8 @@ public class TablePanel extends JPanel implements ActionListener
     private JMenuItem itemEdit = new JMenuItem( "Editar" );
     
     private OsakiMenu window;
+    private int mouseX;
+    private int mouseY;
     /**
      * la table del mundo que va a ser pintada en este panel
      */
@@ -93,7 +99,7 @@ public class TablePanel extends JPanel implements ActionListener
         this.setBorder( BorderFactory.createLineBorder( SystemColor.controlHighlight, 1 ) );
         BorderLayout border = new BorderLayout( );
         this.setLayout( border );
-        this.add( getLabelIcon( ), BorderLayout.CENTER );
+        //this.add( getLabelIcon( ), BorderLayout.CENTER );
         this.add( getLabelNumber( ), BorderLayout.NORTH );
         this.add( getPanelDetails( ), BorderLayout.SOUTH );
         this.addMouseListener( new MouseListener( )
@@ -109,7 +115,7 @@ public class TablePanel extends JPanel implements ActionListener
             @Override
             public void mousePressed( MouseEvent e )
             {
-                // TODO Auto-generated method stub
+                // TODO Auto-generated method stub  
 
             }
 
@@ -133,6 +139,8 @@ public class TablePanel extends JPanel implements ActionListener
                 if( e.getButton( ) == MouseEvent.BUTTON3 )
                 {
                     getTableMenu( ).show( e.getComponent( ), e.getX( ), e.getY( ) );
+                    mouseX = e.getX( );
+                    mouseY = e.getY( );
                 }
 
             }
@@ -190,34 +198,52 @@ public class TablePanel extends JPanel implements ActionListener
         if( labelNumber == null )
         {
             labelNumber = new JLabel( );
+            labelNumber.setHorizontalAlignment( SwingConstants.CENTER );
             if( table != null )
             {
-                labelNumber.setText( table.getNumber( ) + "" );
-                labelNumber.setHorizontalAlignment( SwingConstants.CENTER );
+                labelNumber.setText( table.getNumber( ) + "" );                
             }
 
         }
         return labelNumber;
+    }
+    public void paintComponent(Graphics g )
+    {
+        super.paintComponent( g );
+        if( table != null )
+        {
+            String image = table.getState( ).equalsIgnoreCase( "FREE" ) ? FREE_TABLE : table.getState( ).equalsIgnoreCase( "BUSY" ) ? BUSY_TABLE : WAITING_TABLE;              
+            ImageIcon ic = MyImageIcon.getInstance( ).setSize( new ImageIcon( image ).getImage( ), this.getWidth( ), this.getHeight( ), this );
+            
+            g.drawImage( ic.getImage( ),0,0,null);
+        }
     }
     private JPanel getPanelDetails( )
     {
         if( panelDatails == null )
         {
             panelDatails = new JPanel( );
+            labelCapacity = new JLabel( );
+            labelPuestos = new JLabel( );
+            
+            labelCapacity.setFont( new Font( "Arial", Font.BOLD | Font.ITALIC, 12 ) );
+            labelCapacity.setHorizontalAlignment( SwingConstants.RIGHT );
+            labelCapacity.setHorizontalTextPosition( SwingConstants.RIGHT );
+            labelCapacity.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
+            
+            labelPuestos.setFont( new Font( "Arial", Font.BOLD | Font.ITALIC, 9 ) );
+            labelPuestos.setComponentOrientation( ComponentOrientation.RIGHT_TO_LEFT );
+            
+            
             if( table != null )
             {
                 // panelDatails.setLayout( new GridLayout( 1, 2) );
-                labelCapacity = new JLabel( table.getCapacity( ) + "" );
-                labelCapacity.setFont( new Font( "Arial", Font.BOLD | Font.ITALIC, 12 ) );
-                labelCapacity.setHorizontalAlignment( SwingConstants.RIGHT );
-                labelCapacity.setHorizontalTextPosition( SwingConstants.RIGHT );
-                labelCapacity.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
-                labelPuestos = new JLabel( " puestos" );
-                labelPuestos.setFont( new Font( "Arial", Font.BOLD | Font.ITALIC, 9 ) );
-                labelPuestos.setComponentOrientation( ComponentOrientation.RIGHT_TO_LEFT );
-                panelDatails.add( labelCapacity );
-                panelDatails.add( labelPuestos );
+                labelCapacity.setText( table.getCapacity( ) + "" );                
+                labelPuestos.setText( " puestos" );
+                                
             }
+            panelDatails.add( labelCapacity );
+            panelDatails.add( labelPuestos );
 
         }
         return panelDatails;
@@ -256,6 +282,7 @@ public class TablePanel extends JPanel implements ActionListener
             itemDelete.setEnabled( true );
             itemMoveDown.setEnabled( true );
             itemEdit.setEnabled( true );
+            itemAdd.setEnabled( false );
         }
         else
         {
@@ -275,11 +302,22 @@ public class TablePanel extends JPanel implements ActionListener
         String command = arg0.getActionCommand( );
         if( command.equals( DELETE ) )
         {
-            
+            try
+            {
+                table.delete();
+                refresh( null );
+            }
+            catch( SQLException e )
+            {
+                JOptionPane.showMessageDialog( window, "Error inesperado eliminando la mesa de la base de datos \n" +e.getMessage( ) , "ERROR", JOptionPane.ERROR_MESSAGE );
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }            
         }
         else if( command.equals( ADD ) )
         {
-
+            TableEditDialog d = new TableEditDialog( table, mouseX, mouseY , window, this, x , y);
+            d.setVisible( true );
         }
         else if( command.equals( MOVE_UP ) )
         {
@@ -303,8 +341,44 @@ public class TablePanel extends JPanel implements ActionListener
         }
         else if( command.equals( EDIT ) )
         {
-
+            TableEditDialog d = new TableEditDialog( table, mouseX, mouseY , window, this, x, y);
+            d.setVisible( true );
         }
+    }
+    /**
+     * Este metodo pinta la mesa cuando es creada
+     * @param table
+     */
+    public void refresh(Table table)
+    {
+        this.table = table;
+        if(table != null)
+        {
+            labelCapacity.setText( table.getCapacity( ) +"");
+            labelPuestos.setText( " puestos" );
+            labelNumber.setText( table.getNumber( ) + "" );
+            
+            labelIcon.setHorizontalAlignment( SwingConstants.CENTER );
+            if( table != null )
+            {
+                String image = table.getState( ).equalsIgnoreCase( "FREE" ) ? FREE_TABLE : table.getState( ).equalsIgnoreCase( "BUSY" ) ? BUSY_TABLE : WAITING_TABLE;
+                ImageIcon ic = new ImageIcon( image );
+                labelIcon.setIcon( MyImageIcon.getInstance( ).setSize( ic.getImage( ), 70, 70, this ) );
+            }
+        }
+        else
+        {
+            labelCapacity.setText( "");
+            labelPuestos.setText( "" );
+            labelNumber.setText( "" );
+            labelIcon.setIcon( null );
+        }
+        
+    }
+    public void update( int number, int capacity )
+    {
+        labelCapacity.setText( capacity +"" );
+        labelNumber.setText( number +"" );
     }
 
 }

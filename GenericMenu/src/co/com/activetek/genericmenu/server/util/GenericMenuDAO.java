@@ -250,8 +250,32 @@ public class GenericMenuDAO
                 {
                     p.setId( rs.getInt( 1 ) );
                 }
-            }
+            }            
+        }
+        else if ( object instanceof Table )
+        {
+            Table t = (Table)object;
+            Statement st = conn.createStatement( );
+            sql = "insert into x_table (table_id,number,capacity,x,y,state,enable) values" +
+            "( "+(t.getId( )<0?"NULL":t.getId( ))+","+
+            ""+t.getNumber( )+","+
+            ""+t.getCapacity( )+","+
+            ""+(t.getX( )+1)+","+
+            ""+(t.getY( )+1)+","+
+            "'"+(t.getState( ))+"',"+
+            ""+(t.isEnable( )?"1":"0")+""+
+            ") on duplicate key update number = values(number),capacity = values(capacity), x = values(x), y = values(y), state = values(state), enable = values(enable)";
+            System.out.println(sql);
+            st.execute( sql );
             
+            if(t.getId( ) < 0)
+            {
+                ResultSet rs = st.executeQuery( "select max(table_id) from x_table " );
+                if( rs.next( ) )
+                {
+                    t.setId( rs.getInt( 1 ) );
+                }
+            }
         }
     }
 
@@ -277,6 +301,13 @@ public class GenericMenuDAO
             PriceItem p = (PriceItem)object;
             Statement st = conn.createStatement( );
             sql = "delete from priceitem where priceitem_id = " + p.getId( );
+            st.executeUpdate( sql );
+        }
+        else if(object instanceof Table)
+        {
+            Table t = (Table)object;
+            Statement st = conn.createStatement( );
+            sql = "delete from x_table where table_id = " + t.getId( );
             st.executeUpdate( sql );
         }
     }
