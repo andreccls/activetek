@@ -95,7 +95,7 @@ public class MapTablesPanel extends JPanel
         java.util.Arrays.fill(heightArray, this.getHeight()/height);
         
         layout.setColumn(widthArray);
-        layout.setRow(widthArray);
+        layout.setRow(heightArray);
         
         this.doLayout();
         this.revalidate();
