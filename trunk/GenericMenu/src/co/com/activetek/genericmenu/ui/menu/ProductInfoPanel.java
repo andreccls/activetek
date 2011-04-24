@@ -14,6 +14,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.util.Vector;
 import javax.swing.BoxLayout;
+import javax.swing.SwingConstants;
 
 public class ProductInfoPanel extends JPanel
 {
@@ -29,7 +30,7 @@ public class ProductInfoPanel extends JPanel
     {
         super( );
         this.window = window;
-        initialize( );        
+        initialize( );
     }
 
     /**
@@ -41,6 +42,7 @@ public class ProductInfoPanel extends JPanel
     {
 
         labelNombre = new JLabel( );
+        labelNombre.setHorizontalAlignment(SwingConstants.LEFT);
         labelNombre.setText( "Ebi roll" );// TODO esta vaina tiene que morir
         labelNombre.setFont( new Font( "Dialog", Font.BOLD, 18 ) );
         this.setSize( 388, 600 );
@@ -60,7 +62,7 @@ public class ProductInfoPanel extends JPanel
     {
         if( productInfoImagePanel == null )
         {
-            productInfoImagePanel = new ProductInfoImagePanel( window  );
+            productInfoImagePanel = new ProductInfoImagePanel( window );
         }
         return productInfoImagePanel;
     }
@@ -81,13 +83,20 @@ public class ProductInfoPanel extends JPanel
 
     public void updateSelectedItem( MenuItem selected )
     {
-        if(selected != null)
+        if( selected != null && ( selected.getLevel( ) == MenuItem.LEVEl_CATEGORY || selected.getLevel( ) == MenuItem.LEVEL_MENU ) )
         {
             labelNombre.setText( selected.getName( ) );
             productInfoImagePanel.setImages( selected.getImages( ) );
+            getProdcutInfoDetailPanel().setVisible( false );
+            this.repaint( );
+        }
+        else if( selected != null )
+        {
+            labelNombre.setText( selected.getName( ) );
+            productInfoImagePanel.setImages( selected.getImages( ) );
+            getProdcutInfoDetailPanel().setVisible( true );
             prodcutInfoDetailPanel.setSelectedItem( selected );
         }
-
     }
 
 } // @jve:decl-index=0:visual-constraint="10,10"
