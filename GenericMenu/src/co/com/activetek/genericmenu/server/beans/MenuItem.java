@@ -15,7 +15,8 @@ public class MenuItem extends Vector<MenuItem>
      */
     public final static int LEVEl_CATEGORY = 1;
     public final static int LEVEl_ITEM = 2;
-
+    public final static int LEVEL_MENU = 0;
+    
     private int id;
     private String name;
     private String details;

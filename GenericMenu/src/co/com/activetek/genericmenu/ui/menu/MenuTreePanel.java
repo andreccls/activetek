@@ -35,7 +35,9 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.JScrollPane;
 
+import co.com.activetek.genericmenu.server.beans.Image;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.ui.OsakiMenu;
 
 import java.awt.BorderLayout;
@@ -49,12 +51,29 @@ import java.util.Vector;
  * @author daniel.rodriguez
  * 
  */
-public class MenuTreePanel extends JPanel
+public class MenuTreePanel extends JPanel implements ActionListener
 {
+    // --------------------------------------------------------------------------------
+    // CONSTANTES
+    // --------------------------------------------------------------------------------
+    /**
+     * Constante usada para colocar el nobre a los items nuevos
+     */
+    private final static String NUEVO_ITEM = "Nuevo Item";
 
-    public final static String NUEVO_ITEM = "Nuevo Item";
+    /**
+     * Estas constantes son usadas para colocar el nombre a los JMenuItem y para capturar el action command de esta clase
+     */
+    private final static String ADD_MENUITEM = "Agregar Item";
+    private final static String DEL_MENUITEM = "Eliminar Item";
+    private final static String DEL_CATEGORY = "Eliminar Categoria";
+    private final static String ADD_CATEGORY = "Agregar Categoria";
 
     private static final long serialVersionUID = 1L;
+
+    // --------------------------------------------------------------------------------
+    // ATRIBUTOS
+    // --------------------------------------------------------------------------------
     private OsakiMenu window;
     private JTree treeMenu = null;
     private JScrollPane jScrollPane = null;
@@ -64,24 +83,25 @@ public class MenuTreePanel extends JPanel
     private TreePath selectedNode;
 
     /**
-     * 
      */
     private DefaultMutableTreeNode selectedNodeTreeNode;
 
-    JPopupMenu popupmenuCategory = new JPopupMenu( );
+    private JPopupMenu popupmenuCategory = new JPopupMenu( );
     /**
-     * meny item usado para agregar un nuebo item a la categoria seleccionada
+     * menu item usado para agregar un nuevo item a la categoria seleccionada
      */
-    JMenuItem itemAdd = new JMenuItem( "Agregar Item" );
-    /**
-     * This is the default constructor
-     */
+    private JMenuItem itemAddMenuItem = new JMenuItem( ADD_MENUITEM );
+    private JMenuItem itemDelCategory = new JMenuItem( DEL_CATEGORY );
+    private JPopupMenu popupmenuMenu = new JPopupMenu( );
 
-    JPopupMenu popupmenuItem = new JPopupMenu( );
-    JMenuItem itemDel = new JMenuItem( "Borrar Item" );
-    /**
-     * This is the default constructor
-     */
+    private JMenuItem itemAddCategory = new JMenuItem( ADD_CATEGORY );
+
+    private JPopupMenu popupmenuItem = new JPopupMenu( );
+    private JMenuItem itemDel = new JMenuItem( DEL_MENUITEM );
+
+    // --------------------------------------------------------------------------------
+    // CONSTRUCTOR
+    // --------------------------------------------------------------------------------
     public MenuTreePanel( OsakiMenu window )
     {
         super( );
@@ -101,91 +121,16 @@ public class MenuTreePanel extends JPanel
         this.setBorder( BorderFactory.createTitledBorder( null, "GnericMenu", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null ) );
         this.add( getJScrollPane( ), BorderLayout.CENTER );
 
-        itemAdd.addActionListener( new ActionListener( )
-        {
-            @Override
-            public void actionPerformed( ActionEvent e )
-            {
-                try
-                {
-                    Enumeration<TreePath> a = treeMenu.getExpandedDescendants( selectedNode.getParentPath( ) );// se guardan los paths abiertos para poder repintar el argbol y
-                                                                                                               // posteriormente volverlos a abrir
+        itemAddMenuItem.addActionListener( this );
+        itemDelCategory.addActionListener( this );
+        popupmenuCategory.add( itemAddMenuItem );
+        popupmenuCategory.add( itemDelCategory );
 
-                    DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
-                    MenuItem padre = ( MenuItem )d.getUserObject( );
-                    MenuItem newSon = new MenuItem( -1, NUEVO_ITEM, "description", 2, true, "icon", null, padre, null, true ); // TODO cambiar por los valores que deberia
-                                                                                                                               // entrar por default
-
-                    padre.add( newSon );
-
-                    DefaultMutableTreeNode nuevo = new DefaultMutableTreeNode( newSon );
-                    selectedNodeTreeNode = nuevo;
-
-                    // TODO hay que actualizar los paneles
-
-                    d.add( nuevo );// TODO aqui hay un BUG, cada vez que se agrega a un nodo que no se a habierto antes, se pinga dos veces
-                    ( ( DefaultTreeModel )treeMenu.getModel( ) ).reload( );
-                    treeMenu.repaint( );
-
-                    while( a.hasMoreElements( ) )// vuelve a abrir los paths que estaban abiertos abntes de que se comenzara la edicion
-                    {
-                        TreePath p = a.nextElement( );
-                        treeMenu.expandPath( p );
-                        System.out.println( p );
-                    }
-                    TreePath tp = treeMenu.getNextMatch( NUEVO_ITEM, treeMenu.getRowCount( ) - 1, Position.Bias.Backward ); // TODO no deberia buscar en todo el arbol sino
-                                                                                                                            // desde
-                                                                                                                            // la parte de abajo de la rama en la que se agrefo
-                                                                                                                            // el
-                                                                                                                            // nuevo item
-                    treeMenu.startEditingAtPath( tp );
-                }
-                catch( SQLException e1 )
-                {
-                    JOptionPane.showMessageDialog( window, "Error inesperado tratando de crear el nuevo item \n " + e1.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-                    e1.printStackTrace( );
-                }
-            }
-        } );
-        popupmenuCategory.add( itemAdd );
-
-        itemDel.addActionListener( new ActionListener( )
-        {
-
-            @Override
-            public void actionPerformed( ActionEvent e )
-            {
-                try
-                {
-                    Enumeration<TreePath> a = treeMenu.getExpandedDescendants( selectedNode.getParentPath( ).getParentPath( ) );// se guardan los paths abiertos para poder
-                                                                                                                                // repintar el argbol y
-                    // posteriormente volverlos a abrir
-
-                    DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
-                    MenuItem menuItem = ( MenuItem )d.getUserObject( );
-                    menuItem.delete( );
-                    treeMenu.removeSelectionPath( selectedNode );
-
-                    ( ( DefaultTreeModel )treeMenu.getModel( ) ).removeNodeFromParent( d );
-                    ( ( DefaultTreeModel )treeMenu.getModel( ) ).reload( );
-                    treeMenu.repaint( );
-
-                    while( a.hasMoreElements( ) )// vuelve a abrir los paths que estaban abiertos abntes de que se comenzara la edicion
-                    {
-                        TreePath p = a.nextElement( );
-                        System.out.println( p );
-                        treeMenu.expandPath( p );
-                    }
-                }
-                catch( SQLException e1 )
-                {
-                    JOptionPane.showMessageDialog( window, "Error inesperado tratando de eleminar el item \n " + e1.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-                    e1.printStackTrace( );
-                }
-            }
-        } );
+        itemDel.addActionListener( this );
         popupmenuItem.add( itemDel );
 
+        itemAddCategory.addActionListener( this );
+        popupmenuMenu.add( itemAddCategory );
     }
 
     /**
@@ -252,9 +197,13 @@ public class MenuTreePanel extends JPanel
                         {
                             popupmenuItem.show( e.getComponent( ), e.getX( ), e.getY( ) );
                         }
+                        else if( e.getButton( ) == MouseEvent.BUTTON3 && window.getSelectedItem( ).getLevel( ) == MenuItem.LEVEL_MENU )
+                        {
+                            popupmenuMenu.show( e.getComponent( ), e.getX( ), e.getY( ) );
+                        }
                         else
                         {
-                            window.setSelectedItem( path2 );
+                            window.setSelectedItem( getMenuItembyPath( selectedNode ) );
                         }
                     }
                 }
@@ -289,6 +238,23 @@ public class MenuTreePanel extends JPanel
         return jScrollPane;
     }
 
+    private MenuItem getMenuItembyPath( TreePath path )
+    {
+        Object obj = path.getPath( )[ path.getPath( ).length - 1 ];
+        if( obj instanceof DynamicUtilTreeNode )
+        {
+            return ( ( MenuItem ) ( ( DynamicUtilTreeNode ) ( path.getPath( )[ path.getPath( ).length - 1 ] ) ).getUserObject( ) );
+
+        }
+        else if( obj instanceof DefaultMutableTreeNode )// Aqui entra cuando el MenuItem fue creado en esta secion
+        {
+            return ( ( MenuItem ) ( ( DefaultMutableTreeNode ) ( path.getPath( )[ path.getPath( ).length - 1 ] ) ).getUserObject( ) );
+        }
+        else
+        {
+            return null;
+        }
+    }
     // -----------------------------------------------------------------------------------
     // Otras clases
     // -----------------------------------------------------------------------------------
@@ -347,91 +313,173 @@ public class MenuTreePanel extends JPanel
 
     }
 
-    /**
-     * Esta clase a final tampoco me sirvio
-     */
-    @Deprecated
-    class menuItemEditor extends DefaultCellEditor
+    public void actionPerformed( ActionEvent e )
     {
 
-        public menuItemEditor( JTextField textField )
+        String command = e.getActionCommand( );
+
+        if( command.endsWith( ADD_MENUITEM ) )
         {
-            super( textField );
-        }
-    }
-
-    /**
-     * TODO eventualmente esta clase se usara para que los nodos del arbol se vean mas bonitos
-     * 
-     * @author daniel.rodriguez
-     * 
-     */
-    class menuItemRender implements TreeCellRenderer
-    {
-
-        @Override
-        public Component getTreeCellRendererComponent( JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus )
-        {
-            System.out.println( hashCode( ) + " getTreeCellRendererComponent" );
-            String stringValue = tree.convertValueToText( value, selected, expanded, leaf, row, false );
-            JLabel l = new JLabel( stringValue );
-            return l;
-        }
-
-    }
-
-    /**
-     * Deprecado poarque al parecer esta no fue la solucion
-     * @author daniel.rodriguez
-     * 
-     */
-    @Deprecated
-    class menuItemListener implements TreeModelListener
-    {
-
-        public menuItemListener( JTree tree )
-        {
-
-        }
-        @Override
-        public void treeNodesChanged( TreeModelEvent e )
-        {
-            // TODO Auto-generated method stub
-            // System.out.println("treeNodesChanged");
-            // System.out.println(e.getPath( )[0].getClass( ));
-            // System.out.println(((DefaultTreeModel)e.getSource( )));
-
-            System.out.println( e.getTreePath( ) );
-            Object[] o = e.getPath( );
-            for( Object object : o )
+            try
             {
-                System.out.println( object );
+                Enumeration<TreePath> a = treeMenu.getExpandedDescendants( selectedNode.getParentPath( ) );// se guardan los paths abiertos para poder repintar el argbol y
+                                                                                                           // posteriormente volverlos a abrir
+
+                DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
+                MenuItem padre = ( MenuItem )d.getUserObject( );
+                MenuItem newSon = new MenuItem( -1, NUEVO_ITEM, "description", 2, true, "icon", new Vector<Image>( ), padre, new Vector<PriceItem>( ), true ); // TODO
+                                                                                                                                                               // cambiar
+                                                                                                                                                               // por los
+                                                                                                                                                               // valores
+                                                                                                                                                               // que
+                                                                                                                                                               // deberia
+                // entrar por default
+
+                padre.add( newSon );
+
+                DefaultMutableTreeNode nuevo = new DefaultMutableTreeNode( newSon );
+                selectedNodeTreeNode = nuevo;
+
+                // TODO hay que actualizar los paneles
+
+                d.add( nuevo );// TODO aqui hay un BUG, cada vez que se agrega a un nodo que no se a habierto antes, se pinga dos veces
+                ( ( DefaultTreeModel )treeMenu.getModel( ) ).reload( );
+                treeMenu.repaint( );
+
+                while( a.hasMoreElements( ) )// vuelve a abrir los paths que estaban abiertos abntes de que se comenzara la edicion
+                {
+                    TreePath p = a.nextElement( );
+                    treeMenu.expandPath( p );
+                    System.out.println( p );
+                }
+                TreePath tp = treeMenu.getNextMatch( NUEVO_ITEM, treeMenu.getRowCount( ) - 1, Position.Bias.Backward ); // TODO no deberia buscar en todo el arbol sino
+                                                                                                                        // desde
+                                                                                                                        // la parte de abajo de la rama en la que se agrefo
+                                                                                                                        // el
+                                                                                                                        // nuevo item
+                treeMenu.startEditingAtPath( tp );
             }
-            System.out.println( ( ( ( ( DefaultMutableTreeNode )e.getPath( )[ e.getPath( ).length - 1 ] ).getUserObject( ) ) ).getClass( ) );
-            System.out.println( ( ( ( ( DefaultMutableTreeNode )e.getPath( )[ e.getPath( ).length - 1 ] ).getUserObject( ) ) ) );
-            System.out.println( "" );
-            // System.out.println( ((MenuItem)(((DefaultMutableTreeNode)e.getPath( )[e.getPath( ).length -1]).getUserObject( ))).isEnable( ) );
-        }
+            catch( SQLException e1 )
+            {
+                JOptionPane.showMessageDialog( window, "Error inesperado tratando de crear el nuevo item \n " + e1.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+                e1.printStackTrace( );
+            }
 
-        @Override
-        public void treeNodesInserted( TreeModelEvent e )
-        {
-            // TODO Auto-generated method stub
-            System.out.println( "treeNodesInserted" );
         }
-
-        @Override
-        public void treeNodesRemoved( TreeModelEvent e )
+        else if( command.equals( DEL_MENUITEM ) )
         {
-            // TODO Auto-generated method stub
-            System.out.println( "treeNodesRemoved" );
+            try
+            {
+                Enumeration<TreePath> a = treeMenu.getExpandedDescendants( selectedNode.getParentPath( ).getParentPath( ) );// se guardan los paths abiertos para poder
+                                                                                                                            // repintar el argbol y
+                // posteriormente volverlos a abrir
+
+                DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
+                MenuItem menuItem = ( MenuItem )d.getUserObject( );
+                menuItem.delete( );
+                treeMenu.removeSelectionPath( selectedNode );
+
+                ( ( DefaultTreeModel )treeMenu.getModel( ) ).removeNodeFromParent( d );
+                ( ( DefaultTreeModel )treeMenu.getModel( ) ).reload( );
+                treeMenu.repaint( );
+
+                while( a.hasMoreElements( ) )// vuelve a abrir los paths que estaban abiertos abntes de que se comenzara la edicion
+                {
+                    TreePath p = a.nextElement( );
+                    System.out.println( p );
+                    treeMenu.expandPath( p );
+                }
+            }
+            catch( SQLException e1 )
+            {
+                JOptionPane.showMessageDialog( window, "Error inesperado tratando de eleminar el item \n " + e1.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+                e1.printStackTrace( );
+            }
         }
-
-        @Override
-        public void treeStructureChanged( TreeModelEvent e )
+        else if( command.equals( DEL_CATEGORY ) )
         {
-            // TODO Auto-generated method stub
-            System.out.println( "TreeModelEvent" );
+            try
+            {
+                Enumeration<TreePath> a = treeMenu.getExpandedDescendants( selectedNode );// se guardan los paths abiertos para poder
+                                                                                          // repintar el argbol y
+                // posteriormente volverlos a abrir
+
+                DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
+                MenuItem menuItem = ( MenuItem )d.getUserObject( );
+                
+                
+                int reponce = JOptionPane.showConfirmDialog( window,"Esta apunto de eliminar la categoria " + menuItem + ". \n Esta operacion no se pude deshacer, \n ¿Desea eliminar la categoria y todos sus items? ","Advertencia",JOptionPane.OK_CANCEL_OPTION);
+                if(reponce == JOptionPane.CANCEL_OPTION)
+                {
+                    return;
+                }
+                
+                menuItem.delete( );
+                treeMenu.removeSelectionPath( selectedNode );
+
+                ( ( DefaultTreeModel )treeMenu.getModel( ) ).removeNodeFromParent( d );
+                ( ( DefaultTreeModel )treeMenu.getModel( ) ).reload( );
+                treeMenu.repaint( );
+
+                while( a != null && a.hasMoreElements( ) )// vuelve a abrir los paths que estaban abiertos abntes de que se comenzara la edicion
+                {
+                    TreePath p = a.nextElement( );
+                    System.out.println( p );
+                    treeMenu.expandPath( p );
+                }
+            }
+            catch( SQLException e1 )
+            {
+                JOptionPane.showMessageDialog( window, "Error inesperado tratando de eleminar el item \n " + e1.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+                e1.printStackTrace( );
+            }
+        }
+        else if( command.equals( ADD_CATEGORY ) )
+        {
+            try
+            {
+                Enumeration<TreePath> a = treeMenu.getExpandedDescendants( selectedNode );// se guardan los paths abiertos para poder repintar el argbol y
+                                                                                          // posteriormente volverlos a abrir
+
+                DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
+                MenuItem padre = ( MenuItem )d.getUserObject( );
+                MenuItem newSon = new MenuItem( -1, NUEVO_ITEM, "description", 2, true, "icon", new Vector<Image>( ), padre, new Vector<PriceItem>( ), true ); // TODO
+                                                                                                                                                               // cambiar
+                                                                                                                                                               // por los
+                                                                                                                                                               // valores
+                                                                                                                                                               // que
+                                                                                                                                                               // deberia
+                // entrar por default
+
+                padre.add( newSon );
+
+                DefaultMutableTreeNode nuevo = new DefaultMutableTreeNode( newSon );
+                selectedNodeTreeNode = nuevo;
+
+                // TODO hay que actualizar los paneles
+
+                d.add( nuevo );// TODO aqui hay un BUG, cada vez que se agrega a un nodo que no se a habierto antes, se pinga dos veces
+                ( ( DefaultTreeModel )treeMenu.getModel( ) ).reload( );
+                treeMenu.repaint( );
+
+                while( a != null && a.hasMoreElements( ) )// vuelve a abrir los paths que estaban abiertos abntes de que se comenzara la edicion
+                {
+                    TreePath p = a.nextElement( );
+                    treeMenu.expandPath( p );
+                    System.out.println( p );
+                }
+                TreePath tp = treeMenu.getNextMatch( NUEVO_ITEM, treeMenu.getRowCount( ) - 1, Position.Bias.Backward ); // TODO no deberia buscar en todo el arbol sino
+                                                                                                                        // desde
+                                                                                                                        // la parte de abajo de la rama en la que se agrefo
+                                                                                                                        // el
+                                                                                                                        // nuevo item
+                treeMenu.startEditingAtPath( tp );
+            }
+            catch( SQLException e1 )
+            {
+                JOptionPane.showMessageDialog( window, "Error inesperado tratando de crear el nuevo item \n " + e1.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+                e1.printStackTrace( );
+            }
         }
 
     }

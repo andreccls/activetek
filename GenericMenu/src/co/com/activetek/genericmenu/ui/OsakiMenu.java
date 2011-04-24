@@ -268,7 +268,11 @@ public class OsakiMenu extends JFrame
         selected = server.getMenuItemByPath( path );
         menuPanel.updateSelectedItem( selected );
     }
-
+    public void setSelectedItem( MenuItem selected)
+    {
+        this.selected = selected;
+        menuPanel.updateSelectedItem( selected );
+    }
     public Vector<Waitress> getWaitresses( )
     {
         try
