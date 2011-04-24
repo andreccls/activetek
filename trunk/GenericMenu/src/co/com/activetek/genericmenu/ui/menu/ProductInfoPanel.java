@@ -15,6 +15,7 @@ import java.awt.GridBagConstraints;
 import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.SwingConstants;
+import net.miginfocom.swing.MigLayout;
 
 public class ProductInfoPanel extends JPanel
 {
@@ -46,11 +47,11 @@ public class ProductInfoPanel extends JPanel
         labelNombre.setText( "Ebi roll" );// TODO esta vaina tiene que morir
         labelNombre.setFont( new Font( "Dialog", Font.BOLD, 18 ) );
         this.setSize( 388, 600 );
-        this.setLayout( new BoxLayout( this, BoxLayout.Y_AXIS ) );
         this.setBorder( BorderFactory.createTitledBorder( null, "Detalles del producto", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null ) );
-        this.add( labelNombre );
-        this.add( getProductInfoImagePanel( ) );
-        this.add( getProdcutInfoDetailPanel( ) );
+        setLayout(new MigLayout("fill", "[376px]", "[24px][273px][276px]"));
+        this.add( labelNombre, "cell 0 0,alignx center,aligny center" );
+        this.add( getProductInfoImagePanel( ), "cell 0 1,alignx center,aligny center" );
+        this.add( getProdcutInfoDetailPanel( ), "cell 0 2,alignx center,aligny center" );
     }
 
     /**
