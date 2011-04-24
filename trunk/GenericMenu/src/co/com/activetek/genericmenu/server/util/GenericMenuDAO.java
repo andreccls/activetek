@@ -286,7 +286,7 @@ public class GenericMenuDAO
         {
             MenuItem m = (MenuItem)object;
             Statement st = conn.createStatement( );            
-            sql =  "delete from menuitem where menuitem_id = " + m.getId( );            
+            sql =  "delete from menuitem where menuitem_id = " + m.getId( ) + " or parentId = " + m.getId( ); //TODO tiene que eliminar tambien las imagnes y los precios cada vez que se elimina un menuitem
             st.executeUpdate( sql );          
         }
         else if(object instanceof Image)
