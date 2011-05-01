@@ -1,7 +1,9 @@
 package co.com.activetek.genericmenu.server.beans;
 
 import java.sql.SQLException;
+import java.util.Vector;
 
+import co.com.activetek.genericmenu.server.ClientThread;
 import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 import net.sf.json.JSONObject;
 
@@ -38,7 +40,7 @@ public class Table
     private int y;
     private String state;
     private boolean enable;
-
+    private Vector<ClientThread> clients;
 	//------------------------------------------------------------------------------------
 	//				CONSTRUCTOR
 	//------------------------------------------------------------------------------------
@@ -52,6 +54,7 @@ public class Table
         this.y = y;
         this.state = state;
         this.enable = enable;
+        clients = new Vector<ClientThread>( );
         if(id < 0)
             GenericMenuDAO.getInstance( ).CRUD( this );
     }
@@ -134,4 +137,19 @@ public class Table
         GenericMenuDAO.getInstance( ).delete( this );        
     }
 
+    public void addClient( ClientThread clientThread )
+    {
+        clients.add( clientThread );
+    }
+    public boolean allClientsReady()
+    {     
+        for( ClientThread clientThread : clients )
+        {
+            if(!clientThread.isReady())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }

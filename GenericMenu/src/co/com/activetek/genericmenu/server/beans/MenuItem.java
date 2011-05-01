@@ -16,7 +16,7 @@ public class MenuItem extends Vector<MenuItem>
     public final static int LEVEl_CATEGORY = 1;
     public final static int LEVEl_ITEM = 2;
     public final static int LEVEL_MENU = 0;
-    
+
     private int id;
     private String name;
     private String details;
@@ -27,7 +27,7 @@ public class MenuItem extends Vector<MenuItem>
     private MenuItem father;
     private int order;
 
-    public MenuItem( int id, String nombre, String description,int order, boolean enable, String icon, Vector<Image> images, MenuItem father, Vector<PriceItem> prices, boolean persist ) throws SQLException
+    public MenuItem( int id, String nombre, String description, int order, boolean enable, String icon, Vector<Image> images, MenuItem father, Vector<PriceItem> prices, boolean persist ) throws SQLException
     {
         super( );
         this.id = id;
@@ -39,11 +39,11 @@ public class MenuItem extends Vector<MenuItem>
         this.father = father;
         this.prices = prices;
         this.order = order;
-        if(persist)
+        if( persist )
             GenericMenuDAO.getInstance( ).CRUD( this );
     }
 
-    public MenuItem( int id, String nombre, String description,int order, boolean enable, String icon, Vector<Image> images, MenuItem father, boolean persist ) throws SQLException
+    public MenuItem( int id, String nombre, String description, int order, boolean enable, String icon, Vector<Image> images, MenuItem father, boolean persist ) throws SQLException
     {
         super( );
         this.id = id;
@@ -55,14 +55,14 @@ public class MenuItem extends Vector<MenuItem>
         this.father = father;
         this.prices = prices;
         this.order = order;
-        if(persist)
+        if( persist )
             GenericMenuDAO.getInstance( ).CRUD( this );
     }
     public int getOrder( )
     {
         return order;
     }
-    public void setOrder(int order)
+    public void setOrder( int order )
     {
         this.order = order;
     }
@@ -144,14 +144,14 @@ public class MenuItem extends Vector<MenuItem>
     {
         if( this.id == id )
             return this;
-        
+
         for( MenuItem menuItem : this )
         {
             MenuItem temp = menuItem.findById( id );
             if( temp != null )
                 return temp;
         }
-       
+
         return null;
     }
     public JSONObject getJSON( )
@@ -229,38 +229,56 @@ public class MenuItem extends Vector<MenuItem>
     {
         return prices;
     }
-    public MenuItem getParent()
+    public MenuItem getParent( )
     {
         return father;
     }
     public void delete( ) throws SQLException
     {
         father.remove( this );
-        GenericMenuDAO.getInstance( ).delete(this);
+        GenericMenuDAO.getInstance( ).delete( this );
     }
     public void deleteMenuItemImage( int image ) throws SQLException
     {
         Image i = images.get( image );
         GenericMenuDAO.getInstance( ).delete( i );
         FileUtil.deleteFile( i.getUrl( ) );
-        images.remove( image );        
+        images.remove( image );
     }
     public void changeImageItemEnable( int image, boolean enable ) throws SQLException
     {
-        Image i = images.get( image );      
-        i.setEnable( enable ); 
+        Image i = images.get( image );
+        i.setEnable( enable );
         GenericMenuDAO.getInstance( ).CRUD( i );
     }
     public void addPriceItem( PriceItem p )
     {
         prices.add( p );
     }
-    public void setPrices(Vector<PriceItem> prices)
+    public void setPrices( Vector<PriceItem> prices )
     {
         this.prices = prices;
     }
     public void deltePrice( PriceItem p )
     {
         prices.remove( p );
+    }
+
+    public PriceItem findPriceItemById( int id2 )
+    {
+        for( PriceItem priceItem : prices )
+        {
+            if( priceItem.getId( ) == id2 )
+            {
+                return priceItem;
+            }
+        }
+        for( MenuItem son : this )
+        {
+            PriceItem temp = son.findPriceItemById( id2 );
+            if( temp != null )
+                return temp;
+        }
+        return null;
     }
 }

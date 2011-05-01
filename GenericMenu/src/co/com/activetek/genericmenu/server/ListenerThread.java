@@ -21,8 +21,6 @@ public class ListenerThread extends Thread
     private int port;
 
     private ServerSocket serverSocket;
-    private static BufferedReader read;
-    private static PrintWriter write;
 
     public ListenerThread( GenericMenuServer genericMenuServer, int puerto ) throws IOException
     {
@@ -38,6 +36,8 @@ public class ListenerThread extends Thread
             while( true )
             {
                 Socket newSocket = serverSocket.accept( );
+                ClientThread newClient = new ClientThread( newSocket, main );
+                newClient.start( );
             }
         }
         catch( IOException e )

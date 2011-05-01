@@ -14,6 +14,7 @@ import net.sf.json.JSONObject;
 
 import co.com.activetek.genericmenu.server.beans.Image;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
 import co.com.activetek.genericmenu.server.exception.AnotherInstanceException;
@@ -50,8 +51,8 @@ public class GenericMenuServer
             prop.load( in );
             in.close( );
 
-            writeJson();
-            
+            writeJson( );
+
             try
             {
                 listener = new ListenerThread( this, Integer.parseInt( prop.getProperty( "osaki.server.port" ) ) );
@@ -146,17 +147,39 @@ public class GenericMenuServer
     }
 
     public void changeImageItemEnable( int image, MenuItem selected, boolean enable ) throws SQLException
-    {        
-        selected.changeImageItemEnable(image, enable);
+    {
+        selected.changeImageItemEnable( image, enable );
     }
     public void notifyDimensionChanged( int width, int height ) throws SQLException
     {
         GenericMenuDAO.getInstance( ).notifyDimensionChanged( width, height );
     }
-    public void writeJson() throws FileNotFoundException
+    public void writeJson( ) throws FileNotFoundException
     {
-    	PrintWriter p= new PrintWriter(new File("./images/json.txt"));
-    	p.println(getJSon());
-    	p.close();
+        PrintWriter p = new PrintWriter( new File( "./images/json.txt" ) );
+        p.println( getJSon( ) );
+        p.close( );
+    }
+    public Table getTablebyNumber( int number )
+    {
+        for( Table table : tables )
+        {
+            if( table.getNumber( ) == number )
+                return table;
+        }
+        return null;
+    }
+    public Waitress getWaitressById( int id )
+    {
+        for( Waitress waitress : waitresses )
+        {
+            if( waitress.getId( ) == id )
+                return waitress;
+        }
+        return null;
+    }
+    public PriceItem getPriceItemById( int id )
+    {
+        return root.findPriceItemById( id );
     }
 }
