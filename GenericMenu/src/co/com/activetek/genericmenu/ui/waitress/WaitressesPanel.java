@@ -26,7 +26,7 @@ public class WaitressesPanel extends JPanel implements ActionListener
     private static final long serialVersionUID = 1L;
     private final static int width = 5;
     private final static int height = 5;
-    private JPopupMenu popupmenuWaitressOptions = new JPopupMenu();
+    private JPopupMenu popupmenuWaitressOptions = new JPopupMenu( );
     private JMenuItem menuItemAddWaitress = new JMenuItem( ADD_WAITRESS );
     private OsakiMenu window;
     /**
@@ -40,42 +40,42 @@ public class WaitressesPanel extends JPanel implements ActionListener
         menuItemAddWaitress.addActionListener( this );
         this.addMouseListener( new MouseListener( )
         {
-            
+
             @Override
             public void mouseReleased( MouseEvent arg0 )
             {
                 // TODO Auto-generated method stub
-                
+
             }
-            
+
             @Override
             public void mousePressed( MouseEvent arg0 )
             {
                 // TODO Auto-generated method stub
-                
+
             }
-            
+
             @Override
             public void mouseExited( MouseEvent arg0 )
             {
                 // TODO Auto-generated method stub
-                
+
             }
-            
+
             @Override
             public void mouseEntered( MouseEvent arg0 )
             {
                 // TODO Auto-generated method stub
-                
+
             }
-            
+
             @Override
             public void mouseClicked( MouseEvent arg0 )
             {
                 popupmenuWaitressOptions.show( arg0.getComponent( ), arg0.getX( ), arg0.getY( ) );
-                
+
             }
-        });
+        } );
         refresh( );
     }
 
@@ -104,8 +104,8 @@ public class WaitressesPanel extends JPanel implements ActionListener
 
         for( int i = 0; i < waitressVector.size( ); i++ )
         {
-            Waitress waitress = waitressVector.get( i );            
-            this.add( new WaitressPanel( window , waitress ), " " + ( i % ( waitressVector.size( ) / 2 ) ) + ", " + ( i / ( waitressVector.size( ) / 2 ) ) );
+            Waitress waitress = waitressVector.get( i );
+            this.add( new WaitressPanel( window, waitress ), " " + ( i % ( waitressVector.size( ) / 2 ) ) + ", " + ( i / ( waitressVector.size( ) / 2 ) ) );
         }
 
         this.doLayout( );
@@ -118,7 +118,7 @@ public class WaitressesPanel extends JPanel implements ActionListener
         String command = e.getActionCommand( );
         if( command.equals( ADD_WAITRESS ) )
         {
-            WaitressEditDialog d = new WaitressEditDialog( );
+            WaitressEditDialog d = new WaitressEditDialog( window, null );
             d.setVisible( true );
         }
 
