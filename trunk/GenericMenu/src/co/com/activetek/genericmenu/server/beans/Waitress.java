@@ -80,4 +80,8 @@ public class Waitress
             object.put( "photo", photo.substring( 1 ) );
         return object;
     }
+    public String toString()
+    {
+        return "Mesero:" + nick + ":" + id;
+    }
 }
