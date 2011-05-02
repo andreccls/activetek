@@ -152,4 +152,25 @@ public class Table
         }
         return true;
     }
+
+    /**
+     * 
+     * @param line
+     * @param client: el cliente que envia el mesaje a los demas, por esto a este no se le envia
+     */
+    public void sendMesageToAll( String line, ClientThread client )
+    {
+        for( ClientThread clientThread : clients )
+        {
+            if(!client.equals( clientThread ))
+            {
+                clientThread.sendMesage( line );
+            }
+        }
+    }
+
+    public int getNextSalveNumber( )
+    {
+        return clients.size( );
+    }
 }
