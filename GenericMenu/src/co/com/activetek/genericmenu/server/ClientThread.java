@@ -23,6 +23,7 @@ public class ClientThread extends Thread
     private Table table;
     private boolean isMaster;
     private Order order;
+    private int slaveNumber;
     /**
      * Significa que el usuario ya termino de realizar su pedido
      */
@@ -51,7 +52,7 @@ public class ClientThread extends Thread
         try
         {
             init( );
-            while( true )
+            while( socket.isConnected( ) )
             {
                 processLine( read.readLine( ) );
             }
@@ -63,12 +64,12 @@ public class ClientThread extends Thread
     }
     private void processLine( String line )
     {
-        System.out.println(line);
+        System.out.println( line );
         if( line != null )
         {
             if( line.startsWith( "ADD:" ) || line.startsWith( "REMOVE:" ) )
             {
-                int UserdId = Integer.parseInt( line.split( ":" )[ 1 ] );// TODO este es el numero del esclavo , o para el master
+                //salveNumber = Integer.parseInt( line.split( ":" )[ 1 ] );// TODO este es el numero del esclavo , o para el master
                 int priceItemId = Integer.parseInt( line.split( ":" )[ 2 ] );
                 if( line.startsWith( "ADD:" ) )
                 {
@@ -78,14 +79,15 @@ public class ClientThread extends Thread
                 {
                     order.remove( server.getPriceItemById( priceItemId ) );
                 }
+                table.sendMesageToAll( line, this );
             }
             else if( line.startsWith( "END:" ) )
             {
-                ready = true;                
-                if (isMaster && table.allClientsReady( ))
+                ready = true;
+                if( isMaster && table.allClientsReady( ) )
                 {
                     write.println( "READY:" );
-                    System.out.println("READY:");
+                    System.out.println( "READY:" );
                 }
             }
         }
@@ -98,15 +100,16 @@ public class ClientThread extends Thread
             int tableNumber = Integer.parseInt( line.split( ":" )[ 1 ] );
             System.out.println( "tableNumber: " + tableNumber );
             table = server.getTablebyNumber( tableNumber );
-            table.addClient(this);
+            slaveNumber =  table.getNextSalveNumber();
+            table.addClient( this );
             if( table.getState( ).equals( Table.FREE ) )
             {
                 write.println( "MAESTRO:" );
                 isMaster = true;
             }
             else
-            {
-                write.println( "ESCLAVO:" + 2 );// TODO enviar cantidad de gente - 1
+            {                
+                write.println( "ESCLAVO:" + slaveNumber );
                 isMaster = false;
             }
         }
@@ -119,7 +122,11 @@ public class ClientThread extends Thread
         }
     }
     public boolean isReady( )
-    {        
+    {
         return ready;
+    }
+    public void sendMesage( String mess )
+    {
+        write.println( mess );
     }
 }
