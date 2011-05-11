@@ -53,4 +53,14 @@ public class MenuItem {
 	public ArrayList<Price> getPrices() {
 		return prices;
 	}
+	public Price getPriceById(int itid)
+	{
+		for(int i=0;i<prices.size();i++)
+		{
+			Price pri=prices.get(i);
+			if(pri.getId()==itid)
+				return pri;
+		}
+		return null;
+	}
 }

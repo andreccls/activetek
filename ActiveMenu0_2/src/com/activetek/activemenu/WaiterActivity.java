@@ -113,5 +113,13 @@ public class WaiterActivity extends AbstractActivityGroup{
 	{
 		super.onDestroy();
 	}
+
+
+
+	@Override
+	public int count() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 }

@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 
 public class Receiver extends Thread{
@@ -63,8 +66,11 @@ public class Receiver extends Thread{
 				// TODO Auto-generated catch block
 				Log.d("Receiver", e.getMessage());
 			}
-			if(message!=null)
-				owner.notifier(message);
+			if(message!=null&&message.indexOf(":")!=-1)
+				if(message.equals("READY:"))
+					owner.toastHandler.post(owner.select);
+				else
+					owner.notifier(message);
 			else
 			{
 				owner.toastHandler.post(owner.toastRunnable);
@@ -77,6 +83,11 @@ public class Receiver extends Thread{
 						setSocket(s);
 						Sender send=Sender.getInstance();
 						send.setSocket(s);
+						WifiManager wifiMan = (WifiManager) owner.getSystemService(
+				                Context.WIFI_SERVICE);
+						WifiInfo wifiInf = wifiMan.getConnectionInfo();
+						String macAddr = wifiInf.getMacAddress();
+						send.getWrite().println("RETRY:"+macAddr);
 						success=true;
 					}
 					catch(Exception e)

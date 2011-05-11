@@ -11,6 +11,7 @@ public class WebActivity extends AbstractActivityGroup{
 	
 	private Receiver rec;
 	private TextView text;
+	private int count;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -18,6 +19,7 @@ public class WebActivity extends AbstractActivityGroup{
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		WebView web=(WebView) findViewById(R.id.webview);
+		count=getIntent().getExtras().getInt("count");
 		text=(TextView) findViewById(R.id.TextView01);
 		text.setText("Su Orden está siendo preparada");
 		rec=Receiver.getInstance();
@@ -42,6 +44,11 @@ public class WebActivity extends AbstractActivityGroup{
 		view.loadUrl(url);
 		return true;
 		}
+	}
+	@Override
+	public int count() {
+		// TODO Auto-generated method stub
+		return count;
 	}
 }
 

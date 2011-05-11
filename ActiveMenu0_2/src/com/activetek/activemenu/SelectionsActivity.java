@@ -5,7 +5,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -39,7 +38,6 @@ public class SelectionsActivity extends AbstractActivityGroup {
 	 */
 	private Receiver rec;
 
-	private boolean ready;
 
 	/**
 	 * Conteo de Usuarios 
@@ -58,7 +56,6 @@ public class SelectionsActivity extends AbstractActivityGroup {
 		count=getIntent().getExtras().getInt("count");
 		// Obtenemos el id de usuario de la actividad anterior
 		send=Sender.getInstance();
-		ready=false;
 		rec=Receiver.getInstance();
 		// Indicamos al receptor que esta actividad manejará los mensajes del servidor
 		rec.setOwner(this);
@@ -70,20 +67,18 @@ public class SelectionsActivity extends AbstractActivityGroup {
 		confirm.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+
 				// Creamos un mensaje con el contenido del smartlist
 				Toast.makeText(getBaseContext(), 
 						"Pedido Confirmado", 
 						Toast.LENGTH_SHORT).show(); 
 				// enviamos un mensaje al servidor indicando el fin del pedido
 				send.getWrite().println("confirm");
-				Intent in= new Intent(SelectionsActivity.this, ExtrasActivity.class);
-				startActivity(in);
 				finish();
+
 			}
 
 		});
-		if(ready)
-			confirm.setEnabled(false);
 		Button cancel=(Button) findViewById(R.id.btnCancel);
 		cancel.setOnClickListener(new OnClickListener() {
 			@Override
@@ -187,21 +182,14 @@ public class SelectionsActivity extends AbstractActivityGroup {
 			TextView text=(TextView) view.findViewById(R.id.titl);
 			// Vamos a utilizar exclusivamente parte de la lista inteligente
 			final ArrayList<String> arr=subList(id);
-			
-				// Extraemos la categoría seleccionada
-				String sub=arr.get(position).substring(arr.get(position).indexOf(":")+1);
-				int cat=Integer.parseInt(sub.substring(0,sub.indexOf(":")));
-				// Extraemos la Comida seleccionada
-				String subsub=sub.substring(sub.indexOf(":")+1);
-				int food=Integer.parseInt(subsub.substring(0,subsub.indexOf(":")));
-				// Extraemos la Variedad seleccionada
-				String subsubsub=subsub.substring(sub.indexOf(":")+1);
-				int variety=Integer.parseInt(subsubsub.substring(0));
-				// Obtenemos el menuitem que seleccionamos
-				MenuItem men=CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food);
-				// Escribimos en el listview el nombre del menuitem seleccionado, y la descripciòn de la variedad
-				text.setText(men.getName()+" , "+men.getPrices().get(variety).getDescription());
-				text.setGravity(Gravity.CENTER);
+
+			// Extraemos la categoría seleccionada
+			String sub=arr.get(position).substring(arr.get(position).indexOf(":")+1);
+			int cat=Integer.parseInt(sub);
+			MenuItem men=CategoryWrapper.getInstance().getMenuItemById(cat);
+			// Escribimos en el listview el nombre del menuitem seleccionado, y la descripciòn de la variedad
+			text.setText(men.getName()+" , "+men.getPriceById(cat).getDescription());
+			text.setGravity(Gravity.CENTER);
 			return view;
 		}        
 
@@ -229,7 +217,7 @@ public class SelectionsActivity extends AbstractActivityGroup {
 		}
 
 		public Object getItem(int position) {
-			return smartList2.get(position);
+			return subList(id).get(position);
 		}
 
 		public long getItemId(int position) {
@@ -251,9 +239,10 @@ public class SelectionsActivity extends AbstractActivityGroup {
 	@Override
 	public void notifier(String message) {
 
-		if (message.equals("READY"))
-			ready=true;
-
-
+	}
+	@Override
+	public int count() {
+		// TODO Auto-generated method stub
+		return count;
 	}
 }
