@@ -196,12 +196,20 @@ public class TableActivity extends AbstractActivityGroup{
 	public void notifier(String message) {
 		// TODO Auto-generated method stub
 		Log.d("TableActivity", message);
-		if (!message.equals("MAESTRO"))
+		if (!message.equals("MAESTRO:"))
 			slaveIndex=Integer.parseInt(message.substring(message.indexOf(":"))+1,message.length());
 	}
 	@Override
 	public void onDestroy()
 	{
 		super.onDestroy();
+	}
+
+
+
+	@Override
+	public int count() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

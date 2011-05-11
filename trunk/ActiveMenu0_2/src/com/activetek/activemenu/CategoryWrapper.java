@@ -48,4 +48,25 @@ public class CategoryWrapper {
 	{
 		return delegate;
 	}
+	
+	public MenuItem getMenuItemById(int itid)
+	{
+		for(int i=0;i<delegate.size();i++)
+		{
+			Category cat=delegate.get(i);
+			ArrayList<MenuItem> arr=cat.getFoods();
+			for(int j=0; j<arr.size();j++)
+			{
+				MenuItem men=arr.get(j);
+				ArrayList<Price> pri=men.getPrices();
+				for(int k=0; k<pri.size();k++)
+				{
+					Price pr=pri.get(k);
+					if(pr.getId()==itid)
+						return men;
+				}
+			}
+		}
+		return null;
+	}
 }

@@ -2,6 +2,7 @@ package com.activetek.activemenu;
 
 import android.app.ActivityGroup;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Handler;
 
 /**
@@ -19,10 +20,19 @@ public abstract class AbstractActivityGroup extends ActivityGroup{
 	 * @param message Mensaje enviado por el servidor
 	 */
 	public abstract void notifier(String message);
-	
+	public abstract int count();
+
+	Runnable select=new Runnable(){
+		public void run(){
+			Intent in= new Intent (AbstractActivityGroup.this, SelectionsActivity.class);
+			in.putExtra("count", count());
+			startActivityForResult(in,1);
+		}
+	};
+
 	public void link()
 	{
-		
+
 	}
 	Handler toastHandler = new Handler();
 	ProgressDialog d;

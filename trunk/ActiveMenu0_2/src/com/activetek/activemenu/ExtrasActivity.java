@@ -18,6 +18,7 @@ public class ExtrasActivity extends AbstractActivityGroup{
 
 	private TextView label;
 	private Receiver rec;
+	private int count;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,6 +29,7 @@ public class ExtrasActivity extends AbstractActivityGroup{
 		GridView grid=(GridView) findViewById(R.id.grid);
 		label.setText("Su pedido está siendo preparado");
 		grid.setAdapter(new ImageAdapter(this));
+		count=getIntent().getExtras().getInt("count");
 		grid.setOnItemClickListener(new OnItemClickListener()
 		{
 			public void onItemClick(AdapterView<?> parent, View v,
@@ -53,12 +55,14 @@ public class ExtrasActivity extends AbstractActivityGroup{
 				case 2:
 					in= new Intent(ExtrasActivity.this,WebActivity.class);
 					in.putExtra("URL", "http://www.eltiempo.com");
+					in.putExtra("count", count);
 					ExtrasActivity.this.startActivity(in);
 					finish();
 					break;
 				case 3:
 					in= new Intent(ExtrasActivity.this,WebActivity.class);
 					in.putExtra("URL", "http://www.activetek.co");
+					in.putExtra("count", count);
 					ExtrasActivity.this.startActivity(in);
 					finish();
 					break;
@@ -116,11 +120,17 @@ public class ExtrasActivity extends AbstractActivityGroup{
 		}
 
 	}
-
+	
 	@Override
 	public void notifier(String message) {
 		// TODO Auto-generated method stub
-		if(message.equals("SERVED"))
+		if(message.equals("SERVED:"))
 			label.setText("Su Orden ya está Lista");
+	}
+
+	@Override
+	public int count() {
+		// TODO Auto-generated method stub
+		return count;
 	}
 }

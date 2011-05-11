@@ -15,14 +15,17 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 /**
  * Actividad inicial del Programa
@@ -36,7 +39,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	/**
 	 * Constante que indica la dirección IP del servidor
 	 */
-	public final static String SERVER_IP="192.168.0.199";
+	public final static String SERVER_IP="192.168.0.105";
 
 	/**
 	 * Diálogo de espera
@@ -129,6 +132,12 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 			Sender send=Sender.getInstance();
 			// Ajustamos el socket creado para ser utilizado para envìos
 			send.setSocket(s);
+			WifiManager wifiMan = (WifiManager) this.getSystemService(
+	                Context.WIFI_SERVICE);
+			WifiInfo wifiInf = wifiMan.getConnectionInfo();
+			String macAddr = wifiInf.getMacAddress();
+			Log.d("MAC", macAddr);
+			send.getWrite().println("CLIENT:"+macAddr);
 		}
 		catch (Exception e)
 		{
@@ -370,5 +379,4 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	{
 		super.onDestroy();
 	}
-
 }
