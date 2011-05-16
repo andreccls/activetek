@@ -3,6 +3,8 @@ package co.com.activetek.genericmenu.ui;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
@@ -10,6 +12,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.TreePath;
 
 import java.awt.Rectangle;
@@ -20,13 +23,17 @@ import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
 import co.com.activetek.genericmenu.server.exception.AnotherInstanceException;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
+import co.com.activetek.genericmenu.server.util.Customization;
 import co.com.activetek.genericmenu.server.util.Log;
 import co.com.activetek.genericmenu.ui.orders.OrdersPanel;
 import co.com.activetek.genericmenu.ui.menu.MenuTreePanel;
 import co.com.activetek.genericmenu.ui.menu.MenuPanel;
 import co.com.activetek.genericmenu.ui.tables.MapTablesPanel;
 import co.com.activetek.genericmenu.ui.tables.TablesPanel;
+import co.com.activetek.genericmenu.ui.utils.MyLookAndFeel;
 
+import java.awt.Color;
+import java.awt.Panel;
 import java.awt.Point;
 import java.awt.Dimension;
 import java.io.File;
@@ -169,8 +176,15 @@ public class OsakiMenu extends JFrame
     {
         if( splitPaneRight == null )
         {
+            JPanel centerPanel = new JPanel( );
+            centerPanel.setLayout( new BorderLayout( ) );
+            JLabel logoLab = new JLabel( );
+            ImageIcon ic = new ImageIcon( "./images/GenericMenu/ui/logo.png" );
+            logoLab.setIcon( ic );
+            centerPanel.add( logoLab, BorderLayout.NORTH );
+            centerPanel.add( getTabbedPane( ), BorderLayout.CENTER );
             splitPaneRight = new JSplitPane( );
-            splitPaneRight.setLeftComponent( getTabbedPane( ) );
+            splitPaneRight.setLeftComponent( centerPanel );
         }
         return splitPaneRight;
     }
@@ -186,6 +200,9 @@ public class OsakiMenu extends JFrame
             // UIManager.setLookAndFeel( "ch.randelshofer.quaqua.QuaquaLookAndFeel" );
             // UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
             // UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
+            // UIManager.setLookAndFeel( "co.com.activetek.genericmenu.ui.utils.MyLookAndFeel" );
+            MetalLookAndFeel.setCurrentTheme( new MyLookAndFeel( ) );
+            UIManager.setLookAndFeel( "javax.swing.plaf.metal.MetalLookAndFeel" );
         }
         catch( Exception e )
         {
@@ -259,8 +276,8 @@ public class OsakiMenu extends JFrame
     }
 
     /**
-     * Actualiza el panel el atributo selected por el objeto MenuItem que tiene el path dado como parametro
-     * Acutualiza el panel que contiene la informacion del producto (imagenes, precios, etc..) 
+     * Actualiza el panel el atributo selected por el objeto MenuItem que tiene el path dado como parametro Acutualiza el panel que contiene la informacion del producto
+     * (imagenes, precios, etc..)
      * @param path
      */
     public void setSelectedItem( String path )
@@ -268,7 +285,7 @@ public class OsakiMenu extends JFrame
         selected = server.getMenuItemByPath( path );
         menuPanel.updateSelectedItem( selected );
     }
-    public void setSelectedItem( MenuItem selected)
+    public void setSelectedItem( MenuItem selected )
     {
         this.selected = selected;
         menuPanel.updateSelectedItem( selected );
@@ -327,7 +344,7 @@ public class OsakiMenu extends JFrame
         catch( SQLException e )
         {
             JOptionPane.showMessageDialog( this, "Error inesperado tratando de eliminar la imagen, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-            e.printStackTrace();
+            e.printStackTrace( );
         }
     }
 
@@ -335,12 +352,12 @@ public class OsakiMenu extends JFrame
     {
         try
         {
-            server.changeImageItemEnable(image, selected ,isselected);
+            server.changeImageItemEnable( image, selected, isselected );
         }
         catch( SQLException e )
         {
             JOptionPane.showMessageDialog( this, "Error inesperado tratando de modificar la imagen, contacte al administrador del sistema \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-            e.printStackTrace();
+            e.printStackTrace( );
         }
     }
 
@@ -353,9 +370,9 @@ public class OsakiMenu extends JFrame
         }
         catch( SQLException e )
         {
-            JOptionPane.showMessageDialog( this, "Error inesperado tratando de almacenar las nuevas dimensiones \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );            
-            e.printStackTrace();
+            JOptionPane.showMessageDialog( this, "Error inesperado tratando de almacenar las nuevas dimensiones \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace( );
         }
-        
+
     }
-} 
+}
