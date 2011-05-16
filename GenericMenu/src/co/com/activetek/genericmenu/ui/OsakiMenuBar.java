@@ -26,6 +26,5 @@ public class OsakiMenuBar extends MenuBar implements ActionListener
         {
 
         }
-
     }
 }
