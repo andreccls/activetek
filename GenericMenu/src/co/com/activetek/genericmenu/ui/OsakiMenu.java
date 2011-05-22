@@ -64,7 +64,7 @@ public class OsakiMenu extends JFrame
     private OsakiMenuBar osakiMenuBar = null; // @jve:decl-index=0:visual-constraint=""
     private JSplitPane splitPaneRight = null;
     private JPanel logo = null;
-
+    private JPanel mainPanel =  null;
     /**
      * This method initializes ordersPanel
      * 
@@ -77,6 +77,17 @@ public class OsakiMenu extends JFrame
             ordersPanel = new OrdersPanel( );
         }
         return ordersPanel;
+    }
+    private JPanel getMainPanel()
+    {
+        if(mainPanel == null)
+        {
+            mainPanel = new JPanel( );
+            mainPanel.setLayout( new BorderLayout( ) );
+            mainPanel.add( getLogoPanel(), BorderLayout.NORTH );
+            mainPanel.add( getSplitPane( ), BorderLayout.CENTER );
+        }
+        return mainPanel;
     }
 
     /**
@@ -143,8 +154,12 @@ public class OsakiMenu extends JFrame
         if( splitPane == null )
         {
             splitPane = new JSplitPane( );
-            splitPane.setLeftComponent( getOrdersPanel( ) );
-            splitPane.setRightComponent( getSplitPaneRight( ) );
+            //--------- ini: modificado el 20110522 para agregar las ordenes al tabbed pane
+            //splitPane.setLeftComponent( getOrdersPanel( ) );
+            //splitPane.setRightComponent( getSplitPaneRight( ) );
+            //---------end: 
+            splitPane.setLeftComponent( getTabbedPane( ) );
+            //splitPane.setRightComponent( comp );TODO
         }
         return splitPane;
     }
@@ -159,9 +174,10 @@ public class OsakiMenu extends JFrame
         if( tabbedPane == null )
         {
             tabbedPane = new JTabbedPane( );
+            tabbedPane.addTab( "Ordenes", null, getOrdersPanel( ), null );
             tabbedPane.addTab( "Mesas", null, getMapTablesPanel( ), null );
             tabbedPane.addTab( "Menu", null, getMenuPanel( ), null );
-            tabbedPane.addTab( "Meseros", null, getWaitressesPanel( ), null );
+            tabbedPane.addTab( "Meseros", null, getWaitressesPanel( ), null );            
         }
         return tabbedPane;
     }
@@ -205,10 +221,10 @@ public class OsakiMenu extends JFrame
         {
             // UIManager.setLookAndFeel( "ch.randelshofer.quaqua.QuaquaLookAndFeel" );
             // UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
-            // UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
+            UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
             // UIManager.setLookAndFeel( "co.com.activetek.genericmenu.ui.utils.MyLookAndFeel" );
             // MetalLookAndFeel.setCurrentTheme( new MyLookAndFeel( ) );
-            UIManager.setLookAndFeel( "javax.swing.plaf.metal.MetalLookAndFeel" );
+            // UIManager.setLookAndFeel( "javax.swing.plaf.metal.MetalLookAndFeel" );
         }
         catch( Exception e )
         {
@@ -265,10 +281,11 @@ public class OsakiMenu extends JFrame
     private void initialize( )
     {
         this.setSize( 1000, 1000 );
-        this.setContentPane( getSplitPane( ) );
+        //this.setContentPane( getSplitPane( ) );
+        this.setContentPane( getMainPanel( ) );
         this.setExtendedState( getExtendedState( ) | MAXIMIZED_BOTH );
         this.setTitle( "Osaki" );
-        this.setMenuBar( getOsakiMenuBar( ) );
+        //this.setMenuBar( getOsakiMenuBar( ) );
     }
 
     public MenuItem getMenuTree( )
