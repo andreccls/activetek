@@ -63,6 +63,7 @@ public class OsakiMenu extends JFrame
     private JTabbedPane tabbedPane = null;
     private OsakiMenuBar osakiMenuBar = null; // @jve:decl-index=0:visual-constraint=""
     private JSplitPane splitPaneRight = null;
+    private JPanel logo = null;
 
     /**
      * This method initializes ordersPanel
@@ -119,7 +120,19 @@ public class OsakiMenu extends JFrame
         }
         return waitressesPanel;
     }
-
+    private JPanel getLogoPanel( )
+    {
+        if( logo == null )
+        {
+            logo = new JPanel( );
+            logo.setLayout( new BorderLayout( ) );
+            JLabel logoLab = new JLabel( );
+            ImageIcon ic = new ImageIcon( "./images/GenericMenu/ui/logo.png" );
+            logoLab.setIcon( ic );
+            logo.add( logoLab );
+        }
+        return logo;
+    }
     /**
      * This method initializes splitPane
      * 
@@ -176,15 +189,8 @@ public class OsakiMenu extends JFrame
     {
         if( splitPaneRight == null )
         {
-            JPanel centerPanel = new JPanel( );
-            centerPanel.setLayout( new BorderLayout( ) );
-            JLabel logoLab = new JLabel( );
-            ImageIcon ic = new ImageIcon( "./images/GenericMenu/ui/logo.png" );
-            logoLab.setIcon( ic );
-            centerPanel.add( logoLab, BorderLayout.NORTH );
-            centerPanel.add( getTabbedPane( ), BorderLayout.CENTER );
             splitPaneRight = new JSplitPane( );
-            splitPaneRight.setLeftComponent( centerPanel );
+            splitPaneRight.setLeftComponent( getTabbedPane( ) );
         }
         return splitPaneRight;
     }
@@ -201,7 +207,7 @@ public class OsakiMenu extends JFrame
             // UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
             // UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
             // UIManager.setLookAndFeel( "co.com.activetek.genericmenu.ui.utils.MyLookAndFeel" );
-            MetalLookAndFeel.setCurrentTheme( new MyLookAndFeel( ) );
+            // MetalLookAndFeel.setCurrentTheme( new MyLookAndFeel( ) );
             UIManager.setLookAndFeel( "javax.swing.plaf.metal.MetalLookAndFeel" );
         }
         catch( Exception e )
