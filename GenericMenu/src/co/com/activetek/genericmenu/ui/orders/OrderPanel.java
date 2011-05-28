@@ -21,36 +21,34 @@ import java.awt.FlowLayout;
 
 public class OrderPanel extends JPanel
 {
-    public OrderPanel() {
-        setLayout(new MigLayout("", "[grow][]", "[grow][grow][grow]"));
-        
-        JPanel nortgPanel = new JPanel();
-        add(nortgPanel, "cell 0 0 2 1,grow");
-        nortgPanel.setLayout(new GridLayout(1, 2, 0, 0));
-        
-        JLabel lblMesa = new JLabel("Mesa:");
-        lblMesa.setHorizontalAlignment(SwingConstants.RIGHT);
-        nortgPanel.add(lblMesa);
-        
-        JLabel tableNumberlbl = new JLabel("2");
-        tableNumberlbl.setFont(new Font("Tahoma", Font.PLAIN, 24));
-        nortgPanel.add(tableNumberlbl);
-        
-        OrderItem orderItem = new OrderItem();
-        add(orderItem, "cell 0 1 2 1,grow");
-        
-        JPanel buttonsPanel = new JPanel();
-        add(buttonsPanel, "cell 0 2 2 1,grow");
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        
-        JButton btnLiberarMesa = new JButton("Liberar Mesa");
-        buttonsPanel.add(btnLiberarMesa);
-        
-        JButton btnCancelarPedido = new JButton("Cancelar Pedido");
-        buttonsPanel.add(btnCancelarPedido);
+    public OrderPanel( )
+    {
+        setLayout( new MigLayout( "", "[grow][]", "[grow][grow][grow]" ) );
+
+        JPanel nortgPanel = new JPanel( );
+        add( nortgPanel, "cell 0 0 2 1,grow" );
+        nortgPanel.setLayout( new GridLayout( 1, 2, 0, 0 ) );
+
+        JLabel lblMesa = new JLabel( "Mesa:" );
+        lblMesa.setHorizontalAlignment( SwingConstants.RIGHT );
+        nortgPanel.add( lblMesa );
+
+        JLabel tableNumberlbl = new JLabel( "2" );
+        tableNumberlbl.setFont( new Font( "Tahoma", Font.PLAIN, 24 ) );
+        nortgPanel.add( tableNumberlbl );
+
+        OrderItem orderItem = new OrderItem( );
+        add( orderItem, "cell 0 1 2 1,grow" );
+
+        JPanel buttonsPanel = new JPanel( );
+        add( buttonsPanel, "cell 0 2 2 1,grow" );
+        buttonsPanel.setLayout( new FlowLayout( FlowLayout.CENTER, 5, 5 ) );
+
+        JButton btnLiberarMesa = new JButton( "Liberar Mesa" );
+        buttonsPanel.add( btnLiberarMesa );
+
+        JButton btnCancelarPedido = new JButton( "Cancelar Pedido" );
+        buttonsPanel.add( btnCancelarPedido );
     }
 
-
-    
-    
 }
