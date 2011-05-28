@@ -58,7 +58,7 @@ public class OrdersPanel extends JPanel
         {
             jPanel = new JPanel( );
             jPanel.setLayout( new GridLayout( 5, 1 ) );
-            for( int i = 0; i < 5; i++ )
+            for( int i = 0; i < 2; i++ )
             {
                 jPanel.add( new OrderPanel( ) );
             }
