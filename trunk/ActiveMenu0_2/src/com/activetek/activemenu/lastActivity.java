@@ -54,7 +54,7 @@ public class lastActivity extends Activity{
 					// Añadimos la selección del usuario a la Lista Inteligente
 					SmartList.getInstance().add(id+":"+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(k).getId());
 					// Enviamos un mensaje al servidor con la selección del usuario
-					Sender.getInstance().getWrite().println("ADD:"+id+":"+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(k).getId());
+					Sender.getInstance().getWrite().println("ADD:"+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(k).getId());
 					// Fijamos el código de resultado
 					setResult(1);
 					// Terminamos la Actividad
