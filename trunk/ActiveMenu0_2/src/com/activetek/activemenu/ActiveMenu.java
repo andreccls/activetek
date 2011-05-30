@@ -39,7 +39,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	/**
 	 * Constante que indica la dirección IP del servidor
 	 */
-	public final static String SERVER_IP="192.168.0.105";
+	public final static String SERVER_IP="192.168.0.103";
 
 	/**
 	 * Diálogo de espera
@@ -82,7 +82,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 			dialog.setCancelable(true);
 
 			// set a message text
-			dialog.setMessage("Cargando Información...");
+			dialog.setMessage("Cargando Informacion...");
 
 			// show it
 			dialog.show();
@@ -141,7 +141,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 		}
 		catch (Exception e)
 		{
-			Log.d("Socket", e.getMessage());
+			Log.e("Socket", e.getMessage());
 		}
 		// enviamos señal de que se completo el hilo, al proceso principal
 		handler.sendEmptyMessage(0);
@@ -327,7 +327,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 				// Extraemos cada objeto
 				JSONObject obi= foo.getJSONObject(j);
 				// Tomamos los parámetros de la mesa
-				String code=obi.getString("id");
+				String code=obi.getString("number");
 				String busy=obi.getString("busy");
 				// Evaluamos si la mesa está ocupada
 				boolean bus=false;
