@@ -123,7 +123,7 @@ public class Table
     public JSONObject getJSON( )
     {
         JSONObject object = new JSONObject( );
-        object.put( "id", id );
+        object.put( "number", number );
         object.put( "busy", state.equals( "busy" ) ? 1 : 0 );
         return object;
     }

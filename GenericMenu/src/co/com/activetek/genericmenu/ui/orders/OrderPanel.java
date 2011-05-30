@@ -17,11 +17,14 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.border.EtchedBorder;
+
+import co.com.activetek.genericmenu.server.beans.Order;
+
 import java.awt.FlowLayout;
 
 public class OrderPanel extends JPanel
 {
-    public OrderPanel( )
+    public OrderPanel(Order order )
     {
         setLayout( new MigLayout( "", "[grow][]", "[grow][grow][grow]" ) );
 
@@ -33,11 +36,11 @@ public class OrderPanel extends JPanel
         lblMesa.setHorizontalAlignment( SwingConstants.RIGHT );
         nortgPanel.add( lblMesa );
 
-        JLabel tableNumberlbl = new JLabel( "2" );
+        JLabel tableNumberlbl = new JLabel( order.getTable( ).getId( ) + "" );
         tableNumberlbl.setFont( new Font( "Tahoma", Font.PLAIN, 24 ) );
         nortgPanel.add( tableNumberlbl );
 
-        OrderItem orderItem = new OrderItem( );
+        OrderItemPanel orderItem = new OrderItemPanel( );
         add( orderItem, "cell 0 1 2 1,grow" );
 
         JPanel buttonsPanel = new JPanel( );

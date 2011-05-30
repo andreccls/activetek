@@ -37,7 +37,7 @@ public class ListenerThread extends Thread
             {
                 Socket newSocket = serverSocket.accept( );
                 ClientThread newClient = new ClientThread( newSocket, main );
-                newClient.start( );
+                newClient.start( );                
             }
         }
         catch( IOException e )

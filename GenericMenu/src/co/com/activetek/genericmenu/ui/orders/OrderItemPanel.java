@@ -10,9 +10,9 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.border.EtchedBorder;
 
-public class OrderItem extends JPanel
+public class OrderItemPanel extends JPanel
 {
-    public OrderItem( )
+    public OrderItemPanel( )
     {
         setBorder( null );
         setLayout( new MigLayout( "", "[14px][grow][]", "[14px][][]" ) );
