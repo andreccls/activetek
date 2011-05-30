@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Observable;
 
 import co.com.activetek.genericmenu.server.beans.Order;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
@@ -30,8 +31,7 @@ public class ClientThread extends Thread
     private boolean ready;
 
     public ClientThread( Socket socket, GenericMenuServer server ) throws IOException
-    {
-        this.order = new Order( );
+    {        
         this.socket = socket;
         this.server = server;
         read = new BufferedReader( new InputStreamReader( socket.getInputStream( ) ) );
@@ -69,8 +69,8 @@ public class ClientThread extends Thread
         {
             if( line.startsWith( "ADD:" ) || line.startsWith( "REMOVE:" ) )
             {
-                //salveNumber = Integer.parseInt( line.split( ":" )[ 1 ] );// TODO este es el numero del esclavo , o para el master
-                int priceItemId = Integer.parseInt( line.split( ":" )[ 2 ] );
+                // salveNumber = Integer.parseInt( line.split( ":" )[ 1 ] );// TODO este es el numero del esclavo , o para el master
+                int priceItemId = Integer.parseInt( line.split( ":" )[ 1 ] );
                 if( line.startsWith( "ADD:" ) )
                 {
                     order.add( server.getPriceItemById( priceItemId ) );
@@ -84,10 +84,12 @@ public class ClientThread extends Thread
             else if( line.startsWith( "END:" ) )
             {
                 ready = true;
-                if( isMaster && table.allClientsReady( ) )
+                if( isMaster && table.allClientsReady( ) )// TODO tambien abra que notificar a las otras mesas
                 {
                     write.println( "READY:" );
-                    System.out.println( "READY:" );
+                    server.addOrder( order );
+                    server.notifyOrderReady( );
+                    System.out.println( "TODOS READY:" );
                 }
             }
         }
@@ -100,7 +102,8 @@ public class ClientThread extends Thread
             int tableNumber = Integer.parseInt( line.split( ":" )[ 1 ] );
             System.out.println( "tableNumber: " + tableNumber );
             table = server.getTablebyNumber( tableNumber );
-            slaveNumber =  table.getNextSalveNumber();
+            this.order = new Order( table );
+            slaveNumber = table.getNextSalveNumber( );
             table.addClient( this );
             if( table.getState( ).equals( Table.FREE ) )
             {
@@ -108,7 +111,7 @@ public class ClientThread extends Thread
                 isMaster = true;
             }
             else
-            {                
+            {
                 write.println( "ESCLAVO:" + slaveNumber );
                 isMaster = false;
             }

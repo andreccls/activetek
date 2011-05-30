@@ -14,6 +14,7 @@ import net.sf.json.JSONObject;
 
 import co.com.activetek.genericmenu.server.beans.Image;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.beans.Order;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
@@ -21,6 +22,7 @@ import co.com.activetek.genericmenu.server.exception.AnotherInstanceException;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
 import co.com.activetek.genericmenu.server.util.FileUtil;
 import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
+import co.com.activetek.genericmenu.ui.OsakiMenu;
 
 public class GenericMenuServer
 {
@@ -35,8 +37,10 @@ public class GenericMenuServer
     private Vector<Waitress> waitresses;
     private Vector<Table> tables;
     private ListenerThread listener;
+    private Vector<Order> orders;
+    private OsakiMenu ui;
 
-    public GenericMenuServer( ) throws SQLException, GenericMenuException, AnotherInstanceException
+    public GenericMenuServer(OsakiMenu osakiMenu ) throws SQLException, GenericMenuException, AnotherInstanceException
     {
         GenericMenuDAO.getInstance( );// para verificar que la base de datos esta arriba
         try
@@ -45,7 +49,9 @@ public class GenericMenuServer
             root.loadSons( );
             waitresses = GenericMenuDAO.getInstance( ).getWaitress( );
             tables = GenericMenuDAO.getInstance( ).getTables( );
-
+            orders = new Vector<Order>( );
+            this.ui = osakiMenu;
+            
             Properties prop = new Properties( );
             FileInputStream in = new FileInputStream( PROPERTIES );
             prop.load( in );
@@ -181,5 +187,20 @@ public class GenericMenuServer
     public PriceItem getPriceItemById( int id )
     {
         return root.findPriceItemById( id );
+    }
+    public void addOrder(Order order)
+    {
+        orders.add( order );
+    }
+    /**
+     * Notifica a la interfaz cuando una orden ya esta lista
+     */
+    public void notifyOrderReady( )
+    {
+        ui.notifyOrderReady( );
+    }
+    public Vector<Order> getOrders()
+    {
+        return orders;
     }
 }

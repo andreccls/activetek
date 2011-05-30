@@ -55,7 +55,7 @@ public class GenericMenuDAO
     public synchronized Vector<MenuItem> getChildren( MenuItem parent ) throws SQLException
     {
         Statement st = conn.createStatement( );
-        ResultSet rs = st.executeQuery( "SELECT * FROM menuitem WHERE parentId " + ( parent == null ? "IS NULL" : " = " + parent.getId( ) ) );
+        ResultSet rs = st.executeQuery( "SELECT * FROM menuitem WHERE parentId " + ( parent == null ? "IS NULL" : " = " + parent.getId( ) ) + " order by `order`" );
         Vector<MenuItem> res = new Vector<MenuItem>( );
         while( rs.next( ) )
         {
