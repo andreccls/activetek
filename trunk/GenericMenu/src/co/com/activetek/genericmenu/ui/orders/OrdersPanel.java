@@ -1,6 +1,9 @@
 package co.com.activetek.genericmenu.ui.orders;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.Vector;
 
@@ -14,7 +17,8 @@ public class OrdersPanel extends JPanel
     private static final long serialVersionUID = 1L;
     private JScrollPane jScrollPane = null;
     private JPanel jPanel = null;
-
+    private JLabel noOrdersLabel; 
+    
     /**
      * This is the default constructor
      * @param  
@@ -34,7 +38,18 @@ public class OrdersPanel extends JPanel
     {
         GridLayout gridLayout = new GridLayout( );
         this.setLayout( gridLayout );
-        this.add( getJScrollPane( ), null );
+        this.add( getJScrollPane( ), null );        
+        
+    }
+    
+    private JLabel getNoOrdersLabel( )
+    {
+        if(noOrdersLabel == null)
+        {
+            noOrdersLabel = new JLabel( "No hay ordenes por porcesar"  );
+            noOrdersLabel.setFont(new Font("Tahoma", Font.ITALIC, 30));
+        }
+        return noOrdersLabel;
     }
 
     /**
@@ -62,6 +77,7 @@ public class OrdersPanel extends JPanel
         if( jPanel == null )
         {
             jPanel = new JPanel( );
+            jPanel.add( getNoOrdersLabel( ) );
 //            jPanel.setLayout( new GridLayout( 5, 1 ) );
 //            for( int i = 0; i < 2; i++ )
 //            {
@@ -74,6 +90,11 @@ public class OrdersPanel extends JPanel
 
     public void refresh( Vector<Order> orders )
     {
+        jPanel.removeAll( );
+        if(orders.size( ) == 0)
+        {
+            jPanel.add( noOrdersLabel );
+        }
         for( Order order : orders )
         {
             jPanel.add( new OrderPanel( order ) );            

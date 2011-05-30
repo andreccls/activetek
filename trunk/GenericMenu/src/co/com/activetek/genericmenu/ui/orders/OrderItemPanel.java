@@ -10,9 +10,11 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.border.EtchedBorder;
 
+import co.com.activetek.genericmenu.server.beans.PriceItem;
+
 public class OrderItemPanel extends JPanel
 {
-    public OrderItemPanel( )
+    public OrderItemPanel(PriceItem priceItem )
     {
         setBorder( null );
         setLayout( new MigLayout( "", "[14px][grow][]", "[14px][][]" ) );
@@ -26,18 +28,18 @@ public class OrderItemPanel extends JPanel
         label.setHorizontalAlignment( SwingConstants.CENTER );
         cuantityPanel.add( label );
 
-        JLabel lblMenuitemdescriptionlabel = new JLabel( "menuItemDescriptionLabel" );
+        JLabel lblMenuitemdescriptionlabel = new JLabel( priceItem.getMenuitem( ).getName( ) );
         add( lblMenuitemdescriptionlabel, "cell 1 0" );
 
         JCheckBox checkBox = new JCheckBox( "" );
         checkBox.setHorizontalAlignment( SwingConstants.RIGHT );
         add( checkBox, "cell 2 0" );
 
-        JLabel lblPricedescriptionlabel = new JLabel( "priceDescriptionLabel" );
+        JLabel lblPricedescriptionlabel = new JLabel( priceItem.getDescripcion( ) );
         add( lblPricedescriptionlabel, "cell 1 1" );
 
-        JLabel lblUsercomentslabel = new JLabel( "userComentsLabel" );
-        add( lblUsercomentslabel, "cell 1 2" );
+//        JLabel lblUsercomentslabel = new JLabel( "userComentsLabel" );
+//        add( lblUsercomentslabel, "cell 1 2" );
     }
 
 }

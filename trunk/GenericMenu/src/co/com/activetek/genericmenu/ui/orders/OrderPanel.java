@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.border.EtchedBorder;
 
 import co.com.activetek.genericmenu.server.beans.Order;
+import co.com.activetek.genericmenu.server.beans.PriceItem;
 
 import java.awt.FlowLayout;
 
@@ -27,24 +28,28 @@ public class OrderPanel extends JPanel
     public OrderPanel(Order order )
     {
         setLayout( new MigLayout( "", "[grow][]", "[grow][grow][grow]" ) );
-
+        int y = 0;
         JPanel nortgPanel = new JPanel( );
-        add( nortgPanel, "cell 0 0 2 1,grow" );
+        add( nortgPanel, "cell 0 "+ y++ +" 2 1,grow" );
         nortgPanel.setLayout( new GridLayout( 1, 2, 0, 0 ) );
 
         JLabel lblMesa = new JLabel( "Mesa:" );
         lblMesa.setHorizontalAlignment( SwingConstants.RIGHT );
         nortgPanel.add( lblMesa );
 
-        JLabel tableNumberlbl = new JLabel( order.getTable( ).getId( ) + "" );
+        JLabel tableNumberlbl = new JLabel( order.getTable( ).getNumber( ) + "" );
         tableNumberlbl.setFont( new Font( "Tahoma", Font.PLAIN, 24 ) );
         nortgPanel.add( tableNumberlbl );
 
-        OrderItemPanel orderItem = new OrderItemPanel( );
-        add( orderItem, "cell 0 1 2 1,grow" );
+        for( PriceItem priceItem : order )
+        {
+            OrderItemPanel orderItem = new OrderItemPanel( priceItem );
+            add( orderItem, "cell 0 "+ y++ +" 2 1,grow" );    
+        }
+        
 
         JPanel buttonsPanel = new JPanel( );
-        add( buttonsPanel, "cell 0 2 2 1,grow" );
+        add( buttonsPanel, "cell 0 "+ y++ +" 2 1,grow" );
         buttonsPanel.setLayout( new FlowLayout( FlowLayout.CENTER, 5, 5 ) );
 
         JButton btnLiberarMesa = new JButton( "Liberar Mesa" );
