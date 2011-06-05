@@ -74,6 +74,7 @@ public class SelectionsActivity extends AbstractActivityGroup {
 						Toast.LENGTH_SHORT).show(); 
 				// enviamos un mensaje al servidor indicando el fin del pedido
 				send.getWrite().println("confirm");
+				setResult(0);
 				finish();
 
 			}
