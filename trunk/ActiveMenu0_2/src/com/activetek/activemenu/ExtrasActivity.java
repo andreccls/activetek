@@ -21,6 +21,7 @@ public class ExtrasActivity extends AbstractActivityGroup{
 	private int count;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		count=getIntent().getExtras().getInt("count");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.extras);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -29,7 +30,7 @@ public class ExtrasActivity extends AbstractActivityGroup{
 		GridView grid=(GridView) findViewById(R.id.grid);
 		label.setText("Su pedido está siendo preparado");
 		grid.setAdapter(new ImageAdapter(this));
-		count=getIntent().getExtras().getInt("count");
+		
 		grid.setOnItemClickListener(new OnItemClickListener()
 		{
 			public void onItemClick(AdapterView<?> parent, View v,
@@ -80,6 +81,20 @@ public class ExtrasActivity extends AbstractActivityGroup{
 		return;
 	}
 
+	/**
+	 * Este método verifica el resultado de las actividades generadas
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		super.onActivityResult(requestCode, resultCode, intent);
+		super.onActivityResult(requestCode, resultCode, intent);
+		if(resultCode==1)
+		{
+			setResult(1);
+			finish();
+		}
+
+	}
 	public class ImageAdapter extends BaseAdapter {
 		private Context mContext;
 		public final String[] wrap={"Raging Thunder","Cake Mania","El Tiempo","ActiveTek"};
