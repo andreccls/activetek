@@ -1,0 +1,16 @@
+------------------------------------------------------------
+	Requerimientos NO funcionales 
+------------------------------------------------------------
+RN:iniciar con windows
+
+
+------------------------------------------------------------
+	Requerimientos funcionales 
+------------------------------------------------------------
+RF:Agregar un empleado
+RF:Agregar archivo de huella a empleado
+RF:Editar del informacion de empleado
+RF:Agregar horario
+RF:Editar horario
+RF:Generar reporte en xls
+RF:Registrada llegada empleado
