@@ -70,7 +70,7 @@ public class ClientThread extends Thread
     }
     private void processLine( String line )
     {
-        // System.out.println( line );
+        System.out.println( line );
         if( line != null && !line.equalsIgnoreCase( "null" ) )
         {
             if( line.startsWith( "ADD:" ) || line.startsWith( "REMOVE:" ) )
@@ -101,7 +101,7 @@ public class ClientThread extends Thread
         }
         else
         {
-            finished = false;
+            finished = true;
         }
     }
     private void init( ) throws IOException
