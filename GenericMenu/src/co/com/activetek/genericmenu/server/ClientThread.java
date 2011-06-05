@@ -25,17 +25,19 @@ public class ClientThread extends Thread
     private boolean isMaster;
     private Order order;
     private int slaveNumber;
+    private boolean finished;
     /**
      * Significa que el usuario ya termino de realizar su pedido
      */
     private boolean ready;
 
     public ClientThread( Socket socket, GenericMenuServer server ) throws IOException
-    {        
+    {
         this.socket = socket;
         this.server = server;
         read = new BufferedReader( new InputStreamReader( socket.getInputStream( ) ) );
         write = new PrintWriter( socket.getOutputStream( ), true );
+        this.finished = false;
         String line = read.readLine( );
         if( line.startsWith( "CLIENT:" ) )
         {
@@ -52,7 +54,7 @@ public class ClientThread extends Thread
         try
         {
             init( );
-            while( socket.isConnected( ) )
+            while( socket.isConnected( ) && !finished )
             {
                 processLine( read.readLine( ) );
             }
@@ -61,11 +63,15 @@ public class ClientThread extends Thread
         {
             e.printStackTrace( );
         }
+        finally
+        {
+            Log.getInstance( ).getLog( ).info( "Cerrada conexion con cilente: " + clientId );
+        }
     }
     private void processLine( String line )
     {
-        System.out.println( line );
-        if( line != null )
+        // System.out.println( line );
+        if( line != null && !line.equalsIgnoreCase( "null" ) )
         {
             if( line.startsWith( "ADD:" ) || line.startsWith( "REMOVE:" ) )
             {
@@ -92,6 +98,10 @@ public class ClientThread extends Thread
                     System.out.println( "TODOS READY:" );
                 }
             }
+        }
+        else
+        {
+            finished = false;
         }
     }
     private void init( ) throws IOException
