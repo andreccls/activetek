@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Observable;
 
+import sun.awt.windows.ThemeReader;
+
 import co.com.activetek.genericmenu.server.beans.Order;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.server.beans.Table;
@@ -92,6 +94,14 @@ public class ClientThread extends Thread
                 ready = true;
                 if( isMaster && table.allClientsReady( ) )// TODO tambien abra que notificar a las otras mesas
                 {
+                    try
+                    {
+                        Thread.sleep( 500 );
+                    }
+                    catch( InterruptedException e )
+                    {
+                        e.printStackTrace();
+                    }
                     write.println( "READY:" );
                     server.addOrder( order );
                     server.notifyOrderReady( );
