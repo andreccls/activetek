@@ -26,7 +26,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-public class DialogAddEmployee extends JDialog implements ActionListener
+public class DialogAddEditEmployee extends JDialog implements ActionListener
 {
     private JTextField txtNombre;
     private JTextField txtIdentificacion;
@@ -37,7 +37,7 @@ public class DialogAddEmployee extends JDialog implements ActionListener
     private EnumMap<DPFPFingerIndex, DPFPTemplate> templates = new EnumMap<DPFPFingerIndex, DPFPTemplate>( DPFPFingerIndex.class );
     private EnumMap<DPFPFingerIndex, JCheckBox> checkBoxes = new EnumMap<DPFPFingerIndex, JCheckBox>( DPFPFingerIndex.class );
 
-    public DialogAddEmployee( AClockingUI window, Employee employee )
+    public DialogAddEditEmployee( AClockingUI window, Employee employee )
     {
         isNewEmployee = employee == null;
         this.employee = employee;
@@ -107,13 +107,13 @@ public class DialogAddEmployee extends JDialog implements ActionListener
                     JCheckBox cb = ( JCheckBox )e.getSource( );
                     if( cb.isSelected( ) )
                     {
-                        JOptionPane.showMessageDialog( DialogAddEmployee.this, "Para registrar una huella haga click en \"Registar Huella\"", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
+                        JOptionPane.showMessageDialog( DialogAddEditEmployee.this, "Para registrar una huella haga click en \"Registar Huella\"", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
                         cb.setSelected( false );
                         // templates.put(index, fakeTemplate);
                     }
                     else
                     {
-                        if( JOptionPane.showConfirmDialog( DialogAddEmployee.this, "¿Esta seguro de que quiere remover la huella " + Utilities.fingerprintName( index ) + "?", "Fingerprint Enrollment", JOptionPane.YES_NO_OPTION ) == JOptionPane.YES_OPTION )
+                        if( JOptionPane.showConfirmDialog( DialogAddEditEmployee.this, "¿Esta seguro de que quiere remover la huella " + Utilities.fingerprintName( index ) + "?", "Fingerprint Enrollment", JOptionPane.YES_NO_OPTION ) == JOptionPane.YES_OPTION )
                             templates.remove( index );
                         else
                             cb.setSelected( true );
@@ -182,17 +182,17 @@ public class DialogAddEmployee extends JDialog implements ActionListener
     {
         if( txtNombre.getText( ) == null || txtNombre.getText( ).trim( ).equals( "" ) )
         {
-            JOptionPane.showMessageDialog( DialogAddEmployee.this, "Debe ingresar un nombre valido para el empleado", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
+            JOptionPane.showMessageDialog( DialogAddEditEmployee.this, "Debe ingresar un nombre valido para el empleado", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
             return false;
         }
         if( txtIdentificacion.getText( ) == null || txtIdentificacion.getText( ).trim( ).equals( "" ) )
         {
-            JOptionPane.showMessageDialog( DialogAddEmployee.this, "Debe ingresar un nombre valido para la identificacion del empleado", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
+            JOptionPane.showMessageDialog( DialogAddEditEmployee.this, "Debe ingresar un nombre valido para la identificacion del empleado", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
             return false;
         }
         if( comboBox.getSelectedIndex( ) == -1 )
         {
-            JOptionPane.showMessageDialog( DialogAddEmployee.this, "Ingrese un horario para el empleado \n si no existe un horario creelo antes de agregar el empleado", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
+            JOptionPane.showMessageDialog( DialogAddEditEmployee.this, "Ingrese un horario para el empleado \n si no existe un horario creelo antes de agregar el empleado", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
             return false;
         }
         return true;

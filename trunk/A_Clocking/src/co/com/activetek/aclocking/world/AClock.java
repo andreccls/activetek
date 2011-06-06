@@ -93,4 +93,10 @@ public class AClock {
         
     }
 
+    public void deleteSchedule( Schedule schedule ) //Throw exception si hay algun usuario que tenga asociado este scheule
+    {
+        // TODO 
+        schedules.remove( schedule );
+    }
+
 }
