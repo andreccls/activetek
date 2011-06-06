@@ -2,7 +2,7 @@ package co.com.activetek.aclocking.world;
 
 
 public class Schedule {
-	
+	private String scheduleName;
 	private String lunes;
 	private String martes;
 	private String miercoles;
@@ -61,7 +61,7 @@ public class Schedule {
 	private String festivo;
 	private int code;
 	
-	public Schedule(int cod,String l, String m, String i, String j, String v, String s, String d, String f)
+	public Schedule(int cod,String name,String l, String m, String i, String j, String v, String s, String d, String f)
 	{
 		setCode(cod);
 		lunes=l;
@@ -72,6 +72,7 @@ public class Schedule {
 		sabado=s;
 		setDomingo(d);
 		setFestivo(f);
+		scheduleName = name;
 	}
 
 	public void setCode(int code) {
@@ -98,6 +99,9 @@ public class Schedule {
 		return domingo;
 	}
 	
-	
+	public String toString()
+	{
+	    return scheduleName;
+	}
 
 }

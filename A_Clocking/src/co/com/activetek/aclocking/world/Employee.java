@@ -43,5 +43,10 @@ public class Employee {
 	public Schedule getSchedule() {
 		return schedule;
 	}
+	
+	public String toString()
+	{
+	    return nombre;
+	}
 
 }
