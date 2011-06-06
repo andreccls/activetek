@@ -70,4 +70,10 @@ public class AClockingUI extends JFrame
         LogInDialog dialog = new LogInDialog( window );
         dialog.setVisible( true );
     }
+    public void showAddEmployeeDialog( )
+    {
+        DialogAddEmployee dialog = new DialogAddEmployee( this );
+        dialog.setVisible( true );
+        
+    }
 }
