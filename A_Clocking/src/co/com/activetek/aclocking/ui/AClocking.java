@@ -1,6 +1,8 @@
 package co.com.activetek.aclocking.ui;
 
-public class AClocking
+import javax.swing.JFrame;
+
+public class AClocking extends JFrame
 {
     public final static void main(String[] arg)
     {
