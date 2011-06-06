@@ -1,4 +1,4 @@
-package co.com.activetek.aclocking.world;
+package co.com.activetek.aclocking.entitybeans;
 
 
 public class Schedule {
