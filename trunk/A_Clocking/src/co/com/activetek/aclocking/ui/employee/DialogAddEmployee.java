@@ -1,4 +1,4 @@
-package co.com.activetek.aclocking.ui;
+package co.com.activetek.aclocking.ui.employee;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -13,6 +13,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 
+import co.com.activetek.aclocking.entitybeans.Employee;
+import co.com.activetek.aclocking.entitybeans.Schedule;
+import co.com.activetek.aclocking.ui.AClockingUI;
 import co.com.activetek.aclocking.world.utilities.Utilities;
 
 import com.digitalpersona.onetouch.*;
@@ -27,13 +30,21 @@ public class DialogAddEmployee extends JDialog implements ActionListener
 {
     private JTextField txtNombre;
     private JTextField txtIdentificacion;
+    private JComboBox comboBox;
     private AClockingUI window;
+    private boolean isNewEmployee;
+    private Employee employee;
     private EnumMap<DPFPFingerIndex, DPFPTemplate> templates = new EnumMap<DPFPFingerIndex, DPFPTemplate>( DPFPFingerIndex.class );
     private EnumMap<DPFPFingerIndex, JCheckBox> checkBoxes = new EnumMap<DPFPFingerIndex, JCheckBox>( DPFPFingerIndex.class );
 
-    public DialogAddEmployee( AClockingUI window )
+    public DialogAddEmployee( AClockingUI window, Employee employee )
     {
-        setTitle( "Agregar Empleado" );
+        isNewEmployee = employee == null;
+        this.employee = employee;
+        if( isNewEmployee )
+            setTitle( "Agregar Empleado" );
+        else
+            setTitle( "Editar Empleado" );
         this.window = window;
         this.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
         setSize( 265, 392 );
@@ -45,6 +56,10 @@ public class DialogAddEmployee extends JDialog implements ActionListener
         panel.add( lblNombre, "cell 0 0,alignx trailing" );
 
         txtNombre = new JTextField( );
+        if( !isNewEmployee )
+        {
+            txtNombre.setText( employee.getNombre( ) );
+        }
         panel.add( txtNombre, "cell 1 0,growx" );
         txtNombre.setColumns( 10 );
 
@@ -52,13 +67,19 @@ public class DialogAddEmployee extends JDialog implements ActionListener
         panel.add( lblCc, "cell 0 1,alignx trailing" );
 
         txtIdentificacion = new JTextField( );
+        if( !isNewEmployee )
+        {
+            txtIdentificacion.setText( employee.getCedula( ) );
+        }
         panel.add( txtIdentificacion, "cell 1 1,growx" );
         txtIdentificacion.setColumns( 10 );
 
         JLabel lblTurno = new JLabel( "Horario" );
         panel.add( lblTurno, "cell 0 3,alignx trailing" );
 
-        JComboBox comboBox = new JComboBox( );
+        comboBox = new JComboBox( window.getSchedules( ).toArray( ) );
+        if( !isNewEmployee )
+            comboBox.setSelectedItem( employee.getSchedule( ) );
         panel.add( comboBox, "cell 1 3,growx" );
 
         JPanel fingersPanel = new JPanel( new GridBagLayout( ) );
@@ -115,6 +136,8 @@ public class DialogAddEmployee extends JDialog implements ActionListener
         panel.add( panel_2, "cell 0 6 2 1,grow" );
 
         JButton btnAceptar = new JButton( "Aceptar" );
+        btnAceptar.setActionCommand( "ACEPT" );
+        btnAceptar.addActionListener( this );
         panel_2.add( btnAceptar );
 
         JButton btnCancelar = new JButton( "Cancelar" );
@@ -142,5 +165,36 @@ public class DialogAddEmployee extends JDialog implements ActionListener
         {
             new EnrollmentDialog( this, 10, null, templates ).setVisible( true );
         }
+        if( command.equals( "ACEPT" ) )
+        {
+            if( dataOk( ) )
+            {
+                if( isNewEmployee )
+                {
+                    employee = new Employee( -1, txtIdentificacion.getText( ), txtNombre.getText( ), ( Schedule )comboBox.getSelectedItem( ) );
+                }
+                window.editCreateEmployee( employee );
+                this.dispose( );
+            }
+        }
+    }
+    public boolean dataOk( )
+    {
+        if( txtNombre.getText( ) == null || txtNombre.getText( ).trim( ).equals( "" ) )
+        {
+            JOptionPane.showMessageDialog( DialogAddEmployee.this, "Debe ingresar un nombre valido para el empleado", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
+            return false;
+        }
+        if( txtIdentificacion.getText( ) == null || txtIdentificacion.getText( ).trim( ).equals( "" ) )
+        {
+            JOptionPane.showMessageDialog( DialogAddEmployee.this, "Debe ingresar un nombre valido para la identificacion del empleado", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
+            return false;
+        }
+        if( comboBox.getSelectedIndex( ) == -1 )
+        {
+            JOptionPane.showMessageDialog( DialogAddEmployee.this, "Ingrese un horario para el empleado \n si no existe un horario creelo antes de agregar el empleado", "Fingerprint Enrollment", JOptionPane.INFORMATION_MESSAGE );
+            return false;
+        }
+        return true;
     }
 }

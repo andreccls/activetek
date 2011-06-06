@@ -1,4 +1,5 @@
-package co.com.activetek.aclocking.ui;
+package co.com.activetek.aclocking.ui.employee;
+
 
 import com.digitalpersona.onetouch.*;
 import com.digitalpersona.onetouch.ui.swing.*;

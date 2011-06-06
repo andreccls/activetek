@@ -2,9 +2,11 @@ package co.com.activetek.aclocking.ui;
 
 import javax.swing.JFrame;
 
+import co.com.activetek.aclocking.entitybeans.Employee;
+import co.com.activetek.aclocking.entitybeans.Schedule;
+import co.com.activetek.aclocking.ui.employee.DialogAddEmployee;
+import co.com.activetek.aclocking.ui.employee.PanelEmployees;
 import co.com.activetek.aclocking.world.AClock;
-import co.com.activetek.aclocking.world.Employee;
-import co.com.activetek.aclocking.world.Schedule;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import javax.swing.JScrollBar;
@@ -32,6 +34,8 @@ public class AClockingUI extends JFrame
     private static final long serialVersionUID = 1L;
 
     private AClock aclock;
+    private PanelEmployees panelEmployees;
+    private PanelShedules panelShedules;
 
     public AClockingUI( )
     {
@@ -40,10 +44,10 @@ public class AClockingUI extends JFrame
         this.setSize( 548, 330 );
         getContentPane( ).setLayout( new MigLayout( "", "[grow][grow]", "[grow][grow]" ) );
 
-        PanelEmployees panelEmployees = new PanelEmployees( this );
+        panelEmployees = new PanelEmployees( this );
         getContentPane( ).add( panelEmployees, "cell 0 0,grow" );
 
-        PanelShedules panelShedules = new PanelShedules( this );
+        panelShedules = new PanelShedules( this );
         getContentPane( ).add( panelShedules, "cell 1 0,grow" );
 
         JPanel panel = new JPanel( );
@@ -72,8 +76,22 @@ public class AClockingUI extends JFrame
     }
     public void showAddEmployeeDialog( )
     {
-        DialogAddEmployee dialog = new DialogAddEmployee( this );
+        DialogAddEmployee dialog = new DialogAddEmployee( this, null );
         dialog.setVisible( true );
-        
+    }
+    public void showEditEmployeeDialog( Employee employee )
+    {
+        DialogAddEmployee dialog = new DialogAddEmployee( this, employee );
+        dialog.setVisible( true );
+    }
+    public void deleteEmployee( Employee employee )
+    {
+        aclock.deleteEmployee( employee );
+        panelEmployees.refresh( );
+    }
+    public void editCreateEmployee( Employee employee )
+    {
+        aclock.editCreateEmployee( employee );
+        panelEmployees.refresh( );
     }
 }

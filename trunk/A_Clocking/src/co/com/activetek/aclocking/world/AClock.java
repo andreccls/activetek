@@ -2,6 +2,9 @@ package co.com.activetek.aclocking.world;
 
 import java.util.ArrayList;
 
+import co.com.activetek.aclocking.entitybeans.Employee;
+import co.com.activetek.aclocking.entitybeans.Schedule;
+
 public class AClock {
 	
 	private ArrayList<Employee> employees;
@@ -12,10 +15,11 @@ public class AClock {
 		schedules=new ArrayList<Schedule>();
 		schedules.add(new Schedule(1,"Turno 1","08:00","08:00","08:00","08:00","08:00","08:00","08:00","08:00"));
 		schedules.add(new Schedule(2,"Turno 2","07:00","09:00","07:00","09:00","07:00","09:00","07:00","09:00"));	
+		schedules.add(new Schedule(3,"Turno 3","07:00","09:00","07:00","09:00","07:00","09:00","07:00","09:00"));
 		employees=new ArrayList<Employee>();
-		employees.add(new Employee("1032027089","Carlos",schedules.get(0)));
-		employees.add(new Employee("1032027589","Andres",schedules.get(1)));
-		employees.add(new Employee("1032027689","Mateo",schedules.get(1)));
+		employees.add(new Employee(1,"1032027089","Carlos",schedules.get(0)));
+		employees.add(new Employee(2,"1032027589","Andres",schedules.get(1)));
+		employees.add(new Employee(3,"1032027689","Mateo",schedules.get(2)));
 	}
 	
 	public ArrayList<Employee> getEmployees() {
@@ -68,5 +72,25 @@ public class AClock {
 			schedules.add(e);
 		}
 	}
+
+    public void deleteEmployee( Employee employee )
+    {
+        // TODO 
+        employees.remove( employee );
+        
+    }
+
+    public void editCreateEmployee( Employee employee )
+    {
+        if(employee.getId( ) == -1)
+        {
+            //TODO hacer toda la logica para editarlo (el id es -1 en caso de ser nuevo)
+        }
+        else
+        {
+            //TODO editar la instancia en memoria y en BD
+        }
+        
+    }
 
 }
