@@ -4,8 +4,10 @@ import javax.swing.JFrame;
 
 import co.com.activetek.aclocking.entitybeans.Employee;
 import co.com.activetek.aclocking.entitybeans.Schedule;
-import co.com.activetek.aclocking.ui.employee.DialogAddEmployee;
+import co.com.activetek.aclocking.ui.employee.DialogAddEditEmployee;
 import co.com.activetek.aclocking.ui.employee.PanelEmployees;
+import co.com.activetek.aclocking.ui.schedule.DialogAddEditSchedule;
+import co.com.activetek.aclocking.ui.schedule.PanelShedules;
 import co.com.activetek.aclocking.world.AClock;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
@@ -76,12 +78,12 @@ public class AClockingUI extends JFrame
     }
     public void showAddEmployeeDialog( )
     {
-        DialogAddEmployee dialog = new DialogAddEmployee( this, null );
+        DialogAddEditEmployee dialog = new DialogAddEditEmployee( this, null );
         dialog.setVisible( true );
     }
     public void showEditEmployeeDialog( Employee employee )
     {
-        DialogAddEmployee dialog = new DialogAddEmployee( this, employee );
+        DialogAddEditEmployee dialog = new DialogAddEditEmployee( this, employee );
         dialog.setVisible( true );
     }
     public void deleteEmployee( Employee employee )
@@ -93,5 +95,25 @@ public class AClockingUI extends JFrame
     {
         aclock.editCreateEmployee( employee );
         panelEmployees.refresh( );
+    }
+    public void showAddScheduleDialog( )
+    {
+        DialogAddEditSchedule dialog = new DialogAddEditSchedule( this, null );
+        dialog.setVisible( true );
+    }
+    public void showEditScheduleDialog( Schedule schedule )
+    {
+        DialogAddEditSchedule dialog = new DialogAddEditSchedule( this, schedule );
+        dialog.setVisible( true );
+    }
+    public void deleteSchedule( Schedule schedule )
+    {
+        aclock.deleteSchedule(schedule);   
+        panelShedules.refresh( );
+    }
+    public void editCreateSchedule( Schedule schedule )
+    {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -1,107 +1,222 @@
 package co.com.activetek.aclocking.entitybeans;
 
+public class Schedule
+{
+    private String scheduleName;
+    private String lunes;
+    private String martes;
+    private String miercoles;
+    private String jueves;
+    private String viernes;
+    private String sabado;
+    private String domingo;
+    private String festivo;
+    private int code;
+    public String getScheduleName( )
+    {
+        return scheduleName;
+    }
 
-public class Schedule {
-	private String scheduleName;
-	private String lunes;
-	private String martes;
-	private String miercoles;
-	private String jueves;
-	private String viernes;
-	private String sabado;
-	private String domingo;
-	public String getLunes() {
-		return lunes;
-	}
+    public void setScheduleName( String scheduleName )
+    {
+        this.scheduleName = scheduleName;
+    }
 
-	public void setLunes(String lunes) {
-		this.lunes = lunes;
-	}
+    public boolean isLunes( )
+    {
+        return isLunes;
+    }
 
-	public String getMartes() {
-		return martes;
-	}
+    public void setLunes( boolean isLunes )
+    {
+        this.isLunes = isLunes;
+    }
 
-	public void setMartes(String martes) {
-		this.martes = martes;
-	}
+    public boolean isMartes( )
+    {
+        return isMartes;
+    }
 
-	public String getMiercoles() {
-		return miercoles;
-	}
+    public void setMartes( boolean isMartes )
+    {
+        this.isMartes = isMartes;
+    }
 
-	public void setMiercoles(String miercoles) {
-		this.miercoles = miercoles;
-	}
+    public boolean isMiercoles( )
+    {
+        return isMiercoles;
+    }
 
-	public String getJueves() {
-		return jueves;
-	}
+    public void setMiercoles( boolean isMiercoles )
+    {
+        this.isMiercoles = isMiercoles;
+    }
 
-	public void setJueves(String jueves) {
-		this.jueves = jueves;
-	}
+    public boolean isJueves( )
+    {
+        return isJueves;
+    }
 
-	public String getViernes() {
-		return viernes;
-	}
+    public void setJueves( boolean isJueves )
+    {
+        this.isJueves = isJueves;
+    }
 
-	public void setViernes(String viernes) {
-		this.viernes = viernes;
-	}
+    public boolean isViernes( )
+    {
+        return isViernes;
+    }
 
-	public String getSabado() {
-		return sabado;
-	}
+    public void setViernes( boolean isViernes )
+    {
+        this.isViernes = isViernes;
+    }
 
-	public void setSabado(String sabado) {
-		this.sabado = sabado;
-	}
+    public boolean isSabado( )
+    {
+        return isSabado;
+    }
 
-	private String festivo;
-	private int code;
-	
-	public Schedule(int cod,String name,String l, String m, String i, String j, String v, String s, String d, String f)
-	{
-		setCode(cod);
-		lunes=l;
-		martes=m;
-		miercoles=i;
-		jueves=j;
-		viernes=v;
-		sabado=s;
-		setDomingo(d);
-		setFestivo(f);
-		scheduleName = name;
-	}
+    public void setSabado( boolean isSabado )
+    {
+        this.isSabado = isSabado;
+    }
 
-	public void setCode(int code) {
-		this.code = code;
-	}
+    public boolean isDomingo( )
+    {
+        return isDomingo;
+    }
 
-	public int getCode() {
-		return code;
-	}
+    public void setDomingo( boolean isDomingo )
+    {
+        this.isDomingo = isDomingo;
+    }
 
-	public void setFestivo(String festivo) {
-		this.festivo = festivo;
-	}
+    public boolean isFestivo( )
+    {
+        return isFestivo;
+    }
 
-	public String getFestivo() {
-		return festivo;
-	}
+    public void setFestivo( boolean isFestivo )
+    {
+        this.isFestivo = isFestivo;
+    }
 
-	public void setDomingo(String domingo) {
-		this.domingo = domingo;
-	}
+    private boolean isLunes = true;
+    private boolean isMartes = true;
+    private boolean isMiercoles = true;
+    private boolean isJueves = true;
+    private boolean isViernes = true;
+    private boolean isSabado = true;
+    private boolean isDomingo = true;
+    private boolean isFestivo = true;
+    public String getLunes( )
+    {
+        return lunes;
+    }
 
-	public String getDomingo() {
-		return domingo;
-	}
-	
-	public String toString()
-	{
-	    return scheduleName;
-	}
+    public void setLunes( String lunes )
+    {
+        this.lunes = lunes;
+    }
+
+    public String getMartes( )
+    {
+        return martes;
+    }
+
+    public void setMartes( String martes )
+    {
+        this.martes = martes;
+    }
+
+    public String getMiercoles( )
+    {
+        return miercoles;
+    }
+
+    public void setMiercoles( String miercoles )
+    {
+        this.miercoles = miercoles;
+    }
+
+    public String getJueves( )
+    {
+        return jueves;
+    }
+
+    public void setJueves( String jueves )
+    {
+        this.jueves = jueves;
+    }
+
+    public String getViernes( )
+    {
+        return viernes;
+    }
+
+    public void setViernes( String viernes )
+    {
+        this.viernes = viernes;
+    }
+
+    public String getSabado( )
+    {
+        return sabado;
+    }
+
+    public void setSabado( String sabado )
+    {
+        this.sabado = sabado;
+    }
+
+    public Schedule( int cod, String name, String l, String m, String i, String j, String v, String s, String d, String f )
+    {
+        setCode( cod );
+        lunes = l;
+        martes = m;
+        miercoles = i;
+        jueves = j;
+        viernes = v;
+        sabado = s;
+        setDomingo( d );
+        setFestivo( f );
+        scheduleName = name;
+    }
+
+    public void setCode( int code )
+    {
+        this.code = code;
+    }
+
+    public int getCode( )
+    {
+        return code;
+    }
+
+    public void setFestivo( String festivo )
+    {
+        this.festivo = festivo;
+    }
+
+    public String getFestivo( )
+    {
+        return festivo;
+    }
+
+    public void setDomingo( String domingo )
+    {
+        this.domingo = domingo;
+    }
+
+    public String getDomingo( )
+    {
+        return domingo;
+    }
+
+    public String toString( )
+    {
+        return scheduleName;
+    }
 
 }

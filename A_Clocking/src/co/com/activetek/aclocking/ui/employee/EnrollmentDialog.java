@@ -16,8 +16,8 @@ import java.util.*;
 public class EnrollmentDialog extends JDialog
 {
     private EnumMap<DPFPFingerIndex, DPFPTemplate> templates;
-    private DialogAddEmployee owner;
-    public EnrollmentDialog( DialogAddEmployee owner, int maxCount, final String reasonToFail, EnumMap<DPFPFingerIndex, DPFPTemplate> templates )
+    private DialogAddEditEmployee owner;
+    public EnrollmentDialog( DialogAddEditEmployee owner, int maxCount, final String reasonToFail, EnumMap<DPFPFingerIndex, DPFPTemplate> templates )
     {        
         this.templates = templates;
         this.owner = owner;

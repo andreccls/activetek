@@ -1,4 +1,4 @@
-package co.com.activetek.aclocking.ui.employee;
+package co.com.activetek.aclocking.ui.schedule;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,23 +10,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JButton;
 
-import co.com.activetek.aclocking.entitybeans.Employee;
+import co.com.activetek.aclocking.entitybeans.Schedule;
 import co.com.activetek.aclocking.ui.AClockingUI;
 
-public class PanelEmployees extends JPanel implements ActionListener
+public class PanelShedules extends JPanel implements ActionListener
 {
     private AClockingUI window;
-    private JList list;
     private JButton btnAgregar;
     private JButton btnEditar;
     private JButton btnEliminar;
-    public PanelEmployees( AClockingUI aClockingUI )
+    private JList list;
+
+    public PanelShedules( AClockingUI aClockingUI )
     {
         this.window = aClockingUI;
         setLayout( new MigLayout( "", "[grow]", "[][grow][grow]" ) );
 
-        JLabel lblEmpleados = new JLabel( "Empleados" );
-        add( lblEmpleados, "cell 0 0" );
+        JLabel lblHorarios = new JLabel( "Horarios" );
+        add( lblHorarios, "cell 0 0" );
 
         JScrollPane scrollPane = new JScrollPane( );
         add( scrollPane, "cell 0 1,grow" );
@@ -60,22 +61,22 @@ public class PanelEmployees extends JPanel implements ActionListener
         String command = e.getActionCommand( );
         if( command.equals( "ADD" ) )
         {
-            window.showAddEmployeeDialog( );
+            window.showAddScheduleDialog( );
         }
-        else if( command.equals( "EDIT" ) )
+        if( command.equals( "EDIT" ) )
         {
-            window.showEditEmployeeDialog( ( Employee )list.getSelectedValue( ) );
+            window.showEditScheduleDialog( ( Schedule )list.getSelectedValue( ) );
         }
-        else if( command.equals( "DELETE" ) )
+        if( command.equals( "DELETE" ) )
         {
-            window.deleteEmployee( ( Employee )list.getSelectedValue( ) );
+            window.deleteSchedule( ( Schedule )list.getSelectedValue( ) );
         }
     }
     public void refresh( )
     {
-        list.setListData( window.getEmployees( ).toArray( ) );
+        list.setListData( window.getSchedules( ).toArray( ) );
         list.setSelectedIndex( 0 );
-        if( window.getEmployees( ).size( ) == 0 )
+        if( window.getSchedules( ).size( ) == 0 )
         {
             btnEditar.setEnabled( false );
             btnEliminar.setEnabled( false );
