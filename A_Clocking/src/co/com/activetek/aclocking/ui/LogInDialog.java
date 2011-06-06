@@ -22,6 +22,8 @@ public class LogInDialog extends JDialog implements KeyListener
 
     private JTextField txtAdmin;
     private JPasswordField passwordField;
+    private AClockingUI window;
+        
     public LogInDialog( )
     {
         setTitle( "Inciar Sesion" );
@@ -72,7 +74,7 @@ public class LogInDialog extends JDialog implements KeyListener
     {
         if( passwordField.getText( ).equals( "pass" ) )
         {
-            // TODO tiene que mostrar el JFrame            
+            // TODO tiene que mostrar el JFrame
             this.dispose( );
         }
         else
@@ -83,8 +85,7 @@ public class LogInDialog extends JDialog implements KeyListener
     }
     @Override
     public void keyPressed( KeyEvent arg0 )
-    {
-        System.out.println( "keyy!!!" );
+    {        
         if( arg0.getKeyCode( ) == KeyEvent.VK_ENTER )
         {
             checkPassword( );
