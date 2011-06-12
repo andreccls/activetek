@@ -39,11 +39,11 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
 
     public DialogAddEditEmployee( AClockingUI window, Employee employee )
     {
+        isNewEmployee = employee == null;
     	if(isNewEmployee)
     		templates = new EnumMap<DPFPFingerIndex, DPFPTemplate>( DPFPFingerIndex.class );
         else
     		templates=employee.getTemplates();
-        isNewEmployee = employee == null;
         this.employee = employee;
         if( isNewEmployee )
             setTitle( "Agregar Empleado" );
