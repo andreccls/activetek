@@ -1,5 +1,10 @@
 package co.com.activetek.aclocking.entitybeans;
 
+import java.util.EnumMap;
+
+import com.digitalpersona.onetouch.DPFPFingerIndex;
+import com.digitalpersona.onetouch.DPFPTemplate;
+
 
 public class Employee
 {
@@ -8,12 +13,19 @@ public class Employee
     private String nombre;
     private Schedule schedule;
     private int id;
+    private EnumMap<DPFPFingerIndex, DPFPTemplate> templates;
 
     public Employee( int id, String ced, String nom, Schedule sch )
     {
+    	templates = new EnumMap<DPFPFingerIndex, DPFPTemplate>( DPFPFingerIndex.class );
         setCedula( ced );
         setNombre( nom );
         setSchedule( sch );
+    }
+    
+    public EnumMap<DPFPFingerIndex, DPFPTemplate> getTemplates()
+    {
+    	return templates;
     }
 
     public int getId( )

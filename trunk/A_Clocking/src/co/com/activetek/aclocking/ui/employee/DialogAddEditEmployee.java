@@ -34,11 +34,15 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
     private AClockingUI window;
     private boolean isNewEmployee;
     private Employee employee;
-    private EnumMap<DPFPFingerIndex, DPFPTemplate> templates = new EnumMap<DPFPFingerIndex, DPFPTemplate>( DPFPFingerIndex.class );
+    private EnumMap<DPFPFingerIndex, DPFPTemplate> templates;
     private EnumMap<DPFPFingerIndex, JCheckBox> checkBoxes = new EnumMap<DPFPFingerIndex, JCheckBox>( DPFPFingerIndex.class );
 
     public DialogAddEditEmployee( AClockingUI window, Employee employee )
     {
+    	if(isNewEmployee)
+    		templates = new EnumMap<DPFPFingerIndex, DPFPTemplate>( DPFPFingerIndex.class );
+        else
+    		templates=employee.getTemplates();
         isNewEmployee = employee == null;
         this.employee = employee;
         if( isNewEmployee )
