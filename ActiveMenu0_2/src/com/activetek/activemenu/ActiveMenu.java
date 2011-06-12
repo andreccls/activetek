@@ -41,7 +41,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	 */
 	//public final static String SERVER_IP="192.168.0.103";
 	public final static String SERVER_IP="192.168.0.103";
-	public final static String ROOT_DIR = "/data/menu/";
+	public final static String ROOT_DIR = "/mnt/sdcard/AMenu";
 	/**
 	 * Diálogo de espera
 	 */
@@ -200,7 +200,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	{
 		try {
 			// Intentamos abrir el json principal
-			FileInputStream fis= new FileInputStream(ROOT_DIR + "images/json.txt");
+			FileInputStream fis= new FileInputStream(ROOT_DIR + "/images/json.txt");
 			// Convertimos el FIS a String para interpretarlo
 			String str = convertStreamToString(fis);
 			// Creamos un JSONObject para explorar
@@ -248,7 +248,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 					ArrayList<String> arras=new ArrayList<String>();
 					// Recorremos el arreglo de imágenes
 					if(arraimag.length()==0)
-						arras.add(ROOT_DIR + "images/GenericMenu/waitresses/none.jpg");
+						arras.add(ROOT_DIR + "/images/GenericMenu/waitresses/none.jpg");
 					else
 					{
 						for(int z=0; z<arraimag.length();z++)
@@ -256,7 +256,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 							// Extraemos cada imágen
 							JSONObject finn=arraimag.getJSONObject(z);
 							//Creamos el path absoluto de las imágenes
-							arras.add("/data/menu"+finn.getString("url"));
+							arras.add(ROOT_DIR+finn.getString("url"));
 						}
 					}
 					// Creamos un arreglo vacío para los precios
