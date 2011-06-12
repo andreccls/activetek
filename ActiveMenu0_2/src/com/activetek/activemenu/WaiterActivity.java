@@ -3,8 +3,10 @@ package com.activetek.activemenu;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -13,20 +15,22 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class WaiterActivity extends AbstractActivityGroup{
-	
+
 	private Sender send;
 	private Receiver rec;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.waiter);
 
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-        		WindowManager.LayoutParams.FLAG_FULLSCREEN);
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		GridView grid= (GridView) findViewById(R.id.gridview);
 		grid.setAdapter(new ImageAdapter(this));
 		grid.setOnItemClickListener(new OnItemClickListener()
@@ -84,21 +88,27 @@ public class WaiterActivity extends AbstractActivityGroup{
 		// create a new ImageView for each item referenced by the Adapter
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ImageView imageView;
-			if (convertView == null) {  // if it's not recycled, initialize some attributes
-				imageView = new ImageView(mContext);
-				imageView.setLayoutParams(new GridView.LayoutParams(120, 120));
-				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				imageView.setPadding(10, 10, 10, 10);
-				TypedArray a = mContext.obtainStyledAttributes(R.styleable.HelloGallery);
-				int mGalleryItemBackground = a.getResourceId(
-						R.styleable.HelloGallery_android_galleryItemBackground, 0);
-				imageView.setBackgroundResource(mGalleryItemBackground);
-			} else {
-				imageView = (ImageView) convertView;
-			}
+			TextView t;
+			LinearLayout l;
+			imageView = new ImageView(mContext);
+			imageView.setLayoutParams(new GridView.LayoutParams(120, 120));
+			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+			imageView.setPadding(10, 10, 10, 10);
+			TypedArray a = mContext.obtainStyledAttributes(R.styleable.HelloGallery);
+			int mGalleryItemBackground = a.getResourceId(
+					R.styleable.HelloGallery_android_galleryItemBackground, 0);
+			imageView.setBackgroundResource(mGalleryItemBackground);
 
 			imageView.setImageBitmap(wrap.getWaiters().get(position).getImage());
-			return imageView;
+			t=new TextView(mContext);
+			t.setText(wrap.getWaiters().get(position).getName());
+			t.setTextColor(Color.BLACK);
+			t.setGravity(Gravity.CENTER);
+			l=new LinearLayout(mContext);
+			l.setOrientation(LinearLayout.VERTICAL);
+			l.addView(imageView);
+			l.addView(t);
+			return l;
 		}
 
 	}
@@ -121,5 +131,5 @@ public class WaiterActivity extends AbstractActivityGroup{
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 }
