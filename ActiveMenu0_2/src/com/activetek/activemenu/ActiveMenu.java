@@ -41,7 +41,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	 */
 	//public final static String SERVER_IP="192.168.0.103";
 	public final static String SERVER_IP="192.168.0.103";
-	public final static String ROOT_DIR = "/mnt/sdcard/AMenu";
+	public final static String ROOT_DIR = "/data/menu";
 	/**
 	 * Diálogo de espera
 	 */
@@ -313,7 +313,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 				}
 				String prec=obi.getString("id");
 				// Creamos al mesero
-				Waiter w= new Waiter(name,Integer.parseInt(prec),"/data/menu"+thumb);
+				Waiter w= new Waiter(name,Integer.parseInt(prec),ROOT_DIR+thumb);
 				//Abrimos la instancia del almacen de meseros
 				WaiterWrapper wai= WaiterWrapper.getInstance();
 				//añadimos al mesero creado al almacen
