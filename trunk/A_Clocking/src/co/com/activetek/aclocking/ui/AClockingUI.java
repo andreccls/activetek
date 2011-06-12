@@ -15,6 +15,8 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
+
 import java.awt.Panel;
 import java.awt.Window;
 
@@ -27,6 +29,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 
 public class AClockingUI extends JFrame
 {
@@ -54,12 +57,15 @@ public class AClockingUI extends JFrame
 
         JPanel panel = new JPanel( );
         getContentPane( ).add( panel, "cell 0 1 2 1,grow" );
-
-        JButton btnSalir = new JButton( "Salir" );
-        panel.add( btnSalir );
-
-        JButton btnGenerarReporte = new JButton( "Generar Reporte" );
-        panel.add( btnGenerarReporte );
+        panel.setLayout(new MigLayout("", "[174px][53px][113px][][][]", "[61px]"));
+        
+        
+        JLabel labelLogo = new JLabel("");
+        labelLogo.setIcon(new ImageIcon("C:\\Users\\Daniel\\workspace\\A_Clocking\\images\\logo4 copia.JPG"));
+        panel.add(labelLogo, "cell 0 0,alignx left,aligny top");
+        
+                JButton btnGenerarReporte = new JButton( "Generar Reporte" );
+                panel.add( btnGenerarReporte, "cell 5 0,alignx left,aligny center" );
 
     }
     public ArrayList<Employee> getEmployees( )
@@ -72,6 +78,19 @@ public class AClockingUI extends JFrame
     }
     public final static void main( String[] arg )
     {
+        try
+        {
+            // UIManager.setLookAndFeel( "ch.randelshofer.quaqua.QuaquaLookAndFeel" );
+            // UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
+            UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
+            // UIManager.setLookAndFeel( "co.com.activetek.genericmenu.ui.utils.MyLookAndFeel" );
+            // MetalLookAndFeel.setCurrentTheme( new MyLookAndFeel( ) );
+            // UIManager.setLookAndFeel( "javax.swing.plaf.metal.MetalLookAndFeel" );
+        }
+        catch( Exception e )
+        {            
+            e.printStackTrace( );
+        }
         AClockingUI window = new AClockingUI( );
         LogInDialog dialog = new LogInDialog( window );
         dialog.setVisible( true );
