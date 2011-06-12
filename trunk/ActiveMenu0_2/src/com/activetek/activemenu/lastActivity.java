@@ -79,6 +79,21 @@ public class lastActivity extends Activity{
 		});
 		backButton.setText("Volver");
 		lay.addView(backButton);
+		
+		/**
+		 * Validar si hay mas precios
+		 */
+		if(it.getPrices().size()==1)
+		{
+			// Añadimos la selección del usuario a la Lista Inteligente
+			SmartList.getInstance().add(id+":"+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(0).getId());
+			// Enviamos un mensaje al servidor con la selección del usuario
+			Sender.getInstance().getWrite().println("ADD:"+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(0).getId());
+			// Fijamos el código de resultado
+			setResult(1);
+			// Terminamos la Actividad
+			finish();
+		}
 	}
 	
 	/**
