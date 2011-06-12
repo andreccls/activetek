@@ -2,6 +2,7 @@ package co.com.activetek.genericmenu.ui.menu;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -13,6 +14,7 @@ import javax.swing.JTree;
 import javax.swing.JTree.DynamicUtilTreeNode;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
@@ -25,6 +27,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
@@ -153,7 +157,7 @@ public class MenuTreePanel extends JPanel implements ActionListener
             treeMenu.setModel( new menuItemModel( ( TreeNode )treeMenu.getModel( ).getRoot( ) ) );
             treeMenu.setRootVisible( false );
             // treeMenu.getModel( ).addTreeModelListener( new menuItemListener( treeMenu ) );
-            // treeMenu.setCellRenderer( new menuItemRender( ) );
+            treeMenu.setCellRenderer( new MenuTeeRender( ) );
             // treeMenu.setCellEditor( new menuItemEditor( new JTextField( "CONSTRUCTOR!!!") ) );
             treeMenu.setEditable( true );// TODO cambiar para que solo lo tenga el administrador
             treeMenu.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
@@ -209,6 +213,23 @@ public class MenuTreePanel extends JPanel implements ActionListener
                 }
             } );
         }
+        treeMenu.addKeyListener( new KeyListener( )
+        {
+            @Override
+            public void keyTyped( KeyEvent e )
+            {
+            }
+            @Override
+            public void keyReleased( KeyEvent e )
+            {
+                selectedNode = treeMenu.getSelectionPath( );
+                window.setSelectedItem( getMenuItembyPath( selectedNode ) );
+            }
+            @Override
+            public void keyPressed( KeyEvent e )
+            {
+            }
+        } );
         return treeMenu;
     }
 
@@ -406,14 +427,14 @@ public class MenuTreePanel extends JPanel implements ActionListener
 
                 DefaultMutableTreeNode d = ( DefaultMutableTreeNode )selectedNode.getPath( )[ selectedNode.getPath( ).length - 1 ];
                 MenuItem menuItem = ( MenuItem )d.getUserObject( );
-                
-                
-                int reponce = JOptionPane.showConfirmDialog( window,"Esta apunto de eliminar la categoria " + menuItem + ". \n Esta operacion no se pude deshacer, \n ¿Desea eliminar la categoria y todos sus items? ","Advertencia",JOptionPane.OK_CANCEL_OPTION);
-                if(reponce == JOptionPane.CANCEL_OPTION)
+
+                int reponce = JOptionPane.showConfirmDialog( window, "Esta apunto de eliminar la categoria " + menuItem + ". \n Esta operacion no se pude deshacer, \n ¿Desea eliminar la categoria y todos sus items? ", "Advertencia",
+                        JOptionPane.OK_CANCEL_OPTION );
+                if( reponce == JOptionPane.CANCEL_OPTION )
                 {
                     return;
                 }
-                
+
                 menuItem.delete( );
                 treeMenu.removeSelectionPath( selectedNode );
 
@@ -480,6 +501,47 @@ public class MenuTreePanel extends JPanel implements ActionListener
                 JOptionPane.showMessageDialog( window, "Error inesperado tratando de crear el nuevo item \n " + e1.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
                 e1.printStackTrace( );
             }
+        }
+
+    }
+    class MenuTeeRender extends DefaultTreeCellRenderer
+    {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        private ImageIcon root = new ImageIcon( "./images/tree/root.jpg" );
+        private ImageIcon category = new ImageIcon( "./images/tree/category.jpg" );
+        private ImageIcon menuItemEnable = new ImageIcon( "./images/tree/manuitem-enable.jpg" );
+        private ImageIcon menuItemDisable = new ImageIcon( "./images/tree/menuitem-disable.jpg" );
+
+        public Component getTreeCellRendererComponent( JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus )
+        {
+
+            super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus );
+
+            MenuItem nodeObj = ( MenuItem ) ( ( DefaultMutableTreeNode )value ).getUserObject( );
+            if( nodeObj.getLevel( ) == MenuItem.LEVEL_MENU )
+            {
+                setIcon( root );
+            }
+            else if( nodeObj.getLevel( ) == MenuItem.LEVEl_CATEGORY )
+            {
+                setIcon( category );
+            }
+            else
+            {
+                if( nodeObj.isEnable( ) )
+                {
+                    setIcon( menuItemEnable );
+                }
+                else
+                {
+                    setIcon( menuItemDisable );
+                }
+            }
+            return this;
         }
 
     }
