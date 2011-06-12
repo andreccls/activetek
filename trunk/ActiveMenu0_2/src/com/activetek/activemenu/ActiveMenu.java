@@ -41,6 +41,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	 */
 	//public final static String SERVER_IP="192.168.0.103";
 	public final static String SERVER_IP="192.168.0.103";
+	public final static String ROOT_DIR = "/data/menu/";
 	/**
 	 * Diálogo de espera
 	 */
@@ -199,7 +200,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	{
 		try {
 			// Intentamos abrir el json principal
-			FileInputStream fis= new FileInputStream("/data/menu/images/json.txt");
+			FileInputStream fis= new FileInputStream(ROOT_DIR + "images/json.txt");
 			// Convertimos el FIS a String para interpretarlo
 			String str = convertStreamToString(fis);
 			// Creamos un JSONObject para explorar
@@ -247,7 +248,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 					ArrayList<String> arras=new ArrayList<String>();
 					// Recorremos el arreglo de imágenes
 					if(arraimag.length()==0)
-						arras.add("/data/menu/images/GenericMenu/waitresses/none.jpg");
+						arras.add(ROOT_DIR + "images/GenericMenu/waitresses/none.jpg");
 					else
 					{
 						for(int z=0; z<arraimag.length();z++)
