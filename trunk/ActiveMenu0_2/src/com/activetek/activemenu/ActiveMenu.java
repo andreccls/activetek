@@ -40,7 +40,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	 * Constante que indica la dirección IP del servidor
 	 */
 	//public final static String SERVER_IP="192.168.0.103";
-	public final static String SERVER_IP="192.168.0.199";
+	public final static String SERVER_IP="192.168.0.103";
 	/**
 	 * Diálogo de espera
 	 */
@@ -110,8 +110,7 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 			os.flush();
 			//Esperamos a que el proceso se complete
 			process.waitFor();
-			//Llamamos al gestor de contenidos
-			CreateContent();
+
 		}
 		catch ( IOException e ) {
 			e.printStackTrace();
@@ -120,6 +119,8 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 		}
 		try
 		{
+	        //Llamamos al gestor de contenidos
+            CreateContent();
 			//Abrimos conexión con el servidor en el puerto 9999
 			Socket s= new Socket(SERVER_IP,9999);
 			// Creamos la instancia de receptor de mensajes
