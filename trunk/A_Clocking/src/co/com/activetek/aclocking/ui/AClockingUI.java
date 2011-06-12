@@ -28,8 +28,6 @@ import co.com.activetek.aclocking.ui.schedule.PanelShedules;
 import co.com.activetek.aclocking.world.AClock;
 import co.com.activetek.aclocking.world.VerificationThread;
 
-import com.digitalpersona.onetouch.verification.DPFPVerification;
-
 public class AClockingUI extends JFrame implements ActionListener
 {
     /**
@@ -42,7 +40,6 @@ public class AClockingUI extends JFrame implements ActionListener
     private PanelShedules panelShedules;
     private VerificationThread v;
     private TrayIcon trayIcon;
-    private boolean up;
     private static LogInDialog dialog;
 
     public AClockingUI( )
@@ -52,9 +49,7 @@ public class AClockingUI extends JFrame implements ActionListener
         this.setSize( 548, 330 );
         getContentPane( ).setLayout( new MigLayout( "", "[grow][grow]", "[grow][grow]" ) );
 
-        v = new VerificationThread( aclock.getEmployees( ), DPFPVerification.PROBABILITY_ONE / 10000 );
-        up = false;
-
+        
         panelEmployees = new PanelEmployees( this );
         getContentPane( ).add( panelEmployees, "cell 0 0,grow" );
 
@@ -123,6 +118,9 @@ public class AClockingUI extends JFrame implements ActionListener
                 System.err.println( "TrayIcon could not be added." );
             }
         }
+        
+        v = new VerificationThread( aclock.getEmployees( ), trayIcon );
+        v.start( );
 
     }
     public ArrayList<Employee> getEmployees( )
@@ -197,16 +195,7 @@ public class AClockingUI extends JFrame implements ActionListener
     {
         if( arg0.getActionCommand( ).equals( "TEST" ) )
         {
-            if( !up )
-            {
-                v.start( );
-                up = true;
-            }
-            else
-            {
-                up = false;
-                v.stop( );
-            }
+            
         }
         else if( arg0.getActionCommand( ).equals( "EXIT" ) )
         {

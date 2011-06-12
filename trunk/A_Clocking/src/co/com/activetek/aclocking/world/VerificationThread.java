@@ -1,98 +1,185 @@
 package co.com.activetek.aclocking.world;
+
+import java.awt.TrayIcon;
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import co.com.activetek.aclocking.entitybeans.Employee;
 
+import com.digitalpersona.onetouch.DPFPDataPurpose;
+import com.digitalpersona.onetouch.DPFPFeatureSet;
 import com.digitalpersona.onetouch.DPFPGlobal;
+import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
-import com.digitalpersona.onetouch.ui.swing.DPFPVerificationControl;
-import com.digitalpersona.onetouch.ui.swing.DPFPVerificationEvent;
-import com.digitalpersona.onetouch.ui.swing.DPFPVerificationListener;
-import com.digitalpersona.onetouch.ui.swing.DPFPVerificationVetoException;
+import com.digitalpersona.onetouch.capture.DPFPCapture;
+import com.digitalpersona.onetouch.capture.DPFPCapturePriority;
+import com.digitalpersona.onetouch.capture.event.DPFPDataEvent;
+import com.digitalpersona.onetouch.capture.event.DPFPDataListener;
+import com.digitalpersona.onetouch.capture.event.DPFPReaderStatusAdapter;
+import com.digitalpersona.onetouch.capture.event.DPFPReaderStatusEvent;
+import com.digitalpersona.onetouch.processing.DPFPFeatureExtraction;
+import com.digitalpersona.onetouch.readers.DPFPReadersCollection;
 import com.digitalpersona.onetouch.verification.DPFPVerification;
 import com.digitalpersona.onetouch.verification.DPFPVerificationResult;
 
-public class VerificationThread 
+public class VerificationThread extends Thread
 {
 
-	/**
-	 * Enrollment control test
-	 */
-	private ArrayList<Employee> employees;
-	private int farRequested;
-	private int farAchieved;
-	private DPFPVerificationControl verificationControl;
-	private boolean matched;
+    /**
+     * Enrollment control test
+     */
+    private ArrayList<Employee> employees;
+    private int farAchieved;
+    private boolean matched;
+    TrayIcon trayIcon;
 
-	static final String FAR_PROPERTY = "FAR";
-	static final String MATCHED_PROPERTY = "Matched";
+    static final String FAR_PROPERTY = "FAR";
+    static final String MATCHED_PROPERTY = "Matched";
 
-	public VerificationThread(ArrayList<Employee> emp, int farRequested) {
+    public VerificationThread( ArrayList<Employee> emp, TrayIcon trayIconn )
+    {
 
-		employees=emp;
-		this.farRequested = farRequested;
+        employees = emp;
+        trayIcon = trayIconn;
 
-		verificationControl = new DPFPVerificationControl();
-		verificationControl.addVerificationListener(new DPFPVerificationListener()
-		{
-			public void captureCompleted(DPFPVerificationEvent e) throws DPFPVerificationVetoException
-			{
-				final DPFPVerification verification = 
-					DPFPGlobal.getVerificationFactory().createVerification(VerificationThread.this.farRequested);
-				e.setStopCapture(false);	// we want to continue capture until the dialog is closed
-				int bestFAR = DPFPVerification.PROBABILITY_ONE;
-				boolean hasMatch = false;
-				for(Employee empl:VerificationThread.this.employees)
-				{
-					for (DPFPTemplate template : empl.getTemplates().values()) 
-					{
-						final DPFPVerificationResult result = verification.verify(e.getFeatureSet(), template);
-						e.setMatched(result.isVerified());		// report matching status
-						bestFAR = Math.min(bestFAR, result.getFalseAcceptRate());
-						if (e.getMatched()) {
-							hasMatch = true;
-							System.out.println("El empleado en verificación es: "+empl.getNombre());
-							break;
-						}
-					}
-					if(hasMatch)
-						break;
-				}
-				if(!hasMatch)
-					System.out.println("La persona en el lector no está registrada en la base de datos");
-				setMatched(hasMatch);
-				setFAR(bestFAR);
-			}
-		});
+    }
 
-	}
+    public void run( )
+    {
+        while( true )
+        {
+            verify( selectReader( ) );
+        }
+    }
 
-	public void start()
-	{
-		verificationControl.start();
-		System.out.println("Monitoring Thread Up");
-	}
-	public void stop()
-	{
-		verificationControl.stop();
-		System.out.println("Monitoring Thread Down");
-	}
+    private void verify( String activeReader )
+    {
+        try
+        {
+            DPFPSample sample = getSample( activeReader );
+            if( sample == null )
+                throw new Exception( );
 
-	public int getFAR() {
-		return farAchieved;
-	}
+            DPFPFeatureExtraction featureExtractor = DPFPGlobal.getFeatureExtractionFactory( ).createFeatureExtraction( );
+            DPFPFeatureSet featureSet = featureExtractor.createFeatureSet( sample, DPFPDataPurpose.DATA_PURPOSE_VERIFICATION );
 
-	protected void setFAR(int far) {
-		farAchieved = far;
-		System.out.println(""+farAchieved);
-	}
+            DPFPVerification matcher = DPFPGlobal.getVerificationFactory( ).createVerification( );
+            matcher.setFARRequested( DPFPVerification.MEDIUM_SECURITY_FAR );
 
-	public boolean getMatched() {
-		return matched;
-	}
+            int bestFAR = DPFPVerification.PROBABILITY_ONE;
+            boolean hasMatch = false;
+            for( Employee empl : VerificationThread.this.employees )
+            {
+                for( DPFPTemplate template : empl.getTemplates( ).values( ) )
+                {
+                    DPFPVerificationResult result = matcher.verify( featureSet, template ); // report matching status
+                    bestFAR = Math.min( bestFAR, result.getFalseAcceptRate( ) );
+                    if( result.isVerified( ) )
+                    {
+                        hasMatch = true;
+                        trayIcon.displayMessage( "Active Clocking", "El empleado en verificación es: " + empl.getNombre( ), TrayIcon.MessageType.INFO );
+                        // System.out.println("El empleado en verificación es: "+empl.getNombre());
+                        break;
+                    }
+                }
+                if( hasMatch )
+                    break;
+            }
+            if( !hasMatch )
+            {
+                trayIcon.displayMessage( "Active Clocking", "La persona en el lector no está registrada en la base de datos", TrayIcon.MessageType.ERROR );
+                // System.out.println("La persona en el lector no está registrada en la base de datos");
+            }
 
-	protected void setMatched(boolean matched) {
-		this.matched = matched;
-		System.out.println(""+matched);
-	}
+        }
+        catch( Exception e )
+        {
+            System.out.printf( "Failed to perform verification." );
+            e.printStackTrace( );
+        }
+    }
+
+    private DPFPSample getSample( String activeReader ) throws InterruptedException
+    {
+        final LinkedBlockingQueue<DPFPSample> samples = new LinkedBlockingQueue<DPFPSample>( );
+        DPFPCapture capture = DPFPGlobal.getCaptureFactory( ).createCapture( );
+        capture.setReaderSerialNumber( activeReader );
+        capture.setPriority( DPFPCapturePriority.CAPTURE_PRIORITY_LOW );
+        capture.addDataListener( new DPFPDataListener( )
+        {
+            public void dataAcquired( DPFPDataEvent e )
+            {
+                if( e != null && e.getSample( ) != null )
+                {
+                    try
+                    {
+                        samples.put( e.getSample( ) );
+                    }
+                    catch( InterruptedException e1 )
+                    {
+                        e1.printStackTrace( );
+                    }
+                }
+            }
+        } );
+        capture.addReaderStatusListener( new DPFPReaderStatusAdapter( )
+        {
+            int lastStatus = DPFPReaderStatusEvent.READER_CONNECTED;
+            public void readerConnected( DPFPReaderStatusEvent e )
+            {
+                if( lastStatus != e.getReaderStatus( ) )
+                    System.out.println( "Reader is connected" );
+                lastStatus = e.getReaderStatus( );
+            }
+            public void readerDisconnected( DPFPReaderStatusEvent e )
+            {
+                if( lastStatus != e.getReaderStatus( ) )
+                    System.out.println( "Reader is disconnected" );
+                lastStatus = e.getReaderStatus( );
+            }
+
+        } );
+        try
+        {
+            capture.startCapture( );
+            return samples.take( );
+        }
+        catch( RuntimeException e )
+        {
+            System.out.printf( "Failed to start capture. Check that reader is not used by another application.\n" );
+            throw e;
+        }
+        finally
+        {
+            capture.stopCapture( );
+        }
+    }
+
+    public String selectReader( ) throws IndexOutOfBoundsException
+    {
+        DPFPReadersCollection readers = DPFPGlobal.getReadersFactory( ).getReaders( );
+        return readers.get( 0 ).getSerialNumber( );
+    }
+
+    public int getFAR( )
+    {
+        return farAchieved;
+    }
+
+    protected void setFAR( int far )
+    {
+        farAchieved = far;
+        System.out.println( "" + farAchieved );
+    }
+
+    public boolean getMatched( )
+    {
+        return matched;
+    }
+
+    protected void setMatched( boolean matched )
+    {
+        this.matched = matched;
+        System.out.println( "" + matched );
+    }
 }
