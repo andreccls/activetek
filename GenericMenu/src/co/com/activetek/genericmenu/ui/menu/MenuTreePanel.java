@@ -513,7 +513,9 @@ public class MenuTreePanel extends JPanel implements ActionListener
 
         private ImageIcon root = new ImageIcon( "./images/tree/root.jpg" );
         private ImageIcon category = new ImageIcon( "./images/tree/category.jpg" );
-        private ImageIcon menuItemEnable = new ImageIcon( "./images/tree/manuitem-enable.jpg" );
+        private ImageIcon categoryEnable = new ImageIcon( "./images/tree/category-enable.jpg" );
+        private ImageIcon categoryDisable = new ImageIcon( "./images/tree/category-disable.jpg" );
+        private ImageIcon menuItemEnable = new ImageIcon( "./images/tree/menuitem-enable.jpg" );
         private ImageIcon menuItemDisable = new ImageIcon( "./images/tree/menuitem-disable.jpg" );
 
         public Component getTreeCellRendererComponent( JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus )
@@ -527,8 +529,15 @@ public class MenuTreePanel extends JPanel implements ActionListener
                 setIcon( root );
             }
             else if( nodeObj.getLevel( ) == MenuItem.LEVEl_CATEGORY )
-            {
-                setIcon( category );
+            {                
+                if(nodeObj.isEnable( ))
+                {
+                    setIcon( categoryEnable );
+                }
+                else
+                {
+                    setIcon( categoryDisable );
+                }
             }
             else
             {
