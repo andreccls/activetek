@@ -11,7 +11,7 @@ public class Schedule
     private String sabado;
     private String domingo;
     private String festivo;
-    private int code;
+    private int id;
     public String getScheduleName( )
     {
         return scheduleName;
@@ -172,7 +172,7 @@ public class Schedule
 
     public Schedule( int cod, String name, String l, String m, String i, String j, String v, String s, String d, String f )
     {
-        setCode( cod );
+        setId( cod );
         lunes = l;
         martes = m;
         miercoles = i;
@@ -184,14 +184,14 @@ public class Schedule
         scheduleName = name;
     }
 
-    public void setCode( int code )
+    public void setId( int code )
     {
-        this.code = code;
+        this.id = code;
     }
 
-    public int getCode( )
+    public int getId( )
     {
-        return code;
+        return id;
     }
 
     public void setFestivo( String festivo )

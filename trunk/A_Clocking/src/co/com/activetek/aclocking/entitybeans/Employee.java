@@ -77,5 +77,9 @@ public class Employee
     {
         return nombre;
     }
+    public void addTemplate( DPFPFingerIndex index, DPFPTemplate template )
+    {
+        templates.put( index, template );
+    }
 
 }

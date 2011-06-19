@@ -1,8 +1,10 @@
 package co.com.activetek.aclocking.world;
 
+import java.awt.TrayIcon;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +13,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Properties;
+
+import com.digitalpersona.onetouch.DPFPFingerIndex;
+import com.digitalpersona.onetouch.DPFPGlobal;
+import com.digitalpersona.onetouch.DPFPTemplate;
+import com.digitalpersona.onetouch.verification.DPFPVerificationResult;
 
 import co.com.activetek.aclocking.entitybeans.Employee;
 import co.com.activetek.aclocking.entitybeans.Schedule;
@@ -23,6 +31,7 @@ public class AClock
     private ArrayList<Schedule> schedules;
     private Properties configuration;
     private Connection connection;
+
     public AClock( ) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
     {
         schedules = new ArrayList<Schedule>( );
@@ -42,21 +51,77 @@ public class AClock
         System.setProperty( "derby.system.home", directorioData.getAbsolutePath( ) );
 
         connectADB( );
-        loadData( );
+        loadEmployees( );
+        loadTemplates( );
+    }
+    private void loadTemplates( )
+    {
+        try
+        {
+            File templatesDir = new File( "./templates" );
+            File[] templates = templatesDir.listFiles( );
+            if( templates != null )
+            {
+                for( File file : templates )
+                {
+                    Employee employee = findEmployeeById( Integer.parseInt( file.getName( ).split( "=" )[ 0 ] ) );
+                    DPFPFingerIndex index = DPFPFingerIndex.valueOf( file.getName( ).split( "==" )[ 1 ] );
+                    FileInputStream fis = new FileInputStream( file );
+                    byte[] data = new byte[fis.available( )];
+                    fis.read( data );
+                    DPFPTemplate template = DPFPGlobal.getTemplateFactory( ).createTemplate( );
+                    template.deserialize( data );
+                    employee.addTemplate( index, template );
+                }
+            }
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace( );
+        }
     }
 
-    private void loadData( ) throws SQLException
+    private void removeTemplates( Employee employee )
+    {
+        try
+        {
+            File templatesDir = new File( "./templates" );
+            File[] templates = templatesDir.listFiles( );
+            if( templates != null )
+            {
+                for( File file : templates )
+                {
+                    if( file.getName( ).split( "==" )[0].equals( Integer.toString( employee.getId( ) ) ) )
+                        file.delete( );
+                }
+            }
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace( );
+        }
+    }
+    private void loadEmployees( ) throws SQLException
     {
         Statement st = connection.createStatement( );
         String sql = "select * from employee";
         ResultSet rs = st.executeQuery( sql );
         while( rs.next( ) )
         {
-            Employee e = new Employee( rs.getInt( "employee_id" ), rs.getString( "cedula" ), rs.getString( "name" ), null );
+            int id = rs.getInt( "employee_id" );
+            Employee e = new Employee( id, rs.getString( "cedula" ), rs.getString( "name" ), null );
             employees.add( e );
         }
     }
-
+    public Employee findEmployeeById( int id )
+    {
+        for( Employee employee : employees )
+        {
+            if( employee.getId( ) == id )
+                return employee;
+        }
+        return null;
+    }
     public ArrayList<Employee> getEmployees( )
     {
         return employees;
@@ -91,14 +156,15 @@ public class AClock
         if( createTables )
         {
             System.out.println( "creando tablas .. .." );
-            String sql = "create table employee (employee_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cedula varchar(200),name varchar(200), primary key(employee_id))";
+            String sql = "create table employee (employee_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cedula varchar(200),name varchar(200),schedule int not null, primary key(employee_id))";
             st.execute( sql );
 
-            sql = "create table fingertemplate (fingertemplate_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),dir varchar(200), primary key(fingertemplate_id))";
-            st.execute( sql );
-
-            sql = "create table employee_figertemplate (employee_id INTEGER NOT NULL,fingertemplate_id INTEGER NOT NULL)";
-            st.execute( sql );
+            // sql =
+            // "create table fingertemplate (fingertemplate_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),dir varchar(200), primary key(fingertemplate_id))";
+            // st.execute( sql );
+            //
+            // sql = "create table employee_figertemplate (employee_id INTEGER NOT NULL,fingertemplate_id INTEGER NOT NULL)";
+            // st.execute( sql );
         }
         st.close( );
 
@@ -129,7 +195,7 @@ public class AClock
         for( int i = 0; i < schedules.size( ); i++ )
         {
             Schedule temp = schedules.get( i );
-            if( temp.getCode( ) == ( e.getCode( ) ) )
+            if( temp.getId( ) == ( e.getId( ) ) )
             {
                 temp.setLunes( e.getLunes( ) );
                 temp.setMartes( e.getMartes( ) );
@@ -148,9 +214,11 @@ public class AClock
         }
     }
 
-    public void deleteEmployee( Employee employee )
+    public void deleteEmployee( Employee employee ) throws SQLException
     {
-        // TODO
+        Statement st = connection.createStatement( );
+        removeTemplates( employee );
+        st.execute( "delete from employee where employee_id = " + employee.getId( ) );
         employees.remove( employee );
 
     }
@@ -160,20 +228,41 @@ public class AClock
         Statement st = connection.createStatement( );
         if( employee.getId( ) == -1 )
         {
-            String sql = "insert into employee (cedula,name) values ('" + employee.getCedula( ) + "','" + employee.getNombre( ) + "')";
+            String sql = "insert into employee (cedula,name,schedule) values ('" + employee.getCedula( ) + "','" + employee.getNombre( ) + "'," + employee.getSchedule( ).getId( ) + ")";
             st.execute( sql );
-            
+
             sql = "select max(employee_id) from employee";
             ResultSet rs = st.executeQuery( sql );
-            if(rs.next( ))
+            if( rs.next( ) )
             {
                 employee.setId( rs.getInt( 1 ) );
             }
+
+            EnumMap<DPFPFingerIndex, DPFPTemplate> templates = employee.getTemplates( );
+
+            for( DPFPFingerIndex finger : DPFPFingerIndex.values( ) )
+            {
+                if( templates.containsKey( finger ) )
+                {
+                    try
+                    {
+                        File templateFile = new File( "./templates/" + employee.getId( ) + "==" + finger );
+                        FileOutputStream fos = new FileOutputStream( templateFile );
+                        fos.write( templates.get( finger ).serialize( ) );
+                    }
+                    catch( Exception e )
+                    {
+                        e.printStackTrace( );
+                    }
+                }
+            }
+
             employees.add( employee );
         }
         else
         {
-            // TODO editar la instancia en memoria y en BD
+            String sql = "update employee set cedula = '" + employee.getCedula( ) + "', name = '" + employee.getNombre( ) + "',schedule = " + employee.getSchedule( ).getId( ) + " where employee_id = " + employee.getId( );
+            st.executeUpdate( sql );
         }
 
     }
