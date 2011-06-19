@@ -175,7 +175,7 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
             {
                 if( isNewEmployee )
                 {
-                    employee = new Employee( -1, txtIdentificacion.getText( ), txtNombre.getText( ), ( Schedule )comboBox.getSelectedItem( ) );
+                    employee = new Employee( -1, txtIdentificacion.getText( ), txtNombre.getText( ), ( Schedule )comboBox.getSelectedItem( ), templates );
                 }
                 window.editCreateEmployee( employee );
                 this.dispose( );
