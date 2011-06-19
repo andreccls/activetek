@@ -48,7 +48,14 @@ public class VerificationThread extends Thread
     {
         while( true )
         {
-            verify( selectReader( ) );
+            try
+            {
+                verify( selectReader( ) );
+            }
+            catch( IndexOutOfBoundsException e )
+            {
+                trayIcon.displayMessage( "Active Clocking", "Por favor conecte el lector de huella al computador", TrayIcon.MessageType.ERROR );
+            }
         }
     }
 
@@ -128,13 +135,13 @@ public class VerificationThread extends Thread
             public void readerConnected( DPFPReaderStatusEvent e )
             {
                 if( lastStatus != e.getReaderStatus( ) )
-                    System.out.println( "Reader is connected" );
+                    trayIcon.displayMessage( "Active Clocking", "Lector de huellas conectado", TrayIcon.MessageType.INFO );
                 lastStatus = e.getReaderStatus( );
             }
             public void readerDisconnected( DPFPReaderStatusEvent e )
             {
                 if( lastStatus != e.getReaderStatus( ) )
-                    System.out.println( "Reader is disconnected" );
+                    trayIcon.displayMessage( "Active Clocking", "Se ha desconectado el lector de huella, por favor conectelo nuevamente", TrayIcon.MessageType.ERROR );
                 lastStatus = e.getReaderStatus( );
             }
 
