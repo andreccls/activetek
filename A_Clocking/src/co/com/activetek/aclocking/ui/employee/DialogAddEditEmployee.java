@@ -40,10 +40,10 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
     public DialogAddEditEmployee( AClockingUI window, Employee employee )
     {
         isNewEmployee = employee == null;
-    	if(isNewEmployee)
-    		templates = new EnumMap<DPFPFingerIndex, DPFPTemplate>( DPFPFingerIndex.class );
+        if( isNewEmployee )
+            templates = new EnumMap<DPFPFingerIndex, DPFPTemplate>( DPFPFingerIndex.class );
         else
-    		templates=employee.getTemplates();
+            templates = employee.getTemplates( );
         this.employee = employee;
         if( isNewEmployee )
             setTitle( "Agregar Empleado" );
@@ -150,7 +150,7 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
         panel_2.add( btnCancelar );
 
     }
-    private void Refresh( )
+    public void Refresh( )
     {
         // update enrolled fingers checkboxes
         for( DPFPFingerIndex finger : DPFPFingerIndex.values( ) )

@@ -1,6 +1,5 @@
 package co.com.activetek.aclocking.ui.employee;
 
-
 import com.digitalpersona.onetouch.*;
 import com.digitalpersona.onetouch.ui.swing.*;
 
@@ -18,7 +17,7 @@ public class EnrollmentDialog extends JDialog
     private EnumMap<DPFPFingerIndex, DPFPTemplate> templates;
     private DialogAddEditEmployee owner;
     public EnrollmentDialog( DialogAddEditEmployee owner, int maxCount, final String reasonToFail, EnumMap<DPFPFingerIndex, DPFPTemplate> templates )
-    {        
+    {
         this.templates = templates;
         this.owner = owner;
 
@@ -43,6 +42,7 @@ public class EnrollmentDialog extends JDialog
                 {
                     EnrollmentDialog.this.templates.remove( e.getFingerIndex( ) );
                 }
+                EnrollmentDialog.this.owner.Refresh( );
             }
 
             public void fingerEnrolled( DPFPEnrollmentEvent e ) throws DPFPEnrollmentVetoException
@@ -54,6 +54,7 @@ public class EnrollmentDialog extends JDialog
                 }
                 else
                     EnrollmentDialog.this.templates.put( e.getFingerIndex( ), e.getTemplate( ) );
+                EnrollmentDialog.this.owner.Refresh( );
             }
         } );
 
