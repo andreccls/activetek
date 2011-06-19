@@ -9,12 +9,14 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
@@ -45,11 +47,19 @@ public class AClockingUI extends JFrame implements ActionListener
     public AClockingUI( )
     {
         setTitle( "Control de empleados" );
-        this.aclock = new AClock( );
+        try
+        {
+            this.aclock = new AClock( );
+        }
+        catch( Exception e1 )
+        {
+            JOptionPane.showMessageDialog( this, "Contacte al administrador de la aplicacion \n" + e1.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e1.printStackTrace( );
+            System.exit( 0 );
+        }
         this.setSize( 548, 330 );
         getContentPane( ).setLayout( new MigLayout( "", "[grow][grow]", "[grow][grow]" ) );
 
-        
         panelEmployees = new PanelEmployees( this );
         getContentPane( ).add( panelEmployees, "cell 0 0,grow" );
 
@@ -102,7 +112,7 @@ public class AClockingUI extends JFrame implements ActionListener
                     /**
                      * trayIcon.displayMessage("Action Event", "An Action Event Has Been Performed!", TrayIcon.MessageType.INFO);
                      */
-                    //AClockingUI.this.setVisible( true );
+                    // AClockingUI.this.setVisible( true );
                     dialog.setVisible( true );
                 }
             };
@@ -118,7 +128,7 @@ public class AClockingUI extends JFrame implements ActionListener
                 System.err.println( "TrayIcon could not be added." );
             }
         }
-        
+
         v = new VerificationThread( aclock.getEmployees( ), trayIcon );
         v.start( );
 
@@ -195,7 +205,7 @@ public class AClockingUI extends JFrame implements ActionListener
     {
         if( arg0.getActionCommand( ).equals( "TEST" ) )
         {
-            
+
         }
         else if( arg0.getActionCommand( ).equals( "EXIT" ) )
         {

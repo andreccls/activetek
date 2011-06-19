@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="lib/dpfpverification.jar"/>
 	<classpathentry kind="lib" path="lib/dpotapi.jar"/>
 	<classpathentry kind="lib" path="lib/dpotjni.jar"/>
+	<classpathentry kind="lib" path="lib/derby.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
