@@ -259,15 +259,16 @@ public class ProdcutInfoDetailPanel extends JPanel
         if( jScrollPane == null )
         {
             jScrollPane = new JScrollPane( );
-            jScrollPane.setViewportView( getJTable( ) );
+            //jScrollPane.setViewportView( getJTable( ) );            
         }
         return jScrollPane;
-    }
+    } 
     /**
      * This method initializes jTable
      * 
      * @return javax.swing.JTable
      */
+    @Deprecated
     private JTable getJTable( )
     {
         if( jTable == null )
