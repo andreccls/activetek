@@ -21,7 +21,7 @@ public class EnrollmentDialog extends JDialog
         this.templates = templates;
         this.owner = owner;
 
-        setTitle( "Fingerprint Enrollment" );
+        setTitle( "Registro de huella" );
 
         DPFPEnrollmentControl enrollmentControl = new DPFPEnrollmentControl( );
 
@@ -40,9 +40,9 @@ public class EnrollmentDialog extends JDialog
                 }
                 else
                 {
-                    EnrollmentDialog.this.templates.remove( e.getFingerIndex( ) );
-                }
-                EnrollmentDialog.this.owner.Refresh( );
+                    // EnrollmentDialog.this.templates.remove( e.getFingerIndex( ) );//logica pasada el mundo
+                    EnrollmentDialog.this.owner.removeFinger( e );
+                }                
             }
 
             public void fingerEnrolled( DPFPEnrollmentEvent e ) throws DPFPEnrollmentVetoException
@@ -53,8 +53,10 @@ public class EnrollmentDialog extends JDialog
                     throw new DPFPEnrollmentVetoException( reasonToFail );
                 }
                 else
-                    EnrollmentDialog.this.templates.put( e.getFingerIndex( ), e.getTemplate( ) );
-                EnrollmentDialog.this.owner.Refresh( );
+                {
+                    // EnrollmentDialog.this.templates.put( e.getFingerIndex( ), e.getTemplate( ) ); //logica pasada al mundo
+                    EnrollmentDialog.this.owner.enrollFinger( e );
+                }                
             }
         } );
 

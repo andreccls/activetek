@@ -19,6 +19,7 @@ import co.com.activetek.aclocking.ui.AClockingUI;
 import co.com.activetek.aclocking.world.utilities.Utilities;
 
 import com.digitalpersona.onetouch.*;
+import com.digitalpersona.onetouch.ui.swing.DPFPEnrollmentEvent;
 
 import javax.swing.*;
 
@@ -35,6 +36,7 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
     private boolean isNewEmployee;
     private Employee employee;
     private EnumMap<DPFPFingerIndex, DPFPTemplate> templates;
+    private EnumMap<DPFPFingerIndex, DPFPTemplate> newtemplates;
     private EnumMap<DPFPFingerIndex, JCheckBox> checkBoxes = new EnumMap<DPFPFingerIndex, JCheckBox>( DPFPFingerIndex.class );
 
     public DialogAddEditEmployee( AClockingUI window, Employee employee )
@@ -44,6 +46,8 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
             templates = new EnumMap<DPFPFingerIndex, DPFPTemplate>( DPFPFingerIndex.class );
         else
             templates = employee.getTemplates( );
+        newtemplates = new EnumMap<DPFPFingerIndex, DPFPTemplate>( DPFPFingerIndex.class );
+
         this.employee = employee;
         if( isNewEmployee )
             setTitle( "Agregar Empleado" );
@@ -149,12 +153,13 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
         btnCancelar.addActionListener( this );
         panel_2.add( btnCancelar );
 
+        Refresh( );
     }
     public void Refresh( )
     {
         // update enrolled fingers checkboxes
         for( DPFPFingerIndex finger : DPFPFingerIndex.values( ) )
-            checkBoxes.get( finger ).setSelected( templates.containsKey( finger ) );
+            checkBoxes.get( finger ).setSelected( templates.containsKey( finger ) || newtemplates.containsKey( finger ) );
 
     }
     @Override
@@ -175,7 +180,12 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
             {
                 if( isNewEmployee )
                 {
-                    employee = new Employee( -1, txtIdentificacion.getText( ), txtNombre.getText( ), ( Schedule )comboBox.getSelectedItem( ), templates );
+                    employee = new Employee( -1, txtIdentificacion.getText( ), txtNombre.getText( ), ( Schedule )comboBox.getSelectedItem( ), newtemplates );
+                }
+                else
+                {
+                    employee.setCedula( txtIdentificacion.getText( ) );
+                    employee.setNombre( txtNombre.getText( ) );
                 }
                 window.editCreateEmployee( employee );
                 this.dispose( );
@@ -200,5 +210,16 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
             return false;
         }
         return true;
+    }
+    public void enrollFinger( DPFPEnrollmentEvent e )
+    {
+        // templates.put( e.getFingerIndex( ), e.getTemplate( ) );
+        newtemplates.put( e.getFingerIndex( ), e.getTemplate( ) );
+        Refresh( );
+    }
+    public void removeFinger( DPFPEnrollmentEvent e )
+    {
+        templates.remove( e.getTemplate( ) );
+        Refresh( );
     }
 }

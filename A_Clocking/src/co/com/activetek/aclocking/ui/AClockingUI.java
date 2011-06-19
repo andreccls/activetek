@@ -173,7 +173,15 @@ public class AClockingUI extends JFrame implements ActionListener
     }
     public void deleteEmployee( Employee employee )
     {
-        aclock.deleteEmployee( employee );
+        try
+        {
+            aclock.deleteEmployee( employee );
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado eliminando al empleado\n" + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace();
+        }
         panelEmployees.refresh( );
     }
     public void editCreateEmployee( Employee employee )
