@@ -6,7 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -27,17 +30,31 @@ public class AClock
         schedules.add( new Schedule( 2, "Turno 2", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00" ) );
         schedules.add( new Schedule( 3, "Turno 3", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00" ) );
         employees = new ArrayList<Employee>( );
-        employees.add( new Employee( 1, "1032027089", "Carlos", schedules.get( 0 ) ) );
-        employees.add( new Employee( 2, "1032027589", "Andres", schedules.get( 1 ) ) );
-        employees.add( new Employee( 3, "1032027689", "Mateo", schedules.get( 2 ) ) );
+        // employees.add( new Employee( 1, "1032027089", "Carlos", schedules.get( 0 ) ) );
+        // employees.add( new Employee( 2, "1032027589", "Andres", schedules.get( 1 ) ) );
+        // employees.add( new Employee( 3, "1032027689", "Mateo", schedules.get( 2 ) ) );
 
         FileInputStream fis = new FileInputStream( "./data/aclocking.properties" );
         configuration = new Properties( );
         configuration.load( fis );
         fis.close( );
-        connectADB( );
         File directorioData = new File( "./data/DB" );
         System.setProperty( "derby.system.home", directorioData.getAbsolutePath( ) );
+
+        connectADB( );
+        loadData( );
+    }
+
+    private void loadData( ) throws SQLException
+    {
+        Statement st = connection.createStatement( );
+        String sql = "select * from employee";
+        ResultSet rs = st.executeQuery( sql );
+        while( rs.next( ) )
+        {
+            Employee e = new Employee( rs.getInt( "employee_id" ), rs.getString( "cedula" ), rs.getString( "name" ), null );
+            employees.add( e );
+        }
     }
 
     public ArrayList<Employee> getEmployees( )
@@ -55,6 +72,36 @@ public class AClock
 
         String url = configuration.getProperty( "aclocking.db.url" );
         connection = DriverManager.getConnection( url );
+
+        initialiaceADB( );
+    }
+
+    private void initialiaceADB( ) throws SQLException
+    {
+        Statement st = connection.createStatement( );
+        boolean createTables = false;
+        try
+        {
+            st.executeQuery( "select * from EMPLOYEE where 1 = 3" );
+        }
+        catch( Exception e )
+        {
+            createTables = true;
+        }
+        if( createTables )
+        {
+            System.out.println( "creando tablas .. .." );
+            String sql = "create table employee (employee_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cedula varchar(200),name varchar(200), primary key(employee_id))";
+            st.execute( sql );
+
+            sql = "create table fingertemplate (fingertemplate_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),dir varchar(200), primary key(fingertemplate_id))";
+            st.execute( sql );
+
+            sql = "create table employee_figertemplate (employee_id INTEGER NOT NULL,fingertemplate_id INTEGER NOT NULL)";
+            st.execute( sql );
+        }
+        st.close( );
+
     }
 
     public void setEmployee( Employee e )
@@ -108,11 +155,21 @@ public class AClock
 
     }
 
-    public void editCreateEmployee( Employee employee )
+    public void editCreateEmployee( Employee employee ) throws SQLException
     {
+        Statement st = connection.createStatement( );
         if( employee.getId( ) == -1 )
         {
-            // TODO hacer toda la logica para editarlo (el id es -1 en caso de ser nuevo)
+            String sql = "insert into employee (cedula,name) values ('" + employee.getCedula( ) + "','" + employee.getNombre( ) + "')";
+            st.execute( sql );
+            
+            sql = "select max(employee_id) from employee";
+            ResultSet rs = st.executeQuery( sql );
+            if(rs.next( ))
+            {
+                employee.setId( rs.getInt( 1 ) );
+            }
+            employees.add( employee );
         }
         else
         {

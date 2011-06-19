@@ -10,6 +10,7 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -177,7 +178,15 @@ public class AClockingUI extends JFrame implements ActionListener
     }
     public void editCreateEmployee( Employee employee )
     {
-        aclock.editCreateEmployee( employee );
+        try
+        {
+            aclock.editCreateEmployee( employee );
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado agregando al nuevo empleado\n" + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace( );
+        }
         panelEmployees.refresh( );
     }
     public void showAddScheduleDialog( )
