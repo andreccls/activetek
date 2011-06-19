@@ -22,7 +22,14 @@ public class Employee
         setSchedule( sch );
         setId( id );
     }
-
+    public Employee( int id, String ced, String nom, Schedule sch, EnumMap<DPFPFingerIndex, DPFPTemplate> templates )
+    {
+        this.id = id;
+        this.cedula = ced;
+        this.nombre = nom;
+        this.schedule = sch;
+        this.templates = templates;
+    }
     public EnumMap<DPFPFingerIndex, DPFPTemplate> getTemplates( )
     {
         return templates;
