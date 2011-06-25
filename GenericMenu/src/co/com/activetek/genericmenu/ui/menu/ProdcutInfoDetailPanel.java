@@ -98,7 +98,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         this.setBorder( BorderFactory.createTitledBorder( null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null ) );
         setLayout(new MigLayout("", "[155px][5px][127px]", "[160px:160px,top][23px,top][63px][23px]"));
 
-        this.add( getJScrollPane( ), "cell 0 0 3 1,growx,aligny top" );
+        this.add( getJScrollPane( ), "cell 0 0 3 1,grow" );
         this.add( labelDetails, "cell 0 1,grow" );
         add( getBtnGuardar( ), "cell 2 1,alignx center,aligny center" );
         this.add( getScrollPaneDetails( ), "cell 0 2 3 1,grow" );
