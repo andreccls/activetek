@@ -143,5 +143,6 @@ public class PricesPanel extends JPanel implements ActionListener
         String command = arg0.getActionCommand( );
         System.out.println( command );
         PriceItem targeted = prices.get( command.split( ":" )[ 0 ] );
+        new EditAddPriceItemDialog( ).setVisible( true );
     }
 }
