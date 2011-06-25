@@ -31,6 +31,7 @@ import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.ui.OsakiMenu;
 import java.awt.Insets;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Este panel muestra los detalles del producto (opciones de precios) especidficiones, ademas permite borrar y activar/desactivar el producto
@@ -45,7 +46,7 @@ public class ProdcutInfoDetailPanel extends JPanel
     // --------------------------------------------------------------------------------------------
     private static final long serialVersionUID = 1L;
     /**
-     *  Valor uado por PriceTableCellEditor para notificar a PricesTableModel que la accion corresponde a borrar el precio
+     * Valor uado por PriceTableCellEditor para notificar a PricesTableModel que la accion corresponde a borrar el precio
      */
     private static final String DELETE_PRICE_ITEM = "DELETE_PRICE_ITEM";
 
@@ -57,7 +58,7 @@ public class ProdcutInfoDetailPanel extends JPanel
     private JLabel labelDetails = null;
     private JTextArea textFieldDetails = null;
     private JScrollPane scrollPaneDetails = null;
-
+    private PricesPanel pricesPanel = null;
     private JScrollPane jScrollPane = null;
 
     private JTable jTable = null;
@@ -90,66 +91,29 @@ public class ProdcutInfoDetailPanel extends JPanel
     private void initialize( )
     {
 
-        GridBagConstraints gridBagConstraints0 = new GridBagConstraints( );// Para la table de precios
-        gridBagConstraints0.insets = new Insets( 0, 0, 5, 0 );
-        gridBagConstraints0.fill = GridBagConstraints.BOTH;
-        gridBagConstraints0.gridx = 0;
-        gridBagConstraints0.gridy = 0;
-        gridBagConstraints0.weightx = 1;
-        gridBagConstraints0.weighty = 0.4;
-        gridBagConstraints0.gridwidth = 2;
-
-        GridBagConstraints gridBagConstraints1 = new GridBagConstraints( );// Para el label detalles
-        gridBagConstraints1.insets = new Insets( 0, 0, 5, 5 );
-        gridBagConstraints1.fill = GridBagConstraints.BOTH;
-        gridBagConstraints1.gridx = 0;
-        gridBagConstraints1.gridy = 1;
-        gridBagConstraints1.weightx = 1;
-        gridBagConstraints1.gridheight = 1;
-
-        GridBagConstraints gridBagConstraints2 = new GridBagConstraints( );// Para el textField de detalles
-        gridBagConstraints2.insets = new Insets( 0, 0, 5, 0 );
-        gridBagConstraints2.fill = GridBagConstraints.BOTH;
-        gridBagConstraints2.gridx = 0;
-        gridBagConstraints2.gridy = 2;
-        gridBagConstraints2.weightx = 1;
-        gridBagConstraints2.weighty = 0.4;
-        gridBagConstraints2.gridwidth = 2;
-
-        GridBagConstraints gridBagConstraints3 = new GridBagConstraints( );// Para el chek de enable
-        gridBagConstraints3.insets = new Insets( 0, 0, 0, 5 );
-        gridBagConstraints3.fill = GridBagConstraints.BOTH;
-        gridBagConstraints3.gridx = 0;
-        gridBagConstraints3.gridy = 3;
-        gridBagConstraints3.weightx = 0.8;
-        gridBagConstraints3.gridheight = 1;
-
-        GridBagConstraints gridBagConstraints4 = new GridBagConstraints( );// Para el chek de enable
-        gridBagConstraints4.fill = GridBagConstraints.BOTH;
-        gridBagConstraints4.gridx = 1;
-        gridBagConstraints4.gridy = 3;
-        gridBagConstraints4.weightx = 0.2;
-        gridBagConstraints4.gridheight = 1;
-
         labelDetails = new JLabel( );
         labelDetails.setText( "Detalles:" );
 
         this.setSize( 300, 200 );
-        this.setLayout( new GridBagLayout( ) );
         this.setBorder( BorderFactory.createTitledBorder( null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null ) );
+        setLayout(new MigLayout("", "[155px][5px][127px]", "[160px:160px,top][23px,top][63px][23px]"));
 
-        this.add( getJScrollPane( ), gridBagConstraints0 );
-        this.add( labelDetails, gridBagConstraints1 );
-        GridBagConstraints gbc_btnGuardar = new GridBagConstraints( );
-        gbc_btnGuardar.insets = new Insets( 0, 0, 5, 0 );
-        gbc_btnGuardar.gridx = 1;
-        gbc_btnGuardar.gridy = 1;
-        add( getBtnGuardar( ), gbc_btnGuardar );
-        this.add( getScrollPaneDetails( ), gridBagConstraints2 );
-        this.add( getCheckBoxEnableProduct( ), gridBagConstraints3 );
-        this.add( getButtonDeleteProduct( ), gridBagConstraints4 );
+        this.add( getJScrollPane( ), "cell 0 0 3 1,growx,aligny top" );
+        this.add( labelDetails, "cell 0 1,grow" );
+        add( getBtnGuardar( ), "cell 2 1,alignx center,aligny center" );
+        this.add( getScrollPaneDetails( ), "cell 0 2 3 1,grow" );
+        this.add( getCheckBoxEnableProduct( ), "cell 0 3,grow" );
+        this.add( getButtonDeleteProduct( ), "cell 2 3,grow" );
     }
 
+    private PricesPanel getPricesPanel( )
+    {
+        if( pricesPanel == null )
+        {
+            pricesPanel = new PricesPanel( window );
+        }
+        return pricesPanel;
+    }
     /**
      * This method initializes checkBoxEnableProduct
      * 
@@ -259,10 +223,11 @@ public class ProdcutInfoDetailPanel extends JPanel
         if( jScrollPane == null )
         {
             jScrollPane = new JScrollPane( );
-            //jScrollPane.setViewportView( getJTable( ) );            
+            // jScrollPane.setViewportView( getJTable( ) );
+            jScrollPane.setViewportView( getPricesPanel( ) );
         }
         return jScrollPane;
-    } 
+    }
     /**
      * This method initializes jTable
      * 
@@ -285,9 +250,10 @@ public class ProdcutInfoDetailPanel extends JPanel
     public void setSelectedItem( MenuItem selected )
     {
         this.selected = selected;
-        pricesTableRender.setSelected( selected );
+        // pricesTableRender.setSelected( selected );
+        pricesPanel.setSelectedItem( selected );
         textFieldDetails.setText( selected.getDescription( ) );
-        jTable.repaint( );
+        // jTable.repaint( );
         checkBoxEnableProduct.setSelected( selected.isEnable( ) );
         this.repaint( );
     }
@@ -299,6 +265,7 @@ public class ProdcutInfoDetailPanel extends JPanel
      * @author daniel.rodriguez
      * 
      */
+    @Deprecated
     public class PricesTableModel extends AbstractTableModel
     {
         private static final long serialVersionUID = 1L;
@@ -342,12 +309,12 @@ public class ProdcutInfoDetailPanel extends JPanel
         }
         public void setValueAt( Object value, int row, int col )
         {
-            if(value.toString( ).equals( DELETE_PRICE_ITEM ))
+            if( value.toString( ).equals( DELETE_PRICE_ITEM ) )
             {
                 try
                 {
-                    if(row != data.length - 1 )
-                    {                        
+                    if( row != data.length - 1 )
+                    {
                         PriceItem p = prices.get( row );
                         p.delete( );
                         setSelectedItem( selected );
@@ -416,7 +383,7 @@ public class ProdcutInfoDetailPanel extends JPanel
 
         }
         public void setSelected( MenuItem menuitem )
-        {            
+        {
             prices = menuitem.getPrices( );
             this.data = new Object[prices.size( ) + 1][columnNames.length];
 
@@ -456,7 +423,6 @@ public class ProdcutInfoDetailPanel extends JPanel
         {
             return new JButton( "Render" );
         }
-
     }
     /**
      * 
@@ -475,20 +441,20 @@ public class ProdcutInfoDetailPanel extends JPanel
         {
             button = new JButton( );
             button.setActionCommand( EDIT );
-            button.addActionListener(new ActionListener( )
+            button.addActionListener( new ActionListener( )
             {
-                
+
                 @Override
                 public void actionPerformed( ActionEvent e )
                 {
-                   fireEditingStopped( );//Aqui hace que el envento vall al PriceTableModel donde ya sabe que hacer
-                    
+                    fireEditingStopped( );// Aqui hace que el envento vall al PriceTableModel donde ya sabe que hacer
+
                 }
-            });
+            } );
             button.setBorderPainted( false );
             this.jTable1 = jTable1;
         }
-       
+
         // Implement the one CellEditor method that AbstractCellEditor doesn't.
         public Object getCellEditorValue( )
         {
