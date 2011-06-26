@@ -46,11 +46,18 @@ public class DialogAddEditSchedule extends JDialog implements ActionListener
         txtNombre = new JTextField( );
         panel_2.add( txtNombre, "cell 1 0,alignx left,aligny top" );
         txtNombre.setColumns( 10 );
+        
+        
         JPanel panel = new JPanel( );
         panel.setBorder( new LineBorder( new Color( 0, 0, 0 ) ) );
         getContentPane( ).add( panel, "cell 0 1,growx,aligny top" );
         panel.setLayout( new GridLayout( 0, 8, 0, 0 ) );
 
+        for( String day : daysOfWeek )
+        {
+            panel.add( new PanelDaySchedule( day, this ) );
+        }
+        
         JPanel panel_1 = new JPanel( );
         getContentPane( ).add( panel_1, "cell 0 2,growx,aligny top" );
 
@@ -60,10 +67,7 @@ public class DialogAddEditSchedule extends JDialog implements ActionListener
         btnCancelar = new JButton( "Cancelar" );
         panel_1.add( btnCancelar );
 
-        for( String day : daysOfWeek )
-        {
-            panel.add( new PanelDaySchedule( day, this ) );
-        }
+
     }
 
     @Override
