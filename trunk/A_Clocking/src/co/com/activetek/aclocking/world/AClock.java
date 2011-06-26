@@ -36,9 +36,9 @@ public class AClock
     public AClock( ) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
     {
         schedules = new ArrayList<Schedule>( );
-        schedules.add( new Schedule( 1, "Turno 1", "08:00", "08:00", "08:00", "08:00", "08:00", "08:00", "08:00", "08:00" ) );
-        schedules.add( new Schedule( 2, "Turno 2", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00" ) );
-        schedules.add( new Schedule( 3, "Turno 3", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00" ) );
+//        schedules.add( new Schedule( 1, "Turno 1", "08:00", "08:00", "08:00", "08:00", "08:00", "08:00", "08:00", "08:00" ) );
+//        schedules.add( new Schedule( 2, "Turno 2", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00" ) );
+//        schedules.add( new Schedule( 3, "Turno 3", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00" ) );
         employees = new ArrayList<Employee>( );
         // employees.add( new Employee( 1, "1032027089", "Carlos", schedules.get( 0 ) ) );
         // employees.add( new Employee( 2, "1032027589", "Andres", schedules.get( 1 ) ) );
