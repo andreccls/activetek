@@ -130,7 +130,7 @@ public class AClockingUI extends JFrame implements ActionListener
             }
         }
 
-        v = new VerificationThread( aclock.getEmployees( ), trayIcon );
+        v = new VerificationThread( aclock.getEmployees( ), aclock, trayIcon );
         v.start( );
 
     }
@@ -180,7 +180,7 @@ public class AClockingUI extends JFrame implements ActionListener
         catch( SQLException e )
         {
             JOptionPane.showMessageDialog( this, "Error inesperado eliminando al empleado\n" + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
-            e.printStackTrace();
+            e.printStackTrace( );
         }
         panelEmployees.refresh( );
     }
