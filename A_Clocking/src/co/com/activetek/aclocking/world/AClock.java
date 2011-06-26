@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.Properties;
 
@@ -91,7 +92,7 @@ public class AClock
             {
                 for( File file : templates )
                 {
-                    if( file.getName( ).split( "==" )[0].equals( Integer.toString( employee.getId( ) ) ) )
+                    if( file.getName( ).split( "==" )[ 0 ].equals( Integer.toString( employee.getId( ) ) ) )
                         file.delete( );
                 }
             }
@@ -157,9 +158,9 @@ public class AClock
         {
             System.out.println( "creando tablas .. .." );
             String sql = "create table employee (employee_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cedula varchar(200),name varchar(200),schedule int not null, primary key(employee_id))";
-            st.execute( sql );            
-            
-            sql = "create table event (employee_id INTEGER NOT NULL, X_time timestamp)";            
+            st.execute( sql );
+
+            sql = "create table event (employee_id INTEGER NOT NULL, x_time timestamp, primary key (employee_id,x_time))";
             st.execute( sql );
 
             // sql =
@@ -274,6 +275,12 @@ public class AClock
     {
         // TODO
         schedules.remove( schedule );
+    }
+    public void addEvent( Employee empl, String time ) throws SQLException
+    {
+        Statement st = connection.createStatement( );
+        String sql = "insert into event (employee_id,x_time) values (" + empl.getId( ) + ",'" + time + "')";
+        st.execute( sql );
     }
 
 }

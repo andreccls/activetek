@@ -1,7 +1,10 @@
 package co.com.activetek.aclocking.world;
 
 import java.awt.TrayIcon;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import co.com.activetek.aclocking.entitybeans.Employee;
@@ -31,17 +34,22 @@ public class VerificationThread extends Thread
     private ArrayList<Employee> employees;
     private int farAchieved;
     private boolean matched;
-    TrayIcon trayIcon;
+    private TrayIcon trayIcon;
+    private AClock aclock;
 
     static final String FAR_PROPERTY = "FAR";
     static final String MATCHED_PROPERTY = "Matched";
+    private SimpleDateFormat sdf;
+    private SimpleDateFormat sdf2;
 
-    public VerificationThread( ArrayList<Employee> emp, TrayIcon trayIconn )
+    public VerificationThread( ArrayList<Employee> emp, AClock aclock, TrayIcon trayIconn )
     {
-
+        this.aclock = aclock;
         employees = emp;
         trayIcon = trayIconn;
-
+        sdf = new SimpleDateFormat( "HH:mm" );
+        sdf2 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        //sdf2 = new SimpleDateFormat( "dd/mm/yyyy HH:mm:ss" );
     }
 
     public void run( )
@@ -84,7 +92,11 @@ public class VerificationThread extends Thread
                     if( result.isVerified( ) )
                     {
                         hasMatch = true;
-                        trayIcon.displayMessage( "Active Clocking", "El empleado en verificación es: " + empl.getNombre( ), TrayIcon.MessageType.INFO );
+
+                        Calendar c = Calendar.getInstance( );
+                        String hour = sdf.format( c.getTime( ) );
+                        trayIcon.displayMessage( empl.getNombre( ), "Hora: " + hour, TrayIcon.MessageType.INFO );
+                        aclock.addEvent( empl, sdf2.format( c.getTime( ) ) );
                         // System.out.println("El empleado en verificación es: "+empl.getNombre());
                         break;
                     }
@@ -94,7 +106,7 @@ public class VerificationThread extends Thread
             }
             if( !hasMatch )
             {
-                trayIcon.displayMessage( "Active Clocking", "La persona en el lector no está registrada en la base de datos", TrayIcon.MessageType.ERROR );
+                trayIcon.displayMessage( "Error", "La persona en el lector no está registrada en la base de datos", TrayIcon.MessageType.ERROR );
                 // System.out.println("La persona en el lector no está registrada en la base de datos");
             }
 
