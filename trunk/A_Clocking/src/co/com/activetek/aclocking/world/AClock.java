@@ -157,6 +157,9 @@ public class AClock
         {
             System.out.println( "creando tablas .. .." );
             String sql = "create table employee (employee_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cedula varchar(200),name varchar(200),schedule int not null, primary key(employee_id))";
+            st.execute( sql );            
+            
+            sql = "create table event (employee_id INTEGER NOT NULL, X_time timestamp)";            
             st.execute( sql );
 
             // sql =
