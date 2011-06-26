@@ -197,6 +197,19 @@ public class AClockingUI extends JFrame implements ActionListener
         }
         panelEmployees.refresh( );
     }
+    public void editCreateSchedule( Schedule schedule )
+    {
+        try
+        {
+            aclock.editCreateSchedule( schedule );
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado agregando el nuevo horario\n" + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace( );
+        }
+        panelShedules.refresh( );
+    }
     public void showAddScheduleDialog( )
     {
         DialogAddEditSchedule dialog = new DialogAddEditSchedule( this, null );
@@ -212,11 +225,7 @@ public class AClockingUI extends JFrame implements ActionListener
         aclock.deleteSchedule( schedule );
         panelShedules.refresh( );
     }
-    public void editCreateSchedule( Schedule schedule )
-    {
-        // TODO Auto-generated method stub
 
-    }
     @Override
     public void actionPerformed( ActionEvent arg0 )
     {
