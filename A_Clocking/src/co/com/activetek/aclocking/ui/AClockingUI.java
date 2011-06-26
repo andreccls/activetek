@@ -76,7 +76,7 @@ public class AClockingUI extends JFrame implements ActionListener
         panel.add( labelLogo, "cell 0 0,alignx left,aligny top" );
 
         JButton btnGenerarReporte = new JButton( "Generar Reporte" );
-        btnGenerarReporte.setActionCommand( "TEST" );
+        btnGenerarReporte.setActionCommand( "REPORT" );
         btnGenerarReporte.addActionListener( this );
         panel.add( btnGenerarReporte, "cell 5 0,alignx left,aligny center" );
 
@@ -229,9 +229,9 @@ public class AClockingUI extends JFrame implements ActionListener
     @Override
     public void actionPerformed( ActionEvent arg0 )
     {
-        if( arg0.getActionCommand( ).equals( "TEST" ) )
+        if( arg0.getActionCommand( ).equals( "REPORT" ) )
         {
-
+            System.out.println("report");
         }
         else if( arg0.getActionCommand( ).equals( "EXIT" ) )
         {
