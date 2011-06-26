@@ -71,6 +71,11 @@ public class LogInDialog extends JDialog implements KeyListener
         } );
         panel.add( butCancel );
     }
+    public void dispose( )
+    {
+        passwordField.setText( "" );
+        super.dispose( );
+    }
     public void checkPassword( )
     {
         if( passwordField.getText( ).equals( "pass" ) )
