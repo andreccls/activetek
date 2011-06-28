@@ -9,9 +9,11 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,6 +28,7 @@ import co.com.activetek.aclocking.entitybeans.Employee;
 import co.com.activetek.aclocking.entitybeans.Schedule;
 import co.com.activetek.aclocking.ui.employee.DialogAddEditEmployee;
 import co.com.activetek.aclocking.ui.employee.PanelEmployees;
+import co.com.activetek.aclocking.ui.report.GenerateRportDialog;
 import co.com.activetek.aclocking.ui.schedule.DialogAddEditSchedule;
 import co.com.activetek.aclocking.ui.schedule.PanelShedules;
 import co.com.activetek.aclocking.world.AClock;
@@ -222,7 +225,16 @@ public class AClockingUI extends JFrame implements ActionListener
     }
     public void deleteSchedule( Schedule schedule )
     {
-        aclock.deleteSchedule( schedule );
+        try
+        {
+            aclock.deleteSchedule( schedule );
+            JOptionPane.showMessageDialog( this, "Se produjo un error inesperado eliminando el reporte\n", "ERROR", JOptionPane.ERROR_MESSAGE );
+        }
+        catch( SQLException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         panelShedules.refresh( );
     }
 
@@ -231,12 +243,25 @@ public class AClockingUI extends JFrame implements ActionListener
     {
         if( arg0.getActionCommand( ).equals( "REPORT" ) )
         {
-            System.out.println("report");
+            GenerateRportDialog d = new GenerateRportDialog( this );
+            d.setVisible( true );
         }
         else if( arg0.getActionCommand( ).equals( "EXIT" ) )
         {
             this.setVisible( false );
             trayIcon.displayMessage( "Active Clocking", "Active Clocking sigue ejecutándose", TrayIcon.MessageType.INFO );
+        }
+    }
+    public void generateRerport( File fileReport, Date ini_date, Date end_date )
+    {
+        try
+        {
+            aclock.generateRerport( fileReport, ini_date, end_date );
+        }
+        catch( Exception e )
+        {
+            JOptionPane.showMessageDialog( this, "Se produjo un error inesperado generarndo el reporte\n" + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace();
         }
     }
 }
