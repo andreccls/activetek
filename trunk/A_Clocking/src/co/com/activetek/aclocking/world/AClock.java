@@ -10,12 +10,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.Properties;
+import java.util.Vector;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 
 import com.digitalpersona.onetouch.DPFPFingerIndex;
 import com.digitalpersona.onetouch.DPFPGlobal;
@@ -36,13 +48,7 @@ public class AClock
     public AClock( ) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
     {
         schedules = new ArrayList<Schedule>( );
-        // schedules.add( new Schedule( 1, "Turno 1", "08:00", "08:00", "08:00", "08:00", "08:00", "08:00", "08:00", "08:00" ) );
-        // schedules.add( new Schedule( 2, "Turno 2", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00" ) );
-        // schedules.add( new Schedule( 3, "Turno 3", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00", "07:00", "09:00" ) );
         employees = new ArrayList<Employee>( );
-        // employees.add( new Employee( 1, "1032027089", "Carlos", schedules.get( 0 ) ) );
-        // employees.add( new Employee( 2, "1032027589", "Andres", schedules.get( 1 ) ) );
-        // employees.add( new Employee( 3, "1032027689", "Mateo", schedules.get( 2 ) ) );
 
         FileInputStream fis = new FileInputStream( "./data/aclocking.properties" );
         configuration = new Properties( );
@@ -354,16 +360,18 @@ public class AClock
         }
         else
         {
-            String sql = "update employee set cedula = '" + employee.getCedula( ) + "', name = '" + employee.getNombre( ) + "',schedule = " + employee.getSchedule( ).getId( ) + " where employee_id = " + employee.getId( );
+            String sql = "update employee set cedula = '" + employee.getCedula( ) + "', name = '" + employee.getNombre( ) + "',schedule_id = " + employee.getSchedule( ).getId( ) + " where employee_id = " + employee.getId( );
             System.out.println( sql );
             st.executeUpdate( sql );
         }
 
     }
 
-    public void deleteSchedule( Schedule schedule ) // Throw exception si hay algun usuario que tenga asociado este scheule
+    public void deleteSchedule( Schedule schedule ) throws SQLException // Throw exception si hay algun usuario que tenga asociado este scheule
     {
-        // TODO
+        Statement st = connection.createStatement( );
+        String sql =  "delete from schedule where schedule_id = " + schedule.getId( );
+        st.execute( sql );
         schedules.remove( schedule );
     }
     public void addEvent( Employee empl, String time ) throws SQLException
@@ -371,6 +379,417 @@ public class AClock
         Statement st = connection.createStatement( );
         String sql = "insert into event (employee_id,x_time) values (" + empl.getId( ) + ",'" + time + "')";
         st.execute( sql );
+    }
+    public void generateRerport( File fileReport, Date ini_date, Date end_date ) throws SQLException, IOException
+    {
+        Statement st = connection.createStatement( );
+        HSSFWorkbook wb = new HSSFWorkbook( );
+        HSSFSheet sh = wb.createSheet( "Eventos" );
+        String sql = "select name,x_time from event ev, employee em where ev.employee_id = em.employee_id order by x_time";
+        saveQuery( sh, wb, st.executeQuery( sql ), 0, ( short )0, true );
+
+        sh = wb.createSheet( "Dia-Dia" );
+        generateDaylyReport( sh, wb, ini_date, end_date );
+
+        FileOutputStream fos = new FileOutputStream( fileReport );
+        wb.write( fos );
+        fos.close( );
+    }
+    public void generateDaylyReport( HSSFSheet sh, HSSFWorkbook wb, Date ini_date, Date end_date ) throws SQLException
+    {
+        int numRow = 0;
+        HSSFRow row = sh.createRow( numRow++ );
+        CreationHelper createHelper = wb.getCreationHelper( );
+        CellStyle style = wb.createCellStyle( );
+        String[] headers = { "NOMBRE", "FECHA", "HORA_ENTRADA_ESPERADA", "HORA_ENTRADA", "HORA_SALIDA_ESPERADA", "HORA_SALIDA", "MINUTOS_TARDE" };
+        short numColumn = 0;
+        for( String header : headers )
+        {
+            HSSFCell cell = row.createCell( numColumn++ );
+            cell.setCellValue( header );
+        }
+        numColumn = 0;
+
+        Calendar c_ini = Calendar.getInstance( );
+        c_ini.setTime( ini_date );
+        Calendar c_end = Calendar.getInstance( );
+        c_end.setTime( end_date );
+        while( c_ini.before( c_end ) || c_ini.compareTo( c_end ) == 0 )
+        {
+            for( Employee employee : employees )
+            {
+
+                if( c_ini.get( Calendar.DAY_OF_WEEK ) == 2 )// lunes
+                {
+                    if( !employee.getSchedule( ).isLunes( ) )// **
+                        continue;
+                    // NOMBRE
+                    row = sh.createRow( numRow++ );
+                    HSSFCell cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getNombre( ) );
+
+                    // FECHA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( c_ini.getTime( ) );
+                    style.setDataFormat( createHelper.createDataFormat( ).getFormat( "yyy-mm-dd" ) );
+                    cell.setCellStyle( style );
+
+                    // HORA_ENTRADA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getLunes( ) );// **
+
+                    // HORA_ENTRADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+
+                    // HORA_SALIDA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getLunes_out( ) );// **
+
+                    // HORA_SALIDA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+
+                    // MINUTOS_TARDE TODO
+                    // cell = row.createCell( numColumn++ );
+                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+
+                }
+                else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 3 )// martes
+                {
+                    if( !employee.getSchedule( ).isMartes( ) )
+                        continue;
+                    // NOMBRE
+                    row = sh.createRow( numRow++ );
+                    HSSFCell cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getNombre( ) );
+
+                    // FECHA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( c_ini.getTime( ) );
+                    style.setDataFormat( createHelper.createDataFormat( ).getFormat( "yyy-mm-dd" ) );
+                    cell.setCellStyle( style );
+
+                    // HORA_ENTRADA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getMartes( ) );// **
+
+                    // HORA_ENTRADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+
+                    // HORA_SALIDA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getMartes_out( ) );// **
+
+                    // HORA_SALIDA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+
+                    // MINUTOS_TARDE TODO
+                    // cell = row.createCell( numColumn++ );
+                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                }
+                else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 4 )// miercoles
+                {
+                    if( !employee.getSchedule( ).isMiercoles( ) )
+                        continue;
+                    // NOMBRE
+                    row = sh.createRow( numRow++ );
+                    HSSFCell cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getNombre( ) );
+
+                    // FECHA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( c_ini.getTime( ) );
+                    style.setDataFormat( createHelper.createDataFormat( ).getFormat( "yyy-mm-dd" ) );
+                    cell.setCellStyle( style );
+
+                    // HORA_ENTRADA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getMiercoles( ) );// **
+
+                    // HORA_ENTRADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+
+                    // HORA_SALIDA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getMartes_out( ) );// **
+
+                    // HORA_SALIDA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+
+                    // MINUTOS_TARDE TODO
+                    // cell = row.createCell( numColumn++ );
+                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                }
+                else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 5 )// jueves
+                {
+                    if( !employee.getSchedule( ).isJueves( ) )
+                        continue;
+                    // NOMBRE
+                    row = sh.createRow( numRow++ );
+                    HSSFCell cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getNombre( ) );
+
+                    // FECHA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( c_ini.getTime( ) );
+                    style.setDataFormat( createHelper.createDataFormat( ).getFormat( "yyy-mm-dd" ) );
+                    cell.setCellStyle( style );
+
+                    // HORA_ENTRADA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getJueves( ) );// **
+
+                    // HORA_ENTRADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+
+                    // HORA_SALIDA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getJueves_out( ) );// **
+
+                    // HORA_SALIDA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+
+                    // MINUTOS_TARDE TODO
+                    // cell = row.createCell( numColumn++ );
+                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                }
+                else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 6 )// viernes
+                {
+                    if( !employee.getSchedule( ).isViernes( ) )
+                        continue;
+                    // NOMBRE
+                    row = sh.createRow( numRow++ );
+                    HSSFCell cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getNombre( ) );
+
+                    // FECHA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( c_ini.getTime( ) );
+                    style.setDataFormat( createHelper.createDataFormat( ).getFormat( "yyy-mm-dd" ) );
+                    cell.setCellStyle( style );
+
+                    // HORA_ENTRADA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getViernes( ) );// **
+
+                    // HORA_ENTRADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+
+                    // HORA_SALIDA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getViernes_out( ) );// **
+
+                    // HORA_SALIDA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+
+                    // MINUTOS_TARDE TODO
+                    // cell = row.createCell( numColumn++ );
+                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                }
+                else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 7 )// sabado
+                {
+                    if( !employee.getSchedule( ).isSabado( ) )
+                        continue;
+                    // NOMBRE
+                    row = sh.createRow( numRow++ );
+                    HSSFCell cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getNombre( ) );
+
+                    // FECHA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( c_ini.getTime( ) );
+                    style.setDataFormat( createHelper.createDataFormat( ).getFormat( "yyy-mm-dd" ) );
+                    cell.setCellStyle( style );
+
+                    // HORA_ENTRADA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getSabado( ) );// **
+
+                    // HORA_ENTRADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+
+                    // HORA_SALIDA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getSabado_out( ) );// **
+
+                    // HORA_SALIDA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+
+                    // MINUTOS_TARDE TODO
+                    // cell = row.createCell( numColumn++ );
+                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                }
+                else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 1 )// domingo
+                {
+                    if( !employee.getSchedule( ).isDomingo( ) )
+                        continue;
+                    // NOMBRE
+                    row = sh.createRow( numRow++ );
+                    HSSFCell cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getNombre( ) );
+
+                    // FECHA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( c_ini.getTime( ) );
+                    style.setDataFormat( createHelper.createDataFormat( ).getFormat( "yyy-mm-dd" ) );
+                    cell.setCellStyle( style );
+
+                    // HORA_ENTRADA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getDomingo( ) );// **
+
+                    // HORA_ENTRADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+
+                    // HORA_SALIDA_ESPERADA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( employee.getSchedule( ).getDomingo_out( ) );// **
+
+                    // HORA_SALIDA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+
+                    // MINUTOS_TARDE TODO
+                    // cell = row.createCell( numColumn++ );
+                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                }
+                else
+                {
+                    System.err.println( "No se reconoce el dia de la semana" );
+                }
+                numColumn = 0;
+            }
+            c_ini.add( Calendar.DAY_OF_MONTH, 1 );
+        }
+    }
+
+    public String getIniHour( Employee e, Date date ) throws SQLException
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
+        Statement st = connection.createStatement( );
+        String sql = "select min(time(x_time)) as x_time from event where date(x_time) = '" + sdf.format( date ) + "' and employee_id = " + e.getId( );
+        ResultSet rs = st.executeQuery( sql );
+        String result = "00:00:00";
+        if( rs.next( ) )
+        {
+            result = rs.getString( 1 );
+        }
+        return result;
+    }
+    public String getEndHour( Employee e, Date date ) throws SQLException
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
+        Statement st = connection.createStatement( );
+        String sql = "select max(time(x_time)) as x_time from event where date(x_time) = '" + sdf.format( date ) + "' and employee_id = " + e.getId( );
+        ResultSet rs = st.executeQuery( sql );
+        String result = "00:00:00";
+        if( rs.next( ) )
+        {
+            result = rs.getString( 1 );
+        }
+        return result;
+    }
+    public void saveQuery( HSSFSheet sheet, HSSFWorkbook wb, ResultSet rs, int numRaw, short x_numColumn, boolean printHeader ) throws SQLException
+    {
+        ResultSetMetaData metadata = rs.getMetaData( );
+        int numColums = metadata.getColumnCount( );
+        HSSFRow raw;
+
+        if( printHeader )
+        {
+            raw = sheet.getRow( numRaw );// con el raw.createRaw se borran las formulas
+            raw = raw == null ? sheet.createRow( numRaw ) : raw;
+            short numColumn = x_numColumn;
+            for( int i = 1; i <= numColums && printHeader; i++ )
+            {
+                HSSFCell cell = raw.getCell( numColumn );
+                cell = cell == null ? raw.createCell( numColumn ) : cell;
+                numColumn++;
+                cell.setCellValue( metadata.getColumnName( i ) );
+            }
+            numRaw++;
+        }
+
+        while( rs.next( ) )
+        {
+            raw = sheet.getRow( numRaw );// con el raw.createRaw se borran las formulas
+            raw = raw == null ? sheet.createRow( numRaw ) : raw;
+            numRaw++;
+
+            short numColumn = x_numColumn;
+            for( int i = 1; i <= numColums; i++ )
+            {
+                HSSFCell cell = raw.getCell( numColumn );
+                int columnType = metadata.getColumnType( i );
+                cell = cell == null ? raw.createCell( numColumn ) : cell;
+                numColumn++;
+
+                if( metadata.getColumnName( i ).equals( "VARCHAR" ) )// dado que para UNKNOWN tambien entraba aca, mejor se compara como un string
+                {
+                    cell.setCellValue( rs.getString( i ) );
+                }
+                else if( columnType == Types.DECIMAL || columnType == Types.DOUBLE )
+                {
+                    cell.setCellValue( rs.getDouble( i ) );
+                }
+                else if( columnType == Types.DATE || columnType == Types.TIMESTAMP )
+                {
+                    CreationHelper createHelper = wb.getCreationHelper( );
+                    CellStyle style = wb.createCellStyle( );
+                    style.setDataFormat( createHelper.createDataFormat( ).getFormat( "yyy-mm-dd hh:mm" ) );
+                    cell.setCellStyle( style );
+                    cell.setCellValue( rs.getTimestamp( i ) );
+                }
+                else if( columnType == Types.TIME )
+                {
+                    cell.setCellValue( rs.getString( i ) );
+                }
+                else if( columnType == Types.TINYINT || columnType == Types.INTEGER || columnType == Types.DECIMAL || columnType == Types.DOUBLE )
+                {
+                    cell.setCellValue( rs.getInt( i ) );
+                }
+                else
+                // probablemente es UNKNOWN
+                {
+                    try
+                    {
+                        cell.setCellValue( rs.getDouble( i ) );
+                    }
+                    catch( Exception e )
+                    {
+                        try
+                        {
+                            cell.setCellValue( rs.getInt( i ) );
+                        }
+                        catch( Exception e2 )
+                        {
+                            try
+                            {
+                                cell.setCellValue( rs.getString( i ) );
+                            }
+                            catch( Exception e3 )
+                            {
+                                e3.printStackTrace( );
+                                // TODO poner log de error aqui
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 }

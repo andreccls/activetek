@@ -186,6 +186,7 @@ public class DialogAddEditEmployee extends JDialog implements ActionListener
                 {
                     employee.setCedula( txtIdentificacion.getText( ) );
                     employee.setNombre( txtNombre.getText( ) );
+                    employee.setSchedule( ( Schedule )comboBox.getSelectedItem( ) );
                 }
                 window.editCreateEmployee( employee );
                 this.dispose( );
