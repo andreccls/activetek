@@ -14,15 +14,18 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.Vector;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -44,6 +47,7 @@ public class AClock
     private ArrayList<Schedule> schedules;
     private Properties configuration;
     private Connection connection;
+    private SimpleDateFormat sdf = new SimpleDateFormat( "HH:mm:ss", Locale.US );
 
     public AClock( ) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
     {
@@ -370,7 +374,7 @@ public class AClock
     public void deleteSchedule( Schedule schedule ) throws SQLException // Throw exception si hay algun usuario que tenga asociado este scheule
     {
         Statement st = connection.createStatement( );
-        String sql =  "delete from schedule where schedule_id = " + schedule.getId( );
+        String sql = "delete from schedule where schedule_id = " + schedule.getId( );
         st.execute( sql );
         schedules.remove( schedule );
     }
@@ -380,28 +384,60 @@ public class AClock
         String sql = "insert into event (employee_id,x_time) values (" + empl.getId( ) + ",'" + time + "')";
         st.execute( sql );
     }
-    public void generateRerport( File fileReport, Date ini_date, Date end_date ) throws SQLException, IOException
+    public void generateRerport( File fileReport, Date ini_date, Date end_date ) throws SQLException, IOException, ParseException
     {
         Statement st = connection.createStatement( );
         HSSFWorkbook wb = new HSSFWorkbook( );
         HSSFSheet sh = wb.createSheet( "Eventos" );
-        String sql = "select name,x_time from event ev, employee em where ev.employee_id = em.employee_id order by x_time";
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
+        String sql = "select name,x_time from event ev, employee em where ev.employee_id = em.employee_id and date(x_time) between '" + sdf.format( ini_date ) + "' and '" + sdf.format( end_date ) + "' order by x_time";
+        System.out.println( sql );
         saveQuery( sh, wb, st.executeQuery( sql ), 0, ( short )0, true );
 
         sh = wb.createSheet( "Dia-Dia" );
         generateDaylyReport( sh, wb, ini_date, end_date );
 
+        sh = wb.createSheet( "Resumen" );
+        generateSummary( sh, wb );
+        
+        HSSFFormulaEvaluator.evaluateAllFormulaCells( wb );
+        
         FileOutputStream fos = new FileOutputStream( fileReport );
         wb.write( fos );
         fos.close( );
     }
-    public void generateDaylyReport( HSSFSheet sh, HSSFWorkbook wb, Date ini_date, Date end_date ) throws SQLException
+    private void generateSummary( HSSFSheet sh, HSSFWorkbook wb )
+    {
+        int numRow = 0;
+        HSSFRow row = sh.createRow( numRow++ );
+        String[] headers = { "NOMBRE", "TOTAL_MINUTOS" };
+        short numColumn = 0;
+        for( String header : headers )
+        {
+            HSSFCell cell = row.createCell( numColumn++ );
+            cell.setCellValue( header );
+        }
+        numColumn = 0;
+        for( Employee employee : employees )
+        {
+            row = sh.createRow( numRow++ );
+            HSSFCell cell = row.createCell( numColumn++ );
+            cell.setCellValue( employee.getNombre( ) );
+            
+            cell = row.createCell( numColumn++ );            
+            cell.setCellFormula( "SUMIF('Dia-Dia'!A:A,Resumen!A"+(numRow)+",'Dia-Dia'!F:F)+SUMIF('Dia-Dia'!A:A,Resumen!A"+(numRow)+",'Dia-Dia'!I:I)" );
+            
+            numColumn = 0;
+        }
+        
+    }
+    public void generateDaylyReport( HSSFSheet sh, HSSFWorkbook wb, Date ini_date, Date end_date ) throws SQLException, ParseException
     {
         int numRow = 0;
         HSSFRow row = sh.createRow( numRow++ );
         CreationHelper createHelper = wb.getCreationHelper( );
         CellStyle style = wb.createCellStyle( );
-        String[] headers = { "NOMBRE", "FECHA", "HORA_ENTRADA_ESPERADA", "HORA_ENTRADA", "HORA_SALIDA_ESPERADA", "HORA_SALIDA", "MINUTOS_TARDE" };
+        String[] headers = { "NOMBRE", "DIA_SEMANA", "FECHA", "HORA_ENTRADA_ESPERADA", "HORA_ENTRADA", "DIFERENCIA", "HORA_SALIDA_ESPERADA", "HORA_SALIDA", "DIFERENCIA" };
         short numColumn = 0;
         for( String header : headers )
         {
@@ -428,6 +464,10 @@ public class AClock
                     HSSFCell cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getNombre( ) );
 
+                    // DIA_SEMANA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( "Lunes" );
+
                     // FECHA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( c_ini.getTime( ) );
@@ -437,32 +477,53 @@ public class AClock
                     // HORA_ENTRADA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getLunes( ) );// **
+                    Date ExpectedEntranceHour = sdf.parse( employee.getSchedule( ).getLunes( ) );
+                    // System.out.println( employee.getSchedule( ).getLunes( ) + "   |   " + ExpectedEntranceHour );
 
                     // HORA_ENTRADA
                     cell = row.createCell( numColumn++ );
-                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+                    String EntranceHourString = getIniHour( employee, c_ini.getTime( ) );
+                    cell.setCellValue( EntranceHourString );
+
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( EntranceHourString != null )
+                    {
+                        Date EntranceHour = sdf.parse( EntranceHourString );
+                        cell.setCellValue( getMinutesLate( ExpectedEntranceHour, EntranceHour ) );
+                    }
 
                     // HORA_SALIDA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getLunes_out( ) );// **
+                    Date ExpectedExitHour = sdf.parse( employee.getSchedule( ).getLunes_out( ) );
 
                     // HORA_SALIDA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    String ExitHourString = getEndHour( employee, c_ini.getTime( ) );
 
-                    // MINUTOS_TARDE TODO
-                    // cell = row.createCell( numColumn++ );
-                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( ExitHourString != null )
+                    {
+                        Date exitHour = sdf.parse( ExitHourString );
+                        cell.setCellValue( getMinutesLate( exitHour, ExpectedExitHour ) );
+                    }
 
                 }
                 else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 3 )// martes
                 {
-                    if( !employee.getSchedule( ).isMartes( ) )
+                    if( !employee.getSchedule( ).isMartes( ) )// **
                         continue;
                     // NOMBRE
                     row = sh.createRow( numRow++ );
                     HSSFCell cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getNombre( ) );
+
+                    // DIA_SEMANA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( "Martes" );
 
                     // FECHA
                     cell = row.createCell( numColumn++ );
@@ -473,31 +534,52 @@ public class AClock
                     // HORA_ENTRADA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getMartes( ) );// **
+                    Date ExpectedEntranceHour = sdf.parse( employee.getSchedule( ).getMartes( ) );
+                    // System.out.println( employee.getSchedule( ).getLunes( ) + "   |   " + ExpectedEntranceHour );
 
                     // HORA_ENTRADA
                     cell = row.createCell( numColumn++ );
-                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+                    String EntranceHourString = getIniHour( employee, c_ini.getTime( ) );
+                    cell.setCellValue( EntranceHourString );
+
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( EntranceHourString != null )
+                    {
+                        Date EntranceHour = sdf.parse( EntranceHourString );
+                        cell.setCellValue( getMinutesLate( ExpectedEntranceHour, EntranceHour ) );
+                    }
 
                     // HORA_SALIDA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getMartes_out( ) );// **
+                    Date ExpectedExitHour = sdf.parse( employee.getSchedule( ).getMartes_out( ) );
 
                     // HORA_SALIDA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    String ExitHourString = getEndHour( employee, c_ini.getTime( ) );
 
-                    // MINUTOS_TARDE TODO
-                    // cell = row.createCell( numColumn++ );
-                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( ExitHourString != null )
+                    {
+                        Date exitHour = sdf.parse( ExitHourString );
+                        cell.setCellValue( getMinutesLate( exitHour, ExpectedExitHour ) );
+                    }
                 }
                 else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 4 )// miercoles
                 {
-                    if( !employee.getSchedule( ).isMiercoles( ) )
+                    if( !employee.getSchedule( ).isMiercoles( ) )// **
                         continue;
                     // NOMBRE
                     row = sh.createRow( numRow++ );
                     HSSFCell cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getNombre( ) );
+
+                    // DIA_SEMANA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( "Miercoles" );
 
                     // FECHA
                     cell = row.createCell( numColumn++ );
@@ -508,31 +590,52 @@ public class AClock
                     // HORA_ENTRADA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getMiercoles( ) );// **
+                    Date ExpectedEntranceHour = sdf.parse( employee.getSchedule( ).getMiercoles( ) );
+                    // System.out.println( employee.getSchedule( ).getLunes( ) + "   |   " + ExpectedEntranceHour );
 
                     // HORA_ENTRADA
                     cell = row.createCell( numColumn++ );
-                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+                    String EntranceHourString = getIniHour( employee, c_ini.getTime( ) );
+                    cell.setCellValue( EntranceHourString );
+
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( EntranceHourString != null )
+                    {
+                        Date EntranceHour = sdf.parse( EntranceHourString );
+                        cell.setCellValue( getMinutesLate( ExpectedEntranceHour, EntranceHour ) );
+                    }
 
                     // HORA_SALIDA_ESPERADA
                     cell = row.createCell( numColumn++ );
-                    cell.setCellValue( employee.getSchedule( ).getMartes_out( ) );// **
+                    cell.setCellValue( employee.getSchedule( ).getMiercoles_out( ) );// **
+                    Date ExpectedExitHour = sdf.parse( employee.getSchedule( ).getMartes_out( ) );
 
                     // HORA_SALIDA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    String ExitHourString = getEndHour( employee, c_ini.getTime( ) );
 
-                    // MINUTOS_TARDE TODO
-                    // cell = row.createCell( numColumn++ );
-                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( ExitHourString != null )
+                    {
+                        Date exitHour = sdf.parse( ExitHourString );
+                        cell.setCellValue( getMinutesLate( exitHour, ExpectedExitHour ) );
+                    }
                 }
                 else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 5 )// jueves
                 {
-                    if( !employee.getSchedule( ).isJueves( ) )
+                    if( !employee.getSchedule( ).isJueves( ) )// **
                         continue;
                     // NOMBRE
                     row = sh.createRow( numRow++ );
                     HSSFCell cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getNombre( ) );
+
+                    // DIA_SEMANA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( "Jueves" );
 
                     // FECHA
                     cell = row.createCell( numColumn++ );
@@ -543,31 +646,52 @@ public class AClock
                     // HORA_ENTRADA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getJueves( ) );// **
+                    Date ExpectedEntranceHour = sdf.parse( employee.getSchedule( ).getJueves( ) );
+                    // System.out.println( employee.getSchedule( ).getLunes( ) + "   |   " + ExpectedEntranceHour );
 
                     // HORA_ENTRADA
                     cell = row.createCell( numColumn++ );
-                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+                    String EntranceHourString = getIniHour( employee, c_ini.getTime( ) );
+                    cell.setCellValue( EntranceHourString );
+
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( EntranceHourString != null )
+                    {
+                        Date EntranceHour = sdf.parse( EntranceHourString );
+                        cell.setCellValue( getMinutesLate( ExpectedEntranceHour, EntranceHour ) );
+                    }
 
                     // HORA_SALIDA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getJueves_out( ) );// **
+                    Date ExpectedExitHour = sdf.parse( employee.getSchedule( ).getJueves_out( ) );
 
                     // HORA_SALIDA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    String ExitHourString = getEndHour( employee, c_ini.getTime( ) );
 
-                    // MINUTOS_TARDE TODO
-                    // cell = row.createCell( numColumn++ );
-                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( ExitHourString != null )
+                    {
+                        Date exitHour = sdf.parse( ExitHourString );
+                        cell.setCellValue( getMinutesLate( exitHour, ExpectedExitHour ) );
+                    }
                 }
                 else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 6 )// viernes
                 {
-                    if( !employee.getSchedule( ).isViernes( ) )
+                    if( !employee.getSchedule( ).isViernes( ) )// **
                         continue;
                     // NOMBRE
                     row = sh.createRow( numRow++ );
                     HSSFCell cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getNombre( ) );
+
+                    // DIA_SEMANA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( "Viernes" );
 
                     // FECHA
                     cell = row.createCell( numColumn++ );
@@ -578,31 +702,52 @@ public class AClock
                     // HORA_ENTRADA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getViernes( ) );// **
+                    Date ExpectedEntranceHour = sdf.parse( employee.getSchedule( ).getViernes( ) );
+                    // System.out.println( employee.getSchedule( ).getLunes( ) + "   |   " + ExpectedEntranceHour );
 
                     // HORA_ENTRADA
                     cell = row.createCell( numColumn++ );
-                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+                    String EntranceHourString = getIniHour( employee, c_ini.getTime( ) );
+                    cell.setCellValue( EntranceHourString );
+
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( EntranceHourString != null )
+                    {
+                        Date EntranceHour = sdf.parse( EntranceHourString );
+                        cell.setCellValue( getMinutesLate( ExpectedEntranceHour, EntranceHour ) );
+                    }
 
                     // HORA_SALIDA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getViernes_out( ) );// **
+                    Date ExpectedExitHour = sdf.parse( employee.getSchedule( ).getViernes_out( ) );
 
                     // HORA_SALIDA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    String ExitHourString = getEndHour( employee, c_ini.getTime( ) );
 
-                    // MINUTOS_TARDE TODO
-                    // cell = row.createCell( numColumn++ );
-                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( ExitHourString != null )
+                    {
+                        Date exitHour = sdf.parse( ExitHourString );
+                        cell.setCellValue( getMinutesLate( exitHour, ExpectedExitHour ) );
+                    }
                 }
                 else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 7 )// sabado
                 {
-                    if( !employee.getSchedule( ).isSabado( ) )
+                    if( !employee.getSchedule( ).isSabado( ) )// **
                         continue;
                     // NOMBRE
                     row = sh.createRow( numRow++ );
                     HSSFCell cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getNombre( ) );
+
+                    // DIA_SEMANA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( "Sabado" );
 
                     // FECHA
                     cell = row.createCell( numColumn++ );
@@ -613,31 +758,52 @@ public class AClock
                     // HORA_ENTRADA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getSabado( ) );// **
+                    Date ExpectedEntranceHour = sdf.parse( employee.getSchedule( ).getSabado( ) );
+                    // System.out.println( employee.getSchedule( ).getLunes( ) + "   |   " + ExpectedEntranceHour );
 
                     // HORA_ENTRADA
                     cell = row.createCell( numColumn++ );
-                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+                    String EntranceHourString = getIniHour( employee, c_ini.getTime( ) );
+                    cell.setCellValue( EntranceHourString );
+
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( EntranceHourString != null )
+                    {
+                        Date EntranceHour = sdf.parse( EntranceHourString );
+                        cell.setCellValue( getMinutesLate( ExpectedEntranceHour, EntranceHour ) );
+                    }
 
                     // HORA_SALIDA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getSabado_out( ) );// **
+                    Date ExpectedExitHour = sdf.parse( employee.getSchedule( ).getSabado_out( ) );
 
                     // HORA_SALIDA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    String ExitHourString = getEndHour( employee, c_ini.getTime( ) );
 
-                    // MINUTOS_TARDE TODO
-                    // cell = row.createCell( numColumn++ );
-                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( ExitHourString != null )
+                    {
+                        Date exitHour = sdf.parse( ExitHourString );
+                        cell.setCellValue( getMinutesLate( exitHour, ExpectedExitHour ) );
+                    }
                 }
                 else if( c_ini.get( Calendar.DAY_OF_WEEK ) == 1 )// domingo
                 {
-                    if( !employee.getSchedule( ).isDomingo( ) )
+                    if( !employee.getSchedule( ).isDomingo( ) )// **
                         continue;
                     // NOMBRE
                     row = sh.createRow( numRow++ );
                     HSSFCell cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getNombre( ) );
+
+                    // DIA_SEMANA
+                    cell = row.createCell( numColumn++ );
+                    cell.setCellValue( "Domingo" );
 
                     // FECHA
                     cell = row.createCell( numColumn++ );
@@ -648,22 +814,39 @@ public class AClock
                     // HORA_ENTRADA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getDomingo( ) );// **
+                    Date ExpectedEntranceHour = sdf.parse( employee.getSchedule( ).getDomingo( ) );
+                    // System.out.println( employee.getSchedule( ).getLunes( ) + "   |   " + ExpectedEntranceHour );
 
                     // HORA_ENTRADA
                     cell = row.createCell( numColumn++ );
-                    cell.setCellValue( getIniHour( employee, c_ini.getTime( ) ) );
+                    String EntranceHourString = getIniHour( employee, c_ini.getTime( ) );
+                    cell.setCellValue( EntranceHourString );
+
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( EntranceHourString != null )
+                    {
+                        Date EntranceHour = sdf.parse( EntranceHourString );
+                        cell.setCellValue( getMinutesLate( ExpectedEntranceHour, EntranceHour ) );
+                    }
 
                     // HORA_SALIDA_ESPERADA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( employee.getSchedule( ).getDomingo_out( ) );// **
+                    Date ExpectedExitHour = sdf.parse( employee.getSchedule( ).getDomingo_out( ) );
 
                     // HORA_SALIDA
                     cell = row.createCell( numColumn++ );
                     cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    String ExitHourString = getEndHour( employee, c_ini.getTime( ) );
 
-                    // MINUTOS_TARDE TODO
-                    // cell = row.createCell( numColumn++ );
-                    // cell.setCellValue( getEndHour( employee, c_ini.getTime( ) ) );
+                    // DIFERENCIA
+                    cell = row.createCell( numColumn++ );
+                    if( ExitHourString != null )
+                    {
+                        Date exitHour = sdf.parse( ExitHourString );
+                        cell.setCellValue( getMinutesLate( exitHour, ExpectedExitHour ) );
+                    }
                 }
                 else
                 {
@@ -674,7 +857,22 @@ public class AClock
             c_ini.add( Calendar.DAY_OF_MONTH, 1 );
         }
     }
-
+    private long getMinutesLate( Date d1, Date d2 )
+    {
+        Calendar c1 = Calendar.getInstance( );
+        c1.setTime( d1 );
+        Calendar c2 = Calendar.getInstance( );
+        c2.setTime( d2 );
+        // System.out.println( d1 + "    |    " + d2 );
+        long diff = c2.getTimeInMillis( ) - c1.getTimeInMillis( );
+        if( diff > 0 )
+        {
+            // System.out.println( diff / ( 60 * 1000 ) );
+            return diff / ( 60 * 1000 );
+        }
+        else
+            return 0;
+    }
     public String getIniHour( Employee e, Date date ) throws SQLException
     {
         SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );

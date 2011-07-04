@@ -63,6 +63,15 @@ public class VerificationThread extends Thread
             catch( IndexOutOfBoundsException e )
             {
                 trayIcon.displayMessage( "Active Clocking", "Por favor conecte el lector de huella al computador", TrayIcon.MessageType.ERROR );
+                try
+                {
+                    Thread.sleep( 3000 );
+                }
+                catch( InterruptedException e1 )
+                {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
             }
         }
     }
