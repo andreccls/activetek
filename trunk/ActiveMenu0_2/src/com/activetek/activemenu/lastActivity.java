@@ -5,10 +5,11 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Gallery;
@@ -45,6 +46,7 @@ public class lastActivity extends Activity{
 			rad.setText(it.getPrices().get(i).getUnits()+" Unidades, Precio: "+it.getPrices().get(i).getCost()+"\nDetalles: "+it.getPrices().get(i).getDescription());
 			rad.setTextSize(16);
 			rad.setTextColor(Color.BLACK);
+			rad.setGravity(Gravity.VERTICAL_GRAVITY_MASK);
 			final int k=i;
 			// Creamos el Listener para cuando se haga click en cualquier radiobutton
 			rad.setOnClickListener(new OnClickListener(){

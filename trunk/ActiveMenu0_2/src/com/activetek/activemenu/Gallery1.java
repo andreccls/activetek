@@ -180,7 +180,7 @@ public class Gallery1 extends ActivityGroup implements OnClickListener{
 	    	text.setTextColor(Color.GRAY);
 	    	text.setTextSize(20);
 	    	// Fijamos la imagen de la categoría, Revisar!!
-	    	i.setImageResource(R.drawable.food_logo);
+	    	i.setImageBitmap(wrap.getCategories().get(position).getImage());
 	    	// Ajustamos automáticamente el tamaño de la imágen
 	        i.setScaleType(ImageView.ScaleType.FIT_XY);
 	        // Ajustamos el fondo de galería
