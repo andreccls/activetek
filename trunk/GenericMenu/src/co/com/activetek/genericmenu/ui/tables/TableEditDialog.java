@@ -20,19 +20,19 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 
 import co.com.activetek.genericmenu.server.beans.Table;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 
 public class TableEditDialog extends JDialog
 {
     private JTextField textFieldTableNumber;
     private JTextField textFieldCapacity;
-    private OsakiMenu window;
+    private ActiveMenu window;
     private Table table;
     private TablePanel father;
     private int x;
     private int y;
     
-    public TableEditDialog( Table table, int mouseX, int mouseY, OsakiMenu swindow, TablePanel tablePanel, int x, int y )
+    public TableEditDialog( Table table, int mouseX, int mouseY, ActiveMenu swindow, TablePanel tablePanel, int x, int y )
     {
         this.window = swindow;
         this.table = table;

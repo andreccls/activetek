@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Date;
 import java.util.Observable;
 
 import sun.awt.windows.ThemeReader;
@@ -21,19 +22,20 @@ public class ClientThread extends Thread
     private BufferedReader read;
     private PrintWriter write;
     private String clientId;
-    private GenericMenuServer server;
-    private Waitress waitress;
+    private ActiveMenuServer server;    
     private Table table;
     private boolean isMaster;
     private Order order;
     private int slaveNumber;
     private boolean finished;
+
+    private boolean debug = true;
     /**
      * Significa que el usuario ya termino de realizar su pedido
      */
     private boolean ready;
 
-    public ClientThread( Socket socket, GenericMenuServer server ) throws IOException
+    public ClientThread( Socket socket, ActiveMenuServer server ) throws IOException
     {
         this.socket = socket;
         this.server = server;
@@ -43,13 +45,15 @@ public class ClientThread extends Thread
         String line = read.readLine( );
         if( line.startsWith( "CLIENT:" ) )
         {
-            clientId = line.split( ":" )[ 1 ];
+            // clientId = line.split( ":" )[ 1 ];
+            clientId = line.replace( "CLIENT:", "" );
         }
         else if( line.startsWith( "RETRY:" ) )
         {
-            clientId = line.split( ":" )[ 1 ];// TODO tiene que recupara la informacion que tenia del anterior cliente
+            // clientId = line.split( ":" )[ 1 ];// TODO tiene que recupara la informacion que tenia del anterior cliente
+            clientId = line.replace( "RETRY:", "" );
         }
-        Log.getInstance( ).getLog( ).info( "Nuevo cliente conectado id: " + clientId + " ip: " + this.socket.getInetAddress( ) );
+        Log.getInstance( ).getLog( ).info( "Nuevo cliente conectado id: " + line + " ip: " + this.socket.getInetAddress( ) );
     }
     public void run( )
     {
@@ -70,9 +74,49 @@ public class ClientThread extends Thread
             Log.getInstance( ).getLog( ).info( "Cerrada conexion con cilente: " + clientId );
         }
     }
+    private void init( ) throws IOException
+    {
+        String line = read.readLine( );
+        if( line.startsWith( "MESA:" ) )
+        {
+            if( debug )
+                System.out.println( new Date( ) + "\t" + clientId + "\t" + line );
+
+            int tableNumber = Integer.parseInt( line.split( ":" )[ 1 ] );
+            this.table = server.getTablebyNumber( tableNumber );            
+
+            this.table.addClient( this );
+            this.slaveNumber = table.getNextSalveNumber( );
+
+            if( slaveNumber == 1 ) // table.getState( ).equals( Table.FREE ) )
+            {
+                sendMesage( "MAESTRO:" );
+                isMaster = true;
+            }
+            else
+            {
+                sendMesage( "ESCLAVO:" + slaveNumber );
+                isMaster = false;
+            }
+        }
+        line = read.readLine( );
+        if( line.startsWith( "MESERO:" ) )
+        {
+            if( debug )
+                System.out.println( new Date( ) + "\t" + clientId + "\t" + line );
+
+            int waitressId = Integer.parseInt( line.split( ":" )[ 1 ] );
+            Waitress waitress = server.getWaitressById( waitressId );
+            this.order = new Order( table, waitress );
+        }
+        else //TODO multimesa no esta ben
+            System.out.println( line );
+    }
     private void processLine( String line )
     {
-        System.out.println( line );
+        if( debug )
+            System.out.println( new Date( ) + "\t" + clientId + "\t" + line );
+
         if( line != null && !line.equalsIgnoreCase( "null" ) )
         {
             if( line.startsWith( "ADD:" ) || line.startsWith( "REMOVE:" ) )
@@ -100,48 +144,21 @@ public class ClientThread extends Thread
                     }
                     catch( InterruptedException e )
                     {
-                        e.printStackTrace();
+                        e.printStackTrace( );
                     }
-                    write.println( "READY:" );
-                    server.addOrder( order );
-                    server.notifyOrderReady( );
-                    System.out.println( "TODOS READY:" );
+                    sendMesage( "READY:" );                  
                 }
+            }
+            else if( line.startsWith( "confirm" ) )
+            {
+                server.addOrder( order );
+                order.orderOrdered();
+                server.notifyOrderReady( );
             }
         }
         else
         {
             finished = true;
-        }
-    }
-    private void init( ) throws IOException
-    {
-        String line = read.readLine( );
-        if( line.startsWith( "MESA:" ) )
-        {
-            int tableNumber = Integer.parseInt( line.split( ":" )[ 1 ] );
-            System.out.println( "tableNumber: " + tableNumber );
-            table = server.getTablebyNumber( tableNumber );
-            this.order = new Order( table );
-            slaveNumber = table.getNextSalveNumber( );
-            table.addClient( this );
-            if( table.getState( ).equals( Table.FREE ) )
-            {
-                write.println( "MAESTRO:" );
-                isMaster = true;
-            }
-            else
-            {
-                write.println( "ESCLAVO:" + slaveNumber );
-                isMaster = false;
-            }
-        }
-        line = read.readLine( );
-        if( line.startsWith( "MESERO:" ) )
-        {
-            int waitressId = Integer.parseInt( line.split( ":" )[ 1 ] );
-            waitress = server.getWaitressById( waitressId );
-            System.out.println( waitress );
         }
     }
     public boolean isReady( )
@@ -150,6 +167,8 @@ public class ClientThread extends Thread
     }
     public void sendMesage( String mess )
     {
+        if( debug )
+            System.out.println( new Date( ) + "\t" + "SERVER                 " + "\t" + mess );
         write.println( mess );
     }
 }

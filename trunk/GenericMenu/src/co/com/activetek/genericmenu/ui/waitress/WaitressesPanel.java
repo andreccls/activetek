@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 import co.com.activetek.genericmenu.server.beans.Waitress;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -28,11 +28,11 @@ public class WaitressesPanel extends JPanel implements ActionListener
     private final static int height = 5;
     private JPopupMenu popupmenuWaitressOptions = new JPopupMenu( );
     private JMenuItem menuItemAddWaitress = new JMenuItem( ADD_WAITRESS );
-    private OsakiMenu window;
+    private ActiveMenu window;
     /**
      * This is the default constructor
      */
-    public WaitressesPanel( OsakiMenu widow )
+    public WaitressesPanel( ActiveMenu widow )
     {
         super( );
         this.window = widow;

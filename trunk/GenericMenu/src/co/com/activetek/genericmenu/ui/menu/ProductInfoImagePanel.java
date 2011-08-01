@@ -22,7 +22,7 @@ import java.io.File;
 import javax.swing.JCheckBox;
 import javax.swing.JButton;
 import co.com.activetek.genericmenu.server.beans.Image;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 import co.com.activetek.genericmenu.ui.utils.MyImageIcon;
 import java.util.Vector;
 import javax.swing.BoxLayout;
@@ -49,12 +49,12 @@ public class ProductInfoImagePanel extends JPanel
     private JButton buttonNext = null;
     private Vector<Image> images;
     private int image;
-    private OsakiMenu window;
+    private ActiveMenu window;
 
     /**
      * This is the default constructor
      */
-    public ProductInfoImagePanel( OsakiMenu window )
+    public ProductInfoImagePanel( ActiveMenu window )
     {
         super( );
         this.window = window;

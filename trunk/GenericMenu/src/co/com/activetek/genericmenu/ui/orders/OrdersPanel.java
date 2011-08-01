@@ -1,6 +1,5 @@
 package co.com.activetek.genericmenu.ui.orders;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -11,7 +10,10 @@ import java.util.Vector;
 
 import javax.swing.JScrollPane;
 
+import net.miginfocom.swing.MigLayout;
+
 import co.com.activetek.genericmenu.server.beans.Order;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 
 public class OrdersPanel extends JPanel
 {
@@ -23,14 +25,16 @@ public class OrdersPanel extends JPanel
     private JScrollPane jScrollPane = null;
     private JPanel jPanel = null;
     private JLabel noOrdersLabel;
+    private ActiveMenu window;
 
     /**
      * This is the default constructor
      * @param
      */
-    public OrdersPanel( )
+    public OrdersPanel( ActiveMenu window )
     {
         super( );
+        this.window = window;
         initialize( );
     }
 
@@ -51,7 +55,7 @@ public class OrdersPanel extends JPanel
     {
         if( noOrdersLabel == null )
         {
-            noOrdersLabel = new JLabel( "No hay ordenes por porcesar" );
+            noOrdersLabel = new JLabel( "No hay ordenes por porcesar." );
             noOrdersLabel.setFont( new Font( "Tahoma", Font.ITALIC, 30 ) );
         }
         return noOrdersLabel;
@@ -82,7 +86,8 @@ public class OrdersPanel extends JPanel
         if( jPanel == null )
         {
             jPanel = new JPanel( );
-            jPanel.setLayout( new BoxLayout( jPanel, BoxLayout.Y_AXIS ) );
+            MigLayout ml = new MigLayout( "", "[grow]", "" );
+            jPanel.setLayout( ml );
             jPanel.add( getNoOrdersLabel( ) );
             // jPanel.setLayout( new GridLayout( 5, 1 ) );
             // for( int i = 0; i < 2; i++ )
@@ -105,13 +110,9 @@ public class OrdersPanel extends JPanel
         int i = 0;
         for( Order order : orders )
         {
-            jPanel.add( new OrderPanel( order, i ) );
+            jPanel.add( new OrderPanel( window, order, i ), "cell 0 " + i + ",growx" );
             i++;
         }
-        JLabel dummy = new JLabel( ":P" );
-        
-        dummy.setVerticalAlignment( JLabel.NORTH );
-        jPanel.add( dummy );
         this.revalidate( );
         this.repaint( );
     }

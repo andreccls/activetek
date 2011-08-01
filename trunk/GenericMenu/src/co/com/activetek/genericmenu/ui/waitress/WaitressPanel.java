@@ -3,7 +3,7 @@ package co.com.activetek.genericmenu.ui.waitress;
 import javax.swing.JPanel;
 
 import co.com.activetek.genericmenu.server.beans.Waitress;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 import co.com.activetek.genericmenu.ui.utils.MyImageIcon;
 
 import java.awt.BorderLayout;
@@ -33,12 +33,12 @@ public class WaitressPanel extends JPanel implements ActionListener
 
     private Waitress waitress;
     private JLabel labelPhoto = null;
-    private OsakiMenu window;
+    private ActiveMenu window;
     private JPopupMenu popupmenuWaitresOptions = new JPopupMenu( );
     private JMenuItem menuItemDelWaitress = new JMenuItem( DEL_WAITRESS );
     private JMenuItem menuItemEditWaitress = new JMenuItem( EDIT_WAITRESS );
 
-    public WaitressPanel( OsakiMenu window,Waitress waitress )
+    public WaitressPanel( ActiveMenu window,Waitress waitress )
     {
         super( );
         this.window = window;

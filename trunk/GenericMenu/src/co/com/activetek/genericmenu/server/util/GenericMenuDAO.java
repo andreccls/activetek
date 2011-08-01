@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import co.com.activetek.genericmenu.server.beans.Image;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.beans.Order;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
@@ -183,7 +184,7 @@ public class GenericMenuDAO
             "(" +( m.getId( ) < 0 ? "NULL" : m.getId( ) )+","+
             "" + ( m.getName( ) == null ? "NULL" :"'"+ m.getName( ) +"'" ) +","+
             "" + ( m.getDescription( ) == null ? "NULL" :"'"+ m.getDescription( ) +"'" ) +","+
-            "" + m.getParent( ).getId( )+","+
+            "" + ( m.getParent( ) == null ? "NULL" : m.getParent( ).getId( ) )+","+
             "" + m.getOrder( )+","+
             "" + ( m.getIcon( ) == null ? "NULL" :"'"+ m.getIcon( ) +"'" ) +","+            
             "" + (m.isEnable( ) ? "1" : "0")+                   
@@ -250,6 +251,7 @@ public class GenericMenuDAO
                 {
                     p.setId( rs.getInt( 1 ) );
                 }
+                p.getMenuitem( ).addPriceItem( p );
             }            
         }
         else if ( object instanceof Table )
@@ -276,6 +278,21 @@ public class GenericMenuDAO
                     t.setId( rs.getInt( 1 ) );
                 }
             }
+        }
+        else if (object instanceof Order )
+        {
+            Order o = (Order)object;
+            Statement st = conn.createStatement( );
+            sql = "insert into order (table_id,id_mesero,startTime,orderTime,serverdTime,client_ids) values " +
+            		"("+o.getTable( ).getId( )+"," + //table_id
+            		""+o.getWaitress( ).getId( )+","+//id_mesero
+            		"'"+o.getStartTime( )+"'"+//startTime
+            		"'"+o.getOderTime( )+"'"+//orderTime
+            		"'"+o.getServedTime( )+"'"+//serverdTime
+            		")";
+            
+            System.out.println( sql );
+            st.execute( sql );
         }
     }
 

@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
 
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -19,8 +19,8 @@ public class TablesPanelOptions extends JPanel
     private static final long serialVersionUID = 1L;
     private JTextField textWidth;
     private JTextField textHeight;
-    private OsakiMenu window;
-    public TablesPanelOptions( OsakiMenu window, int width, int height )
+    private ActiveMenu window;
+    public TablesPanelOptions( ActiveMenu window, int width, int height )
     {
         this.window = window;
         setBorder( new TitledBorder( null, "Opciones", TitledBorder.LEADING, TitledBorder.TOP, null, null ) );

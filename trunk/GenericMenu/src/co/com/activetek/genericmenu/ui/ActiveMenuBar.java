@@ -6,14 +6,14 @@ import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class OsakiMenuBar extends MenuBar implements ActionListener
+public class ActiveMenuBar extends MenuBar implements ActionListener
 {
     private final static String ADD_WAITER = "Agregar Mesero";
 
     private Menu file = new Menu( "File" );
     private MenuItem addWaiter = new MenuItem( "Agregar Mesero" );
 
-    public OsakiMenuBar( )
+    public ActiveMenuBar( )
     {
         file.add( addWaiter );
         this.add( file );

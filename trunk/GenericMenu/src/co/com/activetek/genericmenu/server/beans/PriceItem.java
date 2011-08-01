@@ -26,8 +26,8 @@ public class PriceItem
         this.order = order;
         this.price = price;
         this.menuItem = menuItemId;
-        if(id <0)
-            GenericMenuDAO.getInstance( ).CRUD( this );
+        //if(id <0)
+        //    GenericMenuDAO.getInstance( ).CRUD( this );
     }
     public void modify( int cuantity, String descripcion, boolean enable, int order, long price ) throws SQLException
     {        
@@ -93,6 +93,7 @@ public class PriceItem
     }
     public void setEnable( boolean enable )
     {
+        System.out.println("setEnable " + enable );
         this.enable = enable;
     }
     public JSONObject getJSON( )

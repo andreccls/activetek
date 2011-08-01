@@ -17,7 +17,7 @@ import javax.swing.JButton;
 
 import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 
 public class PricesPanel extends JPanel implements ActionListener
 {
@@ -30,14 +30,15 @@ public class PricesPanel extends JPanel implements ActionListener
     private JTextField txtItems;
     private JTextField txtDetalles;
     private JTextField txtPrecio;
-    private OsakiMenu window;
+    private ActiveMenu window;
     private HashMap<Integer, PriceItem> prices;
+    private MenuItem selected;
 
-    public PricesPanel( OsakiMenu window )
+    public PricesPanel( ActiveMenu window )
     {
         this.window = window;
         this.prices = new HashMap<Integer, PriceItem>( );
-        setLayout( new MigLayout( "", "[:15px:15px][grow][][grow][][grow][][][][]", "[][]" ) );
+        setLayout( new MigLayout( "", "[:15px:15px][grow][][grow][][grow][] ", "" ) );
 
         JLabel lblitems = new JLabel( "#" );
         lblitems.setFont( new Font( "Tahoma", Font.BOLD, 11 ) );
@@ -93,6 +94,7 @@ public class PricesPanel extends JPanel implements ActionListener
     }
     public void setSelectedItem( MenuItem selected )
     {
+        this.selected = selected;
         this.removeAll( );
         printHeader( );
         int i = 1;
@@ -136,17 +138,40 @@ public class PricesPanel extends JPanel implements ActionListener
             prices.put( priceItem.getId( ), priceItem );
             i++;
         }
+        JButton buttAdd = new JButton( "+" );
+        buttAdd.addActionListener( this );
+        buttAdd.setActionCommand( "ADD_PRICE" );
+        add( buttAdd, "cell 0 " + i );
     }
     @Override
     public void actionPerformed( ActionEvent arg0 )
     {
         String command = arg0.getActionCommand( );
-        System.out.println( command );
-        PriceItem targeted = prices.get( Integer.parseInt( command.split( ":" )[ 1 ] ) );
-        if( command.startsWith( EDIT ) )
+        if( command.equals( "ADD_PRICE" ) )
         {
-            new EditAddPriceItemDialog( targeted, this ).setVisible( true );
+            new EditAddPriceItemDialog( null, this, selected ).setVisible( true );
         }
+        else
+        {
+            PriceItem targeted = prices.get( Integer.parseInt( command.split( ":" )[ 1 ] ) );
+            if( command.startsWith( EDIT ) )
+            {
+                new EditAddPriceItemDialog( targeted, this, selected ).setVisible( true );
+            }
+            if( command.startsWith( DELETE ) )
+            {
+                window.deletePriceItem( targeted );
+                this.refresh( );
+            }
 
+        }
+    }
+    public void persistPriceItem( PriceItem priceItem )
+    {
+        window.persistPriceItem( priceItem );
+    }
+    public void refresh( )
+    {
+        this.setSelectedItem( selected );
     }
 }

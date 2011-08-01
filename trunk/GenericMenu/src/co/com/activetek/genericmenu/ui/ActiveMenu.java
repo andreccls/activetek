@@ -8,51 +8,38 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.tree.TreePath;
 
-import java.awt.Rectangle;
-
-import co.com.activetek.genericmenu.server.GenericMenuServer;
+import co.com.activetek.genericmenu.server.ActiveMenuServer;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
+import co.com.activetek.genericmenu.server.beans.Order;
+import co.com.activetek.genericmenu.server.beans.PriceItem;
 import co.com.activetek.genericmenu.server.beans.Table;
 import co.com.activetek.genericmenu.server.beans.Waitress;
 import co.com.activetek.genericmenu.server.exception.AnotherInstanceException;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
-import co.com.activetek.genericmenu.server.util.Customization;
 import co.com.activetek.genericmenu.server.util.Log;
 import co.com.activetek.genericmenu.ui.orders.OrdersPanel;
-import co.com.activetek.genericmenu.ui.menu.MenuTreePanel;
 import co.com.activetek.genericmenu.ui.menu.MenuPanel;
-import co.com.activetek.genericmenu.ui.tables.MapTablesPanel;
 import co.com.activetek.genericmenu.ui.tables.TablesPanel;
-import co.com.activetek.genericmenu.ui.utils.MyLookAndFeel;
 
-import java.awt.Color;
-import java.awt.Panel;
-import java.awt.Point;
-import java.awt.Dimension;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 import co.com.activetek.genericmenu.ui.waitress.WaitressesPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import co.com.activetek.genericmenu.ui.statistics.StatisticsPanel;
 
-public class OsakiMenu extends JFrame
+public class ActiveMenu extends JFrame
 {
 
     private static final long serialVersionUID = 1L;
     private OrdersPanel ordersPanel = null;
     private MenuPanel menuPanel = null;
     private TablesPanel tablesPanel = null;
-    private GenericMenuServer server;
+    private ActiveMenuServer server;
 
     /**
      * Atributo que representa el item del menu que esta seleccionado actualmente en la interfaz del usuario
@@ -61,10 +48,11 @@ public class OsakiMenu extends JFrame
     private WaitressesPanel waitressesPanel = null;
     private JSplitPane splitPane = null;
     private JTabbedPane tabbedPane = null;
-    private OsakiMenuBar osakiMenuBar = null; // @jve:decl-index=0:visual-constraint=""
+    private ActiveMenuBar osakiMenuBar = null; // @jve:decl-index=0:visual-constraint=""
     private JSplitPane splitPaneRight = null;
     private JPanel logo = null;
     private JPanel mainPanel = null;
+    private StatisticsPanel statisticsPanel;
     /**
      * This method initializes ordersPanel
      * 
@@ -74,7 +62,7 @@ public class OsakiMenu extends JFrame
     {
         if( ordersPanel == null )
         {
-            ordersPanel = new OrdersPanel( );
+            ordersPanel = new OrdersPanel( this );
         }
         return ordersPanel;
     }
@@ -85,6 +73,7 @@ public class OsakiMenu extends JFrame
             mainPanel = new JPanel( );
             mainPanel.setLayout( new BorderLayout( ) );
             mainPanel.add( getLogoPanel( ), BorderLayout.NORTH );
+            // mainPanel.add( getSplitPane( ), BorderLayout.CENTER );
             mainPanel.add( getSplitPane( ), BorderLayout.CENTER );
         }
         return mainPanel;
@@ -159,6 +148,7 @@ public class OsakiMenu extends JFrame
             // splitPane.setRightComponent( getSplitPaneRight( ) );
             // ---------end:
             splitPane.setLeftComponent( getTabbedPane( ) );
+            splitPane.setRightComponent(getStatisticsPanel());
             // splitPane.setRightComponent( comp );TODO
         }
         return splitPane;
@@ -187,11 +177,11 @@ public class OsakiMenu extends JFrame
      * 
      * @return co.com.activetek.genericmenu.ui.OsakiMenuBar
      */
-    private OsakiMenuBar getOsakiMenuBar( )
+    private ActiveMenuBar getOsakiMenuBar( )
     {
         if( osakiMenuBar == null )
         {
-            osakiMenuBar = new OsakiMenuBar( );
+            osakiMenuBar = new ActiveMenuBar( );
         }
         return osakiMenuBar;
     }
@@ -235,7 +225,7 @@ public class OsakiMenu extends JFrame
         {
             public void run( )
             {
-                OsakiMenu thisClass = new OsakiMenu( );
+                ActiveMenu thisClass = new ActiveMenu( );
                 thisClass.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
                 thisClass.setVisible( true );
             }
@@ -245,12 +235,12 @@ public class OsakiMenu extends JFrame
     /**
      * This is the default constructor
      */
-    public OsakiMenu( )
+    public ActiveMenu( )
     {
         super( );
         try
         {
-            server = new GenericMenuServer( this );
+            server = new ActiveMenuServer( this );
         }
         catch( SQLException e )
         {
@@ -284,7 +274,7 @@ public class OsakiMenu extends JFrame
         // this.setContentPane( getSplitPane( ) );
         this.setContentPane( getMainPanel( ) );
         this.setExtendedState( getExtendedState( ) | MAXIMIZED_BOTH );
-        this.setTitle( "Osaki" );
+        this.setTitle( "Active Menu" );
         // this.setMenuBar( getOsakiMenuBar( ) );
     }
 
@@ -401,5 +391,54 @@ public class OsakiMenu extends JFrame
     public void notifyOrderReady( )
     {
         ordersPanel.refresh( server.getOrders( ) );
+    }
+    public void persistPriceItem( PriceItem priceItem )
+    {
+        try
+        {
+            server.persistPriceItem( priceItem );
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado tratando de almacenar el precio \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace( );
+        }
+
+    }
+    public void deletePriceItem( PriceItem targeted )
+    {
+        try
+        {
+            server.deletePriceItem( targeted );
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Error inesperado tratando de eliminar el precio \n " + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace( );
+        }
+    }
+    public void closeOrder( Order order )
+    {
+        try
+        {
+            server.closeOrder( order );
+        }
+        catch( SQLException e )
+        {
+            JOptionPane.showMessageDialog( this, "Ha ocurrido un error inesperado tratando de liberar esta mesa \npor favor contacte al administrador de la aplicacion en http://helpdesk.activetek.co \n" + e.getMessage( ), "ERROR", JOptionPane.ERROR_MESSAGE );
+            e.printStackTrace( );
+        }
+        ordersPanel.refresh( server.getOrders( ) );
+    }
+    public void cancelOrder( Order order )
+    {
+        server.cancelOrder( order );
+        ordersPanel.refresh( server.getOrders( ) );
+    }
+    private StatisticsPanel getStatisticsPanel() {
+        if (statisticsPanel == null) {
+        	statisticsPanel = new StatisticsPanel((ActiveMenu) null);
+        }
+        return statisticsPanel;
     }
 }

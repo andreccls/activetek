@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 
 import co.com.activetek.genericmenu.server.beans.Waitress;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -32,9 +32,9 @@ public class WaitressEditDialog extends JDialog implements ActionListener
     private JLabel lblImagen;
     private Waitress waitress;
     private File pathPhoto;
-    private OsakiMenu window;
+    private ActiveMenu window;
 
-    public WaitressEditDialog( OsakiMenu window, Waitress waitress )
+    public WaitressEditDialog( ActiveMenu window, Waitress waitress )
     {
         this.waitress = waitress;
         this.window = window;
