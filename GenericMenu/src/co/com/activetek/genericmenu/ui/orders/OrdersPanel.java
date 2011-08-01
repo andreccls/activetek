@@ -4,6 +4,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.Vector;
@@ -14,6 +15,9 @@ import co.com.activetek.genericmenu.server.beans.Order;
 
 public class OrdersPanel extends JPanel
 {
+
+    public final static Color COLOR_1 = new Color( 232, 209, 198 );
+    public final static Color COLOR_2 = Color.WHITE;
 
     private static final long serialVersionUID = 1L;
     private JScrollPane jScrollPane = null;
@@ -97,10 +101,17 @@ public class OrdersPanel extends JPanel
         {
             jPanel.add( noOrdersLabel );
         }
+
+        int i = 0;
         for( Order order : orders )
         {
-            jPanel.add( new OrderPanel( order ) );
+            jPanel.add( new OrderPanel( order, i ) );
+            i++;
         }
+        JLabel dummy = new JLabel( ":P" );
+        
+        dummy.setVerticalAlignment( JLabel.NORTH );
+        jPanel.add( dummy );
         this.revalidate( );
         this.repaint( );
     }
