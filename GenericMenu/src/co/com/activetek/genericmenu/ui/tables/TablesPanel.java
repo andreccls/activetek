@@ -3,16 +3,16 @@ package co.com.activetek.genericmenu.ui.tables;
 import javax.swing.JPanel;
 
 import co.com.activetek.genericmenu.server.beans.Table;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 import java.awt.BorderLayout;
 
 public class TablesPanel extends JPanel
 {
-    private OsakiMenu window;
+    private ActiveMenu window;
     MapTablesPanel mapTablesPanel;
     TablesPanelOptions tablesPanelOptions;
     
-    public TablesPanel( OsakiMenu window )
+    public TablesPanel( ActiveMenu window )
     {
         this.window = window;
         setLayout( new BorderLayout( 0, 0 ) );

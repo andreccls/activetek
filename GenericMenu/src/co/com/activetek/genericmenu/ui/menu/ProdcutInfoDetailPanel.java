@@ -29,7 +29,7 @@ import javax.swing.JTable;
 
 import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 import java.awt.Insets;
 import net.miginfocom.swing.MigLayout;
 
@@ -65,7 +65,7 @@ public class ProdcutInfoDetailPanel extends JPanel
     private PricesTableModel pricesTableRender = null;
 
     private MenuItem selected;
-    private OsakiMenu window;
+    private ActiveMenu window;
     private JButton btnGuardar;
     // --------------------------------------------------------------------------------------------
     // Constructores
@@ -73,7 +73,7 @@ public class ProdcutInfoDetailPanel extends JPanel
     /**
      * This is the default constructor
      */
-    public ProdcutInfoDetailPanel( OsakiMenu window )
+    public ProdcutInfoDetailPanel( ActiveMenu window )
     {
         super( );
         this.window = window;
@@ -94,7 +94,7 @@ public class ProdcutInfoDetailPanel extends JPanel
         labelDetails = new JLabel( );
         labelDetails.setText( "Detalles:" );
 
-        this.setSize( 300, 200 );
+        this.setSize( 318, 364 );
         this.setBorder( BorderFactory.createTitledBorder( null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null ) );
         setLayout(new MigLayout("", "[155px][5px][127px]", "[160px:160px,top][23px,top][63px][23px]"));
 

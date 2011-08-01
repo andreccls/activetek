@@ -3,7 +3,7 @@ package co.com.activetek.genericmenu.ui.tables;
 import javax.swing.JPanel;
 
 import co.com.activetek.genericmenu.server.beans.Table;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 
 import java.awt.Graphics;
 
@@ -13,7 +13,7 @@ public class MapTablesPanel extends JPanel
 {
 
     private static final long serialVersionUID = 1L;
-    private OsakiMenu window;
+    private ActiveMenu window;
     private Table[][] tables;
     private int width;
     private int height;
@@ -21,7 +21,7 @@ public class MapTablesPanel extends JPanel
     /**
      * This is the default constructor
      */
-    public MapTablesPanel( OsakiMenu window, Table[][] tables )
+    public MapTablesPanel( ActiveMenu window, Table[][] tables )
     {
         super( );        
         tables = window.getMatrixTables( );

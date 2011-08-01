@@ -22,9 +22,9 @@ import co.com.activetek.genericmenu.server.exception.AnotherInstanceException;
 import co.com.activetek.genericmenu.server.exception.GenericMenuException;
 import co.com.activetek.genericmenu.server.util.FileUtil;
 import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 
-public class GenericMenuServer
+public class ActiveMenuServer
 {
     public final static String IMAGES_PATH = "./images/menu/";
 
@@ -38,9 +38,9 @@ public class GenericMenuServer
     private Vector<Table> tables;
     private ListenerThread listener;
     private Vector<Order> orders;
-    private OsakiMenu ui;
+    private ActiveMenu ui;
 
-    public GenericMenuServer(OsakiMenu osakiMenu ) throws SQLException, GenericMenuException, AnotherInstanceException
+    public ActiveMenuServer( ActiveMenu osakiMenu ) throws SQLException, GenericMenuException, AnotherInstanceException
     {
         GenericMenuDAO.getInstance( );// para verificar que la base de datos esta arriba
         try
@@ -51,7 +51,7 @@ public class GenericMenuServer
             tables = GenericMenuDAO.getInstance( ).getTables( );
             orders = new Vector<Order>( );
             this.ui = osakiMenu;
-            
+
             Properties prop = new Properties( );
             FileInputStream in = new FileInputStream( PROPERTIES );
             prop.load( in );
@@ -188,7 +188,7 @@ public class GenericMenuServer
     {
         return root.findPriceItemById( id );
     }
-    public void addOrder(Order order)
+    public void addOrder( Order order )
     {
         orders.add( order );
     }
@@ -199,8 +199,25 @@ public class GenericMenuServer
     {
         ui.notifyOrderReady( );
     }
-    public Vector<Order> getOrders()
+    public Vector<Order> getOrders( )
     {
         return orders;
+    }
+    public void persistPriceItem( PriceItem priceItem ) throws SQLException
+    {
+        GenericMenuDAO.getInstance( ).CRUD( priceItem );
+    }
+    public void deletePriceItem( PriceItem targeted ) throws SQLException
+    {
+        targeted.delete( );
+    }
+    public void closeOrder( Order order ) throws SQLException
+    {
+        order.closeOrder( );
+        orders.remove( order );
+    }
+    public void cancelOrder( Order order )
+    {
+        orders.remove( order );        
     }
 }

@@ -21,7 +21,7 @@ import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 
 import co.com.activetek.genericmenu.server.beans.Table;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 import co.com.activetek.genericmenu.ui.utils.MyImageIcon;
 import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
@@ -70,7 +70,7 @@ public class TablePanel extends JPanel implements ActionListener
     private JMenuItem itemFree = new JMenuItem( "Liberar Mesa" );
     private JMenuItem itemEdit = new JMenuItem( "Editar" );
 
-    private OsakiMenu window;
+    private ActiveMenu window;
     private int mouseX;
     private int mouseY;
     /**
@@ -83,7 +83,7 @@ public class TablePanel extends JPanel implements ActionListener
     private int x;
     private int y;
 
-    public TablePanel( Table table, int x, int y, OsakiMenu window )
+    public TablePanel( Table table, int x, int y, ActiveMenu window )
     {
         this.table = table;
         this.x = x;

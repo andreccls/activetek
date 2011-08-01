@@ -42,7 +42,7 @@ import javax.swing.JScrollPane;
 import co.com.activetek.genericmenu.server.beans.Image;
 import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
-import co.com.activetek.genericmenu.ui.OsakiMenu;
+import co.com.activetek.genericmenu.ui.ActiveMenu;
 
 import java.awt.BorderLayout;
 import java.sql.SQLException;
@@ -78,7 +78,7 @@ public class MenuTreePanel extends JPanel implements ActionListener
     // --------------------------------------------------------------------------------
     // ATRIBUTOS
     // --------------------------------------------------------------------------------
-    private OsakiMenu window;
+    private ActiveMenu window;
     private JTree treeMenu = null;
     private JScrollPane jScrollPane = null;
     /**
@@ -106,7 +106,7 @@ public class MenuTreePanel extends JPanel implements ActionListener
     // --------------------------------------------------------------------------------
     // CONSTRUCTOR
     // --------------------------------------------------------------------------------
-    public MenuTreePanel( OsakiMenu window )
+    public MenuTreePanel( ActiveMenu window )
     {
         super( );
         this.window = window;
@@ -254,6 +254,7 @@ public class MenuTreePanel extends JPanel implements ActionListener
         if( jScrollPane == null )
         {
             jScrollPane = new JScrollPane( );
+            jScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS );
             jScrollPane.setViewportView( getTreeMenu( ) );
         }
         return jScrollPane;
@@ -529,8 +530,8 @@ public class MenuTreePanel extends JPanel implements ActionListener
                 setIcon( root );
             }
             else if( nodeObj.getLevel( ) == MenuItem.LEVEl_CATEGORY )
-            {                
-                if(nodeObj.isEnable( ))
+            {
+                if( nodeObj.isEnable( ) )
                 {
                     setIcon( categoryEnable );
                 }

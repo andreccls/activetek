@@ -2,6 +2,7 @@ package co.com.activetek.genericmenu.ui.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JDialog;
 import net.miginfocom.swing.MigLayout;
@@ -12,6 +13,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 
+import co.com.activetek.genericmenu.server.beans.MenuItem;
 import co.com.activetek.genericmenu.server.beans.PriceItem;
 
 public class EditAddPriceItemDialog extends JDialog implements ActionListener
@@ -24,11 +26,16 @@ public class EditAddPriceItemDialog extends JDialog implements ActionListener
     private JTextField txtDetalles;
     private JTextField txtPrecio;
     private PriceItem priceItem;
+    private MenuItem selected;
     private JCheckBox chckbxMostar;
     private boolean isNew;
-    public EditAddPriceItemDialog( PriceItem targeted, PricesPanel pricesPanel )
+    private PricesPanel father;
+    
+    public EditAddPriceItemDialog( PriceItem targeted, PricesPanel pricesPanel, MenuItem selected )
     {
         setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
+        this.father = pricesPanel;
+        this.selected = selected;
         this.priceItem = targeted;
         isNew = priceItem == null;
         if( isNew )
@@ -43,7 +50,7 @@ public class EditAddPriceItemDialog extends JDialog implements ActionListener
         getContentPane( ).add( lblNumeroDeItems, "cell 0 0,alignx trailing" );
 
         txtItems = new JTextField( );
-        txtItems.setText( Integer.toString( priceItem.getCuantity( ) ) );
+        // txtItems.setText( Integer.toString( priceItem.getCuantity( ) ) );
         getContentPane( ).add( txtItems, "cell 1 0,growx" );
         txtItems.setColumns( 10 );
 
@@ -51,7 +58,7 @@ public class EditAddPriceItemDialog extends JDialog implements ActionListener
         getContentPane( ).add( lblDetalles, "cell 0 1,alignx trailing" );
 
         txtDetalles = new JTextField( );
-        txtDetalles.setText( priceItem.getDescripcion( ) );
+        // txtDetalles.setText( priceItem.getDescripcion( ) );
         getContentPane( ).add( txtDetalles, "cell 1 1,growx" );
         txtDetalles.setColumns( 10 );
 
@@ -59,7 +66,7 @@ public class EditAddPriceItemDialog extends JDialog implements ActionListener
         getContentPane( ).add( lblPrecio, "cell 0 2,alignx trailing" );
 
         txtPrecio = new JTextField( );
-        txtPrecio.setText( Long.toString( priceItem.getPrice( ) ) );
+        // txtPrecio.setText( Long.toString( priceItem.getPrice( ) ) );
         getContentPane( ).add( txtPrecio, "cell 1 2,growx" );
         txtPrecio.setColumns( 10 );
 
@@ -67,11 +74,19 @@ public class EditAddPriceItemDialog extends JDialog implements ActionListener
         getContentPane( ).add( lblMostrar, "cell 0 3,alignx right" );
 
         chckbxMostar = new JCheckBox( );
-        chckbxMostar.setSelected( priceItem.isEnable( ) );
+        // chckbxMostar.setSelected( priceItem.isEnable( ) );
         getContentPane( ).add( chckbxMostar, "cell 1 3" );
 
         JPanel panel = new JPanel( );
         getContentPane( ).add( panel, "cell 0 4 2 1,grow" );
+
+        if( !isNew )
+        {
+            txtItems.setText( Integer.toString( priceItem.getCuantity( ) ) );
+            txtDetalles.setText( priceItem.getDescripcion( ) );
+            txtPrecio.setText( Long.toString( priceItem.getPrice( ) ) );
+            chckbxMostar.setSelected( priceItem.isEnable( ) );
+        }
 
         JButton btnAceptar = new JButton( "Aceptar" );
         panel.add( btnAceptar );
@@ -95,7 +110,36 @@ public class EditAddPriceItemDialog extends JDialog implements ActionListener
         {
             if( dataOk( ) )
             {
-                System.out.println( "aceptar!!!!!   !!!!!!" );
+                if( isNew )
+                {
+                    try
+                    {
+                        priceItem = new PriceItem( -1, Integer.parseInt( txtItems.getText( ) ), txtDetalles.getText( ), chckbxMostar.isSelected( ), 1, Long.parseLong( txtPrecio.getText( ) ), selected );
+                        //selected.addPriceItem( priceItem );
+                    }
+                    catch( NumberFormatException e1 )
+                    {
+                        JOptionPane
+                                .showMessageDialog( this, "Error inesperado tratando de persistir el precio\n Concatacte al administrador de la aplicacion\n Para mayor ayuda visitenos en helpdesk.activetek.co ", "Error", JOptionPane.ERROR_MESSAGE );
+                        e1.printStackTrace( );
+                    }
+                    catch( SQLException e1 )
+                    {
+                        JOptionPane
+                                .showMessageDialog( this, "Error inesperado tratando de persistir el precio\n Concatacte al administrador de la aplicacion\n para mayor ayuda visitenos en helpdesk.activetek.co ", "Error", JOptionPane.ERROR_MESSAGE );
+                        e1.printStackTrace( );
+                    }
+                }
+                else
+                {
+                    priceItem.setCuantity( Integer.parseInt( txtItems.getText( ) ) );
+                    priceItem.setDescripcion( txtDetalles.getText( ) );
+                    priceItem.setEnable( chckbxMostar.isSelected( ) );
+                    priceItem.setPrice( Long.parseLong( txtPrecio.getText( ) ) );
+                }
+                father.persistPriceItem(priceItem);
+                father.refresh();
+                this.dispose( );
             }
         }
         else if( command.equals( "CANCEL" ) )
@@ -108,14 +152,23 @@ public class EditAddPriceItemDialog extends JDialog implements ActionListener
     {
         try
         {
-            // Integer.parseInt( txtItems.getText( ) );
             Long.parseLong( txtPrecio.getText( ) );
-            return true;
         }
         catch( NumberFormatException e )
         {
             JOptionPane.showMessageDialog( this, "Ingrese un precio valido", "Error", JOptionPane.ERROR_MESSAGE );
             return false;
         }
+        try
+        {
+            Integer.parseInt( txtItems.getText( ) );
+        }
+        catch( NumberFormatException e )
+        {
+            JOptionPane.showMessageDialog( this, "Ingrese un numero de items valido", "Error", JOptionPane.ERROR_MESSAGE );
+            return false;
+        }
+
+        return true;
     }
 }

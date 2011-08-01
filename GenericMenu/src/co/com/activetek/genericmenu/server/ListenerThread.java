@@ -1,8 +1,6 @@
 package co.com.activetek.genericmenu.server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -17,12 +15,12 @@ public class ListenerThread extends Thread
     /**
      * referencia a la clase principal del mundo
      */
-    private GenericMenuServer main;
+    private ActiveMenuServer main;
     private int port;
 
     private ServerSocket serverSocket;
 
-    public ListenerThread( GenericMenuServer genericMenuServer, int puerto ) throws IOException
+    public ListenerThread( ActiveMenuServer genericMenuServer, int puerto ) throws IOException
     {
         this.main = genericMenuServer;
         this.port = puerto;
