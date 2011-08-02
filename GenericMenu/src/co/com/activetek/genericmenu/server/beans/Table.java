@@ -3,37 +3,38 @@ package co.com.activetek.genericmenu.server.beans;
 import java.sql.SQLException;
 import java.util.Vector;
 
+import co.com.activetek.genericmenu.server.ActiveMenuServer;
 import co.com.activetek.genericmenu.server.ClientThread;
 import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 import net.sf.json.JSONObject;
 
 public class Table
 {
-	//------------------------------------------------------------------------------------
-	//				CONSTANTES
-	//------------------------------------------------------------------------------------
-	/**
-	 * Representa el estado en que la mesa esta libre
-	 */
-	public final static String FREE = "free";
-	/**
-	 * Representa el estado para una que se encuentra ocupada y el pedido ya ha sido llevado a la mesa
-	 */
-	public final static String BUSY = "busy";
-	/**
-	 * Representa el estado para una mesa en que los clientes ya hicieron el pedido y se encuentran esperando la orden
-	 */
-	public final static String WAITING = "waiting";
+    // ------------------------------------------------------------------------------------
+    // CONSTANTES
+    // ------------------------------------------------------------------------------------
+    /**
+     * Representa el estado en que la mesa esta libre
+     */
+    public final static String FREE = "free";
+    /**
+     * Representa el estado para una que se encuentra ocupada y el pedido ya ha sido llevado a la mesa
+     */
+    public final static String BUSY = "busy";
+    /**
+     * Representa el estado para una mesa en que los clientes ya hicieron el pedido y se encuentran esperando la orden
+     */
+    public final static String WAITING = "waiting";
     /**
      * Id generado automatico por la base de datos
      */
-	//------------------------------------------------------------------------------------
-	//				ATRIBUTOS
-	//------------------------------------------------------------------------------------
-	private int id;
+    // ------------------------------------------------------------------------------------
+    // ATRIBUTOS
+    // ------------------------------------------------------------------------------------
+    private int id;
     /**
      * Id usado por el negocio
-     */    
+     */
     private int number;
     private int capacity;
     private int x;
@@ -41,9 +42,11 @@ public class Table
     private String state;
     private boolean enable;
     private Vector<ClientThread> clients;
-	//------------------------------------------------------------------------------------
-	//				CONSTRUCTOR
-	//------------------------------------------------------------------------------------
+    private Order order;
+
+    // ------------------------------------------------------------------------------------
+    // CONSTRUCTOR
+    // ------------------------------------------------------------------------------------
     public Table( int id, int number, int capacity, int x, int y, String state, boolean enable ) throws SQLException
     {
         super( );
@@ -55,13 +58,23 @@ public class Table
         this.state = state;
         this.enable = enable;
         clients = new Vector<ClientThread>( );
-        if(id < 0)
+        if( id < 0 )
             GenericMenuDAO.getInstance( ).CRUD( this );
     }
-    
-	//------------------------------------------------------------------------------------
-	//				METODOS
-	//------------------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------------------
+    // METODOS
+    // ------------------------------------------------------------------------------------
+    /**
+     * Se usa este metodo puesto que una vez se crea la orden, se toma como la hora a la que el cliente llega.
+     */
+    public Order getOrder( )
+    {
+        if( order == null )
+            order = new Order( this );
+        return order;
+    }
+
     public int getId( )
     {
         return id;
@@ -134,18 +147,18 @@ public class Table
 
     public void delete( ) throws SQLException
     {
-        GenericMenuDAO.getInstance( ).delete( this );        
+        GenericMenuDAO.getInstance( ).delete( this );
     }
 
     public void addClient( ClientThread clientThread )
     {
         clients.add( clientThread );
     }
-    public boolean allClientsReady()
-    {     
+    public boolean allClientsReady( )
+    {
         for( ClientThread clientThread : clients )
         {
-            if(!clientThread.isReady())
+            if( !clientThread.isReady( ) )
             {
                 return false;
             }
@@ -162,15 +175,56 @@ public class Table
     {
         for( ClientThread clientThread : clients )
         {
-            if(!client.equals( clientThread ))
+            if( !client.equals( clientThread ) )
             {
                 clientThread.sendMesage( line );
             }
         }
     }
 
+    private String getConcatIds( )
+    {
+        String ids = "";
+        for( ClientThread clientThread : clients )
+        {
+            ids += "|" + clientThread.getClientId( );
+        }
+        return ids.substring( 1 );
+    }
+
     public int getNextSalveNumber( )
     {
         return clients.size( );
     }
+
+    public void setWaitress( Waitress waitress )
+    {
+        getOrder( ).setWaitress( waitress );
+    }
+
+    public void addPriceItem( PriceItem priceItem )
+    {
+        getOrder( ).add( priceItem );
+    }
+
+    public void removePriceItem( PriceItem priceItem )
+    {
+        getOrder( ).remove( priceItem );
+    }
+
+    public void confirmOrder( )
+    {
+        getOrder( ).orderOrdered( );
+    }
+
+    public void release( )
+    {
+        order.setClientIs(getConcatIds( ));
+        order = null;
+        clients = new Vector<ClientThread>( );
+    }
+
+    /*
+     * public void confirmOrder( ) { server.addOrder( getOrder( ) ); getOrder( ).orderOrdered( ); server.notifyOrderReady( ); }
+     */
 }

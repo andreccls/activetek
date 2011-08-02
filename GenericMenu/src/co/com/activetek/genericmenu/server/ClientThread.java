@@ -22,10 +22,10 @@ public class ClientThread extends Thread
     private BufferedReader read;
     private PrintWriter write;
     private String clientId;
-    private ActiveMenuServer server;    
+    private ActiveMenuServer server;
     private Table table;
     private boolean isMaster;
-    private Order order;
+    // private Order order;
     private int slaveNumber;
     private boolean finished;
 
@@ -53,7 +53,7 @@ public class ClientThread extends Thread
             // clientId = line.split( ":" )[ 1 ];// TODO tiene que recupara la informacion que tenia del anterior cliente
             clientId = line.replace( "RETRY:", "" );
         }
-        Log.getInstance( ).getLog( ).info( "Nuevo cliente conectado id: " + line + " ip: " + this.socket.getInetAddress( ) );
+        Log.getInstance( ).getLog( ).info( "Nuevo cliente conectado id: " + clientId + " ip: " + this.socket.getInetAddress( ) );
     }
     public void run( )
     {
@@ -83,7 +83,7 @@ public class ClientThread extends Thread
                 System.out.println( new Date( ) + "\t" + clientId + "\t" + line );
 
             int tableNumber = Integer.parseInt( line.split( ":" )[ 1 ] );
-            this.table = server.getTablebyNumber( tableNumber );            
+            this.table = server.getTablebyNumber( tableNumber );
 
             this.table.addClient( this );
             this.slaveNumber = table.getNextSalveNumber( );
@@ -107,9 +107,11 @@ public class ClientThread extends Thread
 
             int waitressId = Integer.parseInt( line.split( ":" )[ 1 ] );
             Waitress waitress = server.getWaitressById( waitressId );
-            this.order = new Order( table, waitress );
+            // this.order = new Order( table, waitress );
+            table.setWaitress( waitress );
         }
-        else //TODO multimesa no esta ben
+        else
+            // TODO multimesa no esta ben
             System.out.println( line );
     }
     private void processLine( String line )
@@ -125,11 +127,13 @@ public class ClientThread extends Thread
                 int priceItemId = Integer.parseInt( line.split( ":" )[ 1 ] );
                 if( line.startsWith( "ADD:" ) )
                 {
-                    order.add( server.getPriceItemById( priceItemId ) );
+                    // order.add( server.getPriceItemById( priceItemId ) );
+                    table.addPriceItem( server.getPriceItemById( priceItemId ) );
                 }
                 else if( line.startsWith( "REMOVE:" ) )
                 {
-                    order.remove( server.getPriceItemById( priceItemId ) );
+                    // order.remove( server.getPriceItemById( priceItemId ) );
+                    table.removePriceItem( server.getPriceItemById( priceItemId ) );
                 }
                 table.sendMesageToAll( line, this );
             }
@@ -146,14 +150,15 @@ public class ClientThread extends Thread
                     {
                         e.printStackTrace( );
                     }
-                    sendMesage( "READY:" );                  
+                    sendMesage( "READY:" );
                 }
             }
             else if( line.startsWith( "confirm" ) )
             {
-                server.addOrder( order );
-                order.orderOrdered();
-                server.notifyOrderReady( );
+                // server.addOrder( order );
+                // order.orderOrdered( );
+                // server.notifyOrderReady( );
+                confirmOrder( );
             }
         }
         else
@@ -165,10 +170,21 @@ public class ClientThread extends Thread
     {
         return ready;
     }
+    public void confirmOrder( )
+    {
+        table.confirmOrder( );
+        server.confirmOrder( table );
+    }
+
     public void sendMesage( String mess )
     {
         if( debug )
             System.out.println( new Date( ) + "\t" + "SERVER                 " + "\t" + mess );
         write.println( mess );
+    }
+    
+    public String getClientId()
+    {
+        return clientId;
     }
 }
