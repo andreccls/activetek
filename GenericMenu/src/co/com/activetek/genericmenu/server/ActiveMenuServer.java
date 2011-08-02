@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -218,13 +220,33 @@ public class ActiveMenuServer
     }
     public void cancelOrder( Order order )
     {
-        orders.remove( order );        
+        orders.remove( order );
     }
     public void confirmOrder( Table table )
     {
         table.getOrder( ).orderOrdered( );
         orders.add( table.getOrder( ) );
         notifyOrderReady( );
-        table.release();
+        table.release( );
+    }
+    public Waitress findWaitressById( int id)
+    {
+        for( Waitress w : waitresses )
+        {
+            if(w.getId( ) == id )
+                return w;
+        }
+        return null;
+    }
+    public HashMap<Waitress, Integer> getTopWaitress( ) throws SQLException
+    {
+        LinkedHashMap<Waitress, Integer> waitress = new LinkedHashMap<Waitress, Integer>( );
+        HashMap<Integer, Integer> ids = GenericMenuDAO.getInstance( ).getTopWaitressIds( );
+        for( Integer id: ids.keySet( ) )
+        {
+            Waitress w = findWaitressById( id ) ;
+            waitress.put( w, ids.get( id ) );
+        }
+        return waitress;
     }
 }
