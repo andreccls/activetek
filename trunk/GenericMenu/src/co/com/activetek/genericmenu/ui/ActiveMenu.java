@@ -25,6 +25,7 @@ import co.com.activetek.genericmenu.ui.tables.TablesPanel;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Vector;
 
 import co.com.activetek.genericmenu.ui.waitress.WaitressesPanel;
@@ -422,6 +423,7 @@ public class ActiveMenu extends JFrame
         try
         {
             server.closeOrder( order );
+            statisticsPanel.refresh( );
         }
         catch( SQLException e )
         {
@@ -437,8 +439,12 @@ public class ActiveMenu extends JFrame
     }
     private StatisticsPanel getStatisticsPanel() {
         if (statisticsPanel == null) {
-        	statisticsPanel = new StatisticsPanel((ActiveMenu) null);
+        	statisticsPanel = new StatisticsPanel(this);
         }
         return statisticsPanel;
+    }
+    public HashMap<Waitress, Integer> getTopWaitress( ) throws SQLException
+    {
+        return server.getTopWaitress( );
     }
 }

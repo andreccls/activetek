@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
@@ -23,7 +24,8 @@ public class GenericMenuDAO
 {
     public final static String MAPTABLES_HEIGHT = "mapTables.height";
     public final static String MAPTABLES_WIDTH = "mapTables.width";
-
+    public final static int STATISCS_COUNT = 10;
+    
     private static GenericMenuDAO instance;
     private Connection conn;
 
@@ -369,6 +371,18 @@ public class GenericMenuDAO
         st.executeUpdate( sql );
     }
     
-    
+    public LinkedHashMap<Integer, Integer> getTopWaitressIds( ) throws SQLException
+    {
+        LinkedHashMap<Integer, Integer> sales = new LinkedHashMap<Integer, Integer>( );
+        Statement st = conn.createStatement( );
+        String sql = "SELECT id_mesero,COUNT(*) AS sales FROM x_order JOIN  ordereditems USING (order_id) GROUP BY id_mesero ORDER BY sales DESC LIMIT " + STATISCS_COUNT;
+        ResultSet rs = st.executeQuery( sql );
 
+        while( rs.next( ) )
+        {
+            sales.put( rs.getInt( "id_mesero" ), rs.getInt( "sales" ) );
+        }
+
+        return sales;
+    }
 }
