@@ -220,4 +220,11 @@ public class ActiveMenuServer
     {
         orders.remove( order );        
     }
+    public void confirmOrder( Table table )
+    {
+        table.getOrder( ).orderOrdered( );
+        orders.add( table.getOrder( ) );
+        notifyOrderReady( );
+        table.release();
+    }
 }

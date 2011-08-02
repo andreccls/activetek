@@ -10,6 +10,10 @@ import co.com.activetek.genericmenu.server.util.GenericMenuDAO;
 
 public class Order extends Vector<PriceItem>
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Table table;
     /**
      * Hora a la que el cliente llega comienza a tomar su pedido
@@ -26,13 +30,14 @@ public class Order extends Vector<PriceItem>
 
     private Waitress waitress;
 
-    private SimpleDateFormat sdf = new SimpleDateFormat( "HH:mm:dd" );
+    private String clientIds;
 
-    public Order( Table table, Waitress waitress )
+    private SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+
+    public Order( Table table )
     {
         super( );
         this.table = table;
-        this.waitress = waitress;
 
         Calendar c = Calendar.getInstance( );
         startTime = sdf.format( c.getTime( ) );
@@ -71,6 +76,23 @@ public class Order extends Vector<PriceItem>
 
     public void closeOrder( ) throws SQLException
     {
+        Calendar c = Calendar.getInstance( );
+        serverdTime = sdf.format( c.getTime( ) );
         GenericMenuDAO.getInstance( ).CRUD( this );
+    }
+
+    public void setWaitress( Waitress waitress2 )
+    {
+        this.waitress = waitress2;
+    }
+
+    public void setClientIs( String concatIds )
+    {
+        this.clientIds = concatIds;
+    }
+
+    public String getClientIds( )
+    {
+        return clientIds;
     }
 }

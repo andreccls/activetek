@@ -283,16 +283,46 @@ public class GenericMenuDAO
         {
             Order o = (Order)object;
             Statement st = conn.createStatement( );
-            sql = "insert into order (table_id,id_mesero,startTime,orderTime,serverdTime,client_ids) values " +
-            		"("+o.getTable( ).getId( )+"," + //table_id
+            sql = "insert into `x_order` (table_id,id_mesero,startTime,orderTime,serverdTime,client_ids) values " +
+            		"("+o.getTable( ).getNumber( )+"," + //table_id
             		""+o.getWaitress( ).getId( )+","+//id_mesero
-            		"'"+o.getStartTime( )+"'"+//startTime
-            		"'"+o.getOderTime( )+"'"+//orderTime
-            		"'"+o.getServedTime( )+"'"+//serverdTime
+            		"'"+o.getStartTime( )+"',"+//startTime
+            		"'"+o.getOderTime( )+"',"+//orderTime
+            		"'"+o.getServedTime( )+"',"+//serverdTime
+            		"'"+o.getClientIds( )+"'"+
             		")";
             
             System.out.println( sql );
             st.execute( sql );
+            
+            ResultSet rs = st.executeQuery( "select max(order_id) from x_order" );
+            if( rs.next( ) )
+            {
+                int orderId = rs.getInt( 1 );
+                PreparedStatement ps = conn.prepareStatement( "insert into ordereditems (order_id,priceitem_id,priceitemPrice,priceitemDescription,priceitemCuantity,priceitemOrder,menuitem_id,menuitemName,menuitemDescription,menuitemParentId,menuitemParentName,menuitemParentIcon,menuitemIcon) values (?,?,?,?,?,?,?,?,?,?,?,?,?) " );
+                for( PriceItem priceItem : o )
+                {
+                    int i=1;
+                    ps.setInt( i++, orderId );//order_id
+                    ps.setInt( i++, priceItem.getId( ) );//priceitem_id
+                    ps.setLong( i++, priceItem.getPrice( ) );//priceitemPrice
+                    ps.setString( i++, priceItem.getDescripcion( ) );//priceitemDescription
+                    ps.setInt( i++, priceItem.getCuantity( ) );//priceitemCuantity
+                    ps.setInt( i++, priceItem.getOrder( ) );//priceitemOrder
+                    ps.setInt( i++, priceItem.getMenuitem( ).getId( ) );//menuitem_id
+                    ps.setString( i++,  priceItem.getMenuitem( ).getName( ));//menuitemName
+                    ps.setString( i++,  priceItem.getMenuitem( ).getDescription( ));//menuitemDescription
+                    ps.setInt( i++, priceItem.getMenuitem( ).getParent( ).getId( ) );//menuitemParentId
+                    ps.setString( i++, priceItem.getMenuitem( ).getParent( ).getName( ) );//menuitemParentName
+                    ps.setString( i++,  priceItem.getMenuitem( ).getParent( ).getConcatImages( ));//menuitemParentIcon
+                    ps.setString( i++,  priceItem.getMenuitem( ).getConcatImages( ));//menuitemIcon
+                    
+                    System.out.println(ps);
+                    ps.execute( );
+                    ps.clearParameters( );
+                }
+            }
+            
         }
     }
 

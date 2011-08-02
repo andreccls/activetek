@@ -281,4 +281,14 @@ public class MenuItem extends Vector<MenuItem>
         }
         return null;
     }
+    
+    public String getConcatImages()
+    {
+        String im = "";
+        for( Image image : images )
+        {
+            im+= "|" +image;
+        }
+        return im.length( ) == 0 ? "" : im.substring( 1 );
+    }
 }
