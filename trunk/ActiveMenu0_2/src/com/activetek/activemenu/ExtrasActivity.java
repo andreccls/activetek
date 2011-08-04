@@ -58,14 +58,12 @@ public class ExtrasActivity extends AbstractActivityGroup{
 					in.putExtra("URL", "http://www.eltiempo.com");
 					in.putExtra("count", count);
 					ExtrasActivity.this.startActivity(in);
-					finish();
 					break;
 				case 3:
 					in= new Intent(ExtrasActivity.this,WebActivity.class);
 					in.putExtra("URL", "http://www.activetek.co");
 					in.putExtra("count", count);
 					ExtrasActivity.this.startActivity(in);
-					finish();
 					break;
 				default:
 				}

@@ -25,13 +25,14 @@ public class TableActivity extends AbstractActivityGroup
 	private Sender send;
 	private Receiver rec;
 	private int slaveIndex;
+	private boolean sync;
 
 	@Override
 	public void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.tables );
-
+		sync=false;
 		this.getWindow( ).setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
 		// /**
 		// try {
@@ -127,7 +128,7 @@ public class TableActivity extends AbstractActivityGroup
 
 					send.getWrite( ).println( "MESA:" + TableWrapper.getInstance( ).getTables( ).get( position ).getNumber( ) );
 					Toast.makeText( getApplicationContext( ), "Haz seleccionado la mesa " + TableWrapper.getInstance( ).getTables( ).get( position ).getNumber( ), Toast.LENGTH_LONG ).show( );
-					Toast.makeText( getApplicationContext( ), "Haz seleccionado la mesa " + TableWrapper.getInstance( ).getTables( ).get( position ).getNumber( ), Toast.LENGTH_LONG ).show( );
+					while(!sync);
 					Intent in= new Intent( TableActivity.this, WaiterActivity.class );
 					Intent ini = new Intent( TableActivity.this, MenuActivity.class );
 					
@@ -217,6 +218,7 @@ public class TableActivity extends AbstractActivityGroup
 	@Override
 	public void notifier( String message )
 	{
+		sync=true;
 		// TODO Auto-generated method stub
 		Log.d( "TableActivity", message );
 		if( !message.equals( "MAESTRO:" ) )

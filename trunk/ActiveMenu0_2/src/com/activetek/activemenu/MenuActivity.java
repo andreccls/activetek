@@ -1,6 +1,5 @@
 package com.activetek.activemenu;
 
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -36,7 +35,7 @@ public class MenuActivity extends AbstractActivityGroup{
 	/**
 	 * Instancia de la lista inteligente
 	 */
-	private SmartList smartList1;
+	private OList smartList1;
 	/**
 	 * Instancia de envío de mensajes
 	 */
@@ -67,7 +66,7 @@ public class MenuActivity extends AbstractActivityGroup{
 		// Creamos la vista de la lista de pedido
 		ListView list=new ListView(this);
 
-		smartList1 = SmartList.getInstance();
+		smartList1 = OList.getInstance();
 		//La cuenta de usuarios corresponde siempre al id de usuario
 		// mas uno
 		count=getIntent().getExtras().getInt("SLI")+1;
@@ -79,7 +78,7 @@ public class MenuActivity extends AbstractActivityGroup{
 		rec.setOwner(this);
 
 		// Creamos un adaptador para lista inteligente
-		SmartListAdapter smartAdapter = new SmartListAdapter(this,id);		
+		SmartListAdapter smartAdapter = new SmartListAdapter(this);		
 		// Añadimos el tìtulo de la lista
 		TextView title=new TextView(this);
 		title.setBackgroundColor(Color.TRANSPARENT);
@@ -151,14 +150,12 @@ public class MenuActivity extends AbstractActivityGroup{
 	 */
 	private class SmartListAdapter extends BaseAdapter implements Observer {
 		private Context mContext;
-		private SmartList smartList2;
-		private int id;
+		private OList smartList2;
 
-		public SmartListAdapter(Context context, int mid) {
+		public SmartListAdapter(Context context) {
 			mContext = context;            		
-			smartList2 = SmartList.getInstance();
+			smartList2 = OList.getInstance();
 			smartList2.addObserver(this);
-			id=mid;
 		}
 
 		public View getView(final int position, View convertView, ViewGroup parent) {
@@ -174,9 +171,8 @@ public class MenuActivity extends AbstractActivityGroup{
 			}
 			TextView text=(TextView) view.findViewById(R.id.title);
 			// Vamos a utilizar exclusivamente parte de la lista inteligente
-			final ArrayList<String> arr=subList(id);
 			// Extraemos la categoría seleccionada
-			String sub=arr.get(position).substring(arr.get(position).indexOf(":")+1);
+			String sub=smartList2.get(position);
 			int cat=Integer.parseInt(sub);
 			MenuItem men=CategoryWrapper.getInstance().getMenuItemById(cat);
 			// Escribimos en el listview el nombre del menuitem seleccionado, y la descripciòn de la variedad
@@ -191,9 +187,9 @@ public class MenuActivity extends AbstractActivityGroup{
 				@Override
 				public void onClick(View arg0) {
 					// Envio la remociòn al servidor
-					Sender.getInstance().getWrite().println("REMOVE:"+arr.get(position));
+					Sender.getInstance().getWrite().println("REMOVE:"+smartList2.get(position));
 					// Elimino la entrada de la lista inteligente
-					smartList2.remove(arr.get(position));
+					smartList2.remove(smartList2.get(position));
 				}
 
 			});
@@ -201,27 +197,8 @@ public class MenuActivity extends AbstractActivityGroup{
 			return view;
 		}        
 
-		/**
-		 * Este método retorna un arraylist con los pedidos locales
-		 * @param id identificaciòn del usuario
-		 * @return arraylist con los pedidos de este usuario
-		 */
-		public ArrayList<String> subList(int id)
-		{
-			ArrayList<String> temp=new ArrayList<String>();
-			for(int i=0;i<smartList2.size();i++)
-			{
-				String item=smartList2.get(i);
-				int itid=Integer.parseInt(item.substring(0,item.indexOf(":")));
-				if(itid==id)
-					// Solo añado algo si el id del item en la lista es igual al id de usuario
-					temp.add(item);
-			}
-			return temp;
-		}
-
 		public int getCount() {
-			return subList(id).size();
+			return smartList2.size();
 		}
 
 		public Object getItem(int position) {
@@ -237,7 +214,7 @@ public class MenuActivity extends AbstractActivityGroup{
 		 */
 		@Override
 		public void update(Observable arg0, Object arg1) {
-			smartList2 = SmartList.getInstance();
+			smartList2 = OList.getInstance();
 			notifyDataSetChanged();
 			Log.v("SmartListAdapter", "Count is :"+smartList2.size());
 		}

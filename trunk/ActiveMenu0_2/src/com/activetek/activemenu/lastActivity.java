@@ -55,6 +55,7 @@ public class lastActivity extends Activity{
 				public void onClick(View arg0) {
 					// Añadimos la selección del usuario a la Lista Inteligente
 					SmartList.getInstance().add(id+":"+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(k).getId());
+					OList.getInstance().add(""+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(k).getId());
 					// Enviamos un mensaje al servidor con la selección del usuario
 					Sender.getInstance().getWrite().println("ADD:"+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(k).getId());
 					// Fijamos el código de resultado
@@ -89,6 +90,7 @@ public class lastActivity extends Activity{
 		{
 			// Añadimos la selección del usuario a la Lista Inteligente
 			SmartList.getInstance().add(id+":"+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(0).getId());
+			OList.getInstance().add(""+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(0).getId());
 			// Enviamos un mensaje al servidor con la selección del usuario
 			Sender.getInstance().getWrite().println("ADD:"+CategoryWrapper.getInstance().getCategories().get(cat).getFoods().get(food).getPrices().get(0).getId());
 			// Fijamos el código de resultado
