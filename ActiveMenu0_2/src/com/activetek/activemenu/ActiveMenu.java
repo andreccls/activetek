@@ -41,7 +41,8 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 	 * Constante que indica la dirección IP del servidor
 	 */
 	//public final static String SERVER_IP="192.168.0.103";
-	public final static String SERVER_IP="192.168.43.168";
+	//public final static String SERVER_IP="192.168.43.168";
+	public final static String SERVER_IP="192.168.0.194";
 	public final static String ROOT_DIR = "/data/menu";
 	/**
 	 * Diálogo de espera
@@ -109,9 +110,9 @@ public class ActiveMenu extends Activity implements OnClickListener, Runnable {
 			//Obtenemos la línea de escritura sobre la consola
 			OutputStream os = process.getOutputStream();
 			//Introducimos el comando a ser utilizado
-			String cmd="/data/data/eu.kowalczuk.rsync4android/files/rsync -avz Daniel@"+SERVER_IP+"::AMenu " + ROOT_DIR + "/images/ && exit";
-			writeLine( os, cmd );
-            //writeLine( os,"sleep 1 && exit");
+			//String cmd="/data/data/eu.kowalczuk.rsync4android/files/rsync -avz Daniel@"+SERVER_IP+"::AMenu " + ROOT_DIR + "/images/ && exit";
+			//writeLine( os, cmd );
+            writeLine( os,"sleep 1 && exit");
 			// iniciamos ejecución sobre consola
 			os.flush();
 			//Esperamos a que el proceso se complete
