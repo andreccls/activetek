@@ -12,7 +12,7 @@ public class ServerTest
 	private static BufferedReader read;
 	private static PrintWriter write;
 
-	public final static void main(String[] ar) throws IOException
+	public final static void main(String[] ar) throws IOException, InterruptedException
 	{
 		ServerSocket s = new ServerSocket(9999 );
 		while(true)
@@ -23,6 +23,7 @@ public class ServerTest
 			int t=-1;
 			read = new BufferedReader( new InputStreamReader( socket.getInputStream( ) ) );
 			write = new PrintWriter( socket.getOutputStream( ) ,true);
+			System.out.println(read.readLine());
 			while(true)
 			{
 				String a=read.readLine( );
@@ -32,17 +33,21 @@ public class ServerTest
 				if(c!=-1)
 					b= a.substring(0,c);
 				if(b.equals("MESA"))
-					write.println("MAESTRO");
+					write.println("MAESTRO:");
 				else if(b.equals("MESERO"));
-				else if(b.equals("end"));
+				else if(b.equals("END"))
+				{
+					Thread.sleep(1000);
+					write.println("READY:");
+				}
 				else
 				{
-					write.println(a);
-					write.println("arrive");
+					//write.println(a);
+					write.println("ARRIVE:");
 					t++;
 					if(t>0)
 					{
-						write.println("ADD:"+t+":0:1:1");
+						write.println("ADD:"+t+":7");
 					}
 				}
 			}
